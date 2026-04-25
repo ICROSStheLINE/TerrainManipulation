@@ -47,28 +47,37 @@ public class Container : MonoBehaviour
 
   public void GenerateMesh()
   {
-    for (int cubeIndex = 0; cubeIndex < 2; cubeIndex++)
+    int chunkWidth = 6;
+    int chunkHeight = 6;
+    int chunkLength = 6;
+
+    for (int chunkLength_ = 0; chunkLength_ < chunkLength; chunkLength_++)
     {
-      for (int vertexIndex = 0; vertexIndex < 8; vertexIndex++)
+      for (int chunkWidth_ = 0; chunkWidth_ < chunkWidth; chunkWidth_++)
       {
-        if (vertexIndex == 2 && cubeIndex == 0)
-          vertices.Add(voxelVertices[vertexIndex] + -Vector3.forward + -Vector3.forward + -Vector3.forward + new Vector3(0,cubeIndex,0));
-        else
-          vertices.Add(voxelVertices[vertexIndex] + new Vector3(0,cubeIndex,0));
+        for (int chunkHeight_ = 0; chunkHeight_ < chunkHeight; chunkHeight_++)
+        {
+          for (int vertexIndex = 0; vertexIndex < 8; vertexIndex++)
+          {
+            vertices.Add(voxelVertices[vertexIndex] + new Vector3(chunkWidth_,chunkHeight_,chunkLength_));
+          }
+        }
       }
     }
-    for (int cubeIndex = 0; cubeIndex < 2; cubeIndex++)
+    
+
+    for (int blockIndex = 0; blockIndex < chunkWidth * chunkHeight * chunkLength; blockIndex++)
     {
       for (int faceIndex = 0; faceIndex < 6; faceIndex++)
       {
         for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
         {
           // UVs.Add(voxelUVs[voxelTris[faceIndex,vertexIndex]] + new Vector2(0,cubeIndex));
-          triangles.Add(voxelVertexIndex[faceIndex, voxelTris[faceIndex,vertexIndex]] + cubeIndex * 8);
+          triangles.Add(voxelVertexIndex[faceIndex, voxelTris[faceIndex,vertexIndex]] + blockIndex * 8);
         }
       }
     }
-    
+
     // // Front
     // vertices.Add(voxelVertices[0]);
     // vertices.Add(voxelVertices[2]);
@@ -183,7 +192,6 @@ public class Container : MonoBehaviour
     // triangles.Add(33);
     // triangles.Add(34);
     // triangles.Add(35);
-
 
   }
 
