@@ -72,134 +72,16 @@ public class Container : MonoBehaviour
       {
         for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
         {
-          // UVs.Add(voxelUVs[voxelTris[faceIndex,vertexIndex]] + new Vector2(0,cubeIndex));
           triangles.Add(voxelVertexIndex[faceIndex, voxelTris[faceIndex,vertexIndex]] + blockIndex * 8);
         }
       }
     }
-
-    // // Front
-    // vertices.Add(voxelVertices[0]);
-    // vertices.Add(voxelVertices[2]);
-    // vertices.Add(voxelVertices[3]);
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 0));
-    // triangles.Add(0);
-    // triangles.Add(1);
-    // triangles.Add(2);
-    // vertices.Add(voxelVertices[0]);
-    // vertices.Add(voxelVertices[3]);
-    // vertices.Add(voxelVertices[1]);
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 1));
-    // UVs.Add(new Vector2(1, 0));
-    // triangles.Add(3);
-    // triangles.Add(4);
-    // triangles.Add(5);
-    // // Up
-    // vertices.Add(new Vector3(0, 1, 0));
-    // vertices.Add(new Vector3(0, 1, 1));
-    // vertices.Add(new Vector3(1, 1, 1));
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 1));
-    // triangles.Add(6);
-    // triangles.Add(7);
-    // triangles.Add(8);
-    // vertices.Add(new Vector3(1, 1, 1));
-    // vertices.Add(new Vector3(1, 1, 0));
-    // vertices.Add(new Vector3(0, 1, 0));
-    // UVs.Add(new Vector2(1, 1));
-    // UVs.Add(new Vector2(1, 0));
-    // UVs.Add(new Vector2(0, 0));
-    // triangles.Add(9);
-    // triangles.Add(10);
-    // triangles.Add(11);
-    // // Back
-    // vertices.Add(new Vector3(1, 0, 1));
-    // vertices.Add(new Vector3(1, 1, 1));
-    // vertices.Add(new Vector3(0, 0, 1));
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 0));
-    // triangles.Add(12);
-    // triangles.Add(13);
-    // triangles.Add(14);
-    // vertices.Add(new Vector3(0, 0, 1));
-    // vertices.Add(new Vector3(1, 1, 1));
-    // vertices.Add(new Vector3(0, 1, 1));
-    // UVs.Add(new Vector2(1, 0));
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 1));
-    // triangles.Add(15);
-    // triangles.Add(16);
-    // triangles.Add(17);
-    // // Down
-    // vertices.Add(new Vector3(0, 0, 0));
-    // vertices.Add(new Vector3(1, 0, 0));
-    // vertices.Add(new Vector3(1, 0, 1));
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(1, 0));
-    // UVs.Add(new Vector2(1, 1));
-    // triangles.Add(18);
-    // triangles.Add(19);
-    // triangles.Add(20);
-    // vertices.Add(new Vector3(0, 0, 0));
-    // vertices.Add(new Vector3(1, 0, 1));
-    // vertices.Add(new Vector3(0, 0, 1));
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(1, 1));
-    // UVs.Add(new Vector2(0, 1));
-    // triangles.Add(21);
-    // triangles.Add(22);
-    // triangles.Add(23);
-    // // Left
-    // vertices.Add(new Vector3(0, 0, 1));
-    // vertices.Add(new Vector3(0, 1, 1));
-    // vertices.Add(new Vector3(0, 0, 0));
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 0));
-    // triangles.Add(24);
-    // triangles.Add(25);
-    // triangles.Add(26);
-    // vertices.Add(new Vector3(0, 0, 0));
-    // vertices.Add(new Vector3(0, 1, 1));
-    // vertices.Add(new Vector3(0, 1, 0));
-    // UVs.Add(new Vector2(1, 0));
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 1));
-    // triangles.Add(27);
-    // triangles.Add(28);
-    // triangles.Add(29);
-    // // Right
-    // vertices.Add(new Vector3(1, 0, 0));
-    // vertices.Add(new Vector3(1, 1, 0));
-    // vertices.Add(new Vector3(1, 1, 1));
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(0, 1));
-    // UVs.Add(new Vector2(1, 1));
-    // triangles.Add(30);
-    // triangles.Add(31);
-    // triangles.Add(32);
-    // vertices.Add(new Vector3(1, 0, 0));
-    // vertices.Add(new Vector3(1, 1, 1));
-    // vertices.Add(new Vector3(1, 0, 1));
-    // UVs.Add(new Vector2(0, 0));
-    // UVs.Add(new Vector2(1, 1));
-    // UVs.Add(new Vector2(1, 0));
-    // triangles.Add(33);
-    // triangles.Add(34);
-    // triangles.Add(35);
-
   }
 
   public void UploadMesh()
   {
     mesh.SetVertices(vertices);
     mesh.SetTriangles(triangles, 0, false);
-    // mesh.SetUVs(0, UVs);
 
     mesh.RecalculateNormals();
 
