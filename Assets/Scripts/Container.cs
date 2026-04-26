@@ -18,9 +18,9 @@ public class Container : MonoBehaviour
   [HideInInspector] public List<int> triangles;
   public List<Vector2> UVs;
 
-  static int chunkLength = 6; // x  (I had to make these static so I could use them to make the cube map)
-  static int chunkHeight = 6; // y
-  static int chunkWidth = 6; // z
+  static int chunkLength = 2; // x  (I had to make these static so I could use them to make the cube map)
+  static int chunkHeight = 2; // y
+  static int chunkWidth = 2; // z
   
   // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
   bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
@@ -66,35 +66,50 @@ public class Container : MonoBehaviour
       }
     }
 
-    // Vertices
+
+    
     for (int x = 0; x < chunkLength; x++)
     {
       for (int y = 0; y < chunkHeight; y++)
       {
         for (int z = 0; z < chunkWidth; z++)
         {
-          for (int vertexIndex = 0; vertexIndex < 8; vertexIndex++)
+          for (int faceIndex = 0; faceIndex < 6; faceIndex++)
           {
-            // Implement that check I made before to cull out useless vertices
-            vertices.Add(voxelVertices[vertexIndex] + new Vector3(x,y,z));
+            int[] lastFourVertexIndicesAdded = new int[4];
+            for (int vertexIndex = 0; vertexIndex < 4; vertexIndex++)
+            {
+              vertices.Add(voxelVertices[voxelVertexIndex[faceIndex, vertexIndex]] + new Vector3(x,y,z));
+              lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
+            }
+            for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
+            {
+              triangles.Add(lastFourVertexIndicesAdded[voxelTris[faceIndex,vertexIndex]]);
+            }
+            // EXPLANATION:
+            // Before:
+            // We were making exactly 8 vertices for each cube. No overlapping vertices... EFFICIENT!
+            // We were carefully organizing triangles around each of the 8 vertices to draw faces...
+            // And whenever we wanted to draw triangles for the next cube in the list, we used a "cubeIndex" variable to count what cube we were on...
+            // then multiplied that count by 8 (since it was assumed that each cube has 8 vertices and the next set of vertices we needed to draw...
+            // triangels between was also a set of 8 vertices)...
+            // THIS WAS A PROBLEM because if we wanted to move to the next step where we were deciding which vertices to remove and which to keep,
+            // we would no longer be able to reliably tell how much we had to multiply blockIndex by (since we no longer knew how many vertices were
+            // made in the last set AND we didn't know what order they were in if some vertices were removed!).
+            // SOLUTION:
+            // Once I learned that this was the problem, i changed it to NO LONGER ADD EXACTLY 8 VERTICES FOR EACH CUBE...
+            // and to instead add 4 VERTICES FOR EACH FACE... INEFFICIENT!!!
+            // This, however, solves the problem where we don't know what order the list of vertices is in anymore.
+            // All we need to do now is draw triangles between the LAST 4 CREATED VERTICES instead of picking out vertices in the total list to draw between.
+            // NOTE that despite INEFFICIENTLY creating 4 vertices per cube face (which could potentially lead to a total of 24 vertices if the cube is alone)...
+            // after doing the next step of culling out the faces that won't be used it will actually end up being MORE efficient than if we didn't do any culling
+            // and just kept our old solution of 8 shared vertices per cube.
+            // MAYBE in the future if I become a god-tier programmer I can figure out how to share vertices between faces WHILE ALSO culling faces that are hidden.
           }
         }
       }
     }
 
-    // Face Triangles
-    // I need to be able to identify which direction each face is, and which face each vertex is associated with.
-    for (int blockIndex = 0; blockIndex < chunkLength * chunkHeight * chunkWidth; blockIndex++)
-    {
-      for (int faceIndex = 0; faceIndex < 6; faceIndex++)
-      {
-        // Do a facecheck to see if there is a cube in the direction of this face before drawing
-        for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
-        {
-          triangles.Add(voxelVertexIndex[faceIndex, voxelTris[faceIndex,vertexIndex]] + blockIndex * 8);
-        }
-      }
-    }
   }
 
   public void UploadMesh()
