@@ -18,6 +18,13 @@ public class Container : MonoBehaviour
   [HideInInspector] public List<int> triangles;
   public List<Vector2> UVs;
 
+  static int chunkLength = 6; // x  (I had to make these static so I could use them to make the cube map)
+  static int chunkHeight = 6; // y
+  static int chunkWidth = 6; // z
+  
+  // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
+  bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
+
   void Start()
   {
     meshFilter = GetComponent<MeshFilter>();
@@ -47,29 +54,41 @@ public class Container : MonoBehaviour
 
   public void GenerateMesh()
   {
-    int chunkWidth = 6;
-    int chunkHeight = 6;
-    int chunkLength = 6;
-
-    for (int chunkLength_ = 0; chunkLength_ < chunkLength; chunkLength_++)
+    // Cube Map
+    for (int x = 0; x < chunkLength; x++)
     {
-      for (int chunkWidth_ = 0; chunkWidth_ < chunkWidth; chunkWidth_++)
+      for (int y = 0; y < chunkHeight; y++)
       {
-        for (int chunkHeight_ = 0; chunkHeight_ < chunkHeight; chunkHeight_++)
+        for (int z = 0; z < chunkWidth; z++)
+        {
+          cubeMap[x,y,z] = true;
+        }
+      }
+    }
+
+    // Vertices
+    for (int x = 0; x < chunkLength; x++)
+    {
+      for (int y = 0; y < chunkHeight; y++)
+      {
+        for (int z = 0; z < chunkWidth; z++)
         {
           for (int vertexIndex = 0; vertexIndex < 8; vertexIndex++)
           {
-            vertices.Add(voxelVertices[vertexIndex] + new Vector3(chunkWidth_,chunkHeight_,chunkLength_));
+            // Implement that check I made before to cull out useless vertices
+            vertices.Add(voxelVertices[vertexIndex] + new Vector3(x,y,z));
           }
         }
       }
     }
-    
 
-    for (int blockIndex = 0; blockIndex < chunkWidth * chunkHeight * chunkLength; blockIndex++)
+    // Face Triangles
+    // I need to be able to identify which direction each face is, and which face each vertex is associated with.
+    for (int blockIndex = 0; blockIndex < chunkLength * chunkHeight * chunkWidth; blockIndex++)
     {
       for (int faceIndex = 0; faceIndex < 6; faceIndex++)
       {
+        // Do a facecheck to see if there is a cube in the direction of this face before drawing
         for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
         {
           triangles.Add(voxelVertexIndex[faceIndex, voxelTris[faceIndex,vertexIndex]] + blockIndex * 8);
