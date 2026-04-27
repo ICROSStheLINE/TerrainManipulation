@@ -62,6 +62,11 @@ public class Container : MonoBehaviour
       {
         for (int z = 0; z < chunkWidth; z++)
         {
+          if (y == 5 || y == 6 || y == 7)
+          {
+            cubeMap[x,y,z] = false;
+            continue;
+          }
           cubeMap[x,y,z] = true;
         }
       }
@@ -117,6 +122,10 @@ public class Container : MonoBehaviour
       {
         for (int z = 0; z < chunkWidth; z++)
         {
+          if (!cubeMap[x,y,z]) // If this cube position is supposed to be empty
+          {
+            continue;
+          }
           for (int faceIndex = 0; faceIndex < 6; faceIndex++)
           {
             if (!CheckForNeighbouringCube(x, y, z, faceIndex))
