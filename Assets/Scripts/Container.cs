@@ -62,7 +62,7 @@ public class Container : MonoBehaviour
       {
         for (int z = 0; z < chunkWidth; z++)
         {
-          if (y == 5 || y == 6 || y == 7)
+          if (y == 5 || y == 6 || y == 7 || x == 5 || x == 8 || z == 3 || z == 6)
           {
             cubeMap[x,y,z] = false;
             continue;
@@ -77,7 +77,7 @@ public class Container : MonoBehaviour
   {
     if (faceIndex == 0) // Vector3.backward
     {
-      if (Mathf.Sign(z - 1) == -1)
+      if (Mathf.Sign(z - 1) == -1) // These if statements are to check if the neighbour we're looking for even exists in the chunk's bounds
         return false;
       return cubeMap[x,y,z - 1];
     }
