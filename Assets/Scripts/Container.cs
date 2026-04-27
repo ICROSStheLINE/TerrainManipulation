@@ -18,9 +18,9 @@ public class Container : MonoBehaviour
   [HideInInspector] public List<int> triangles;
   public List<Vector2> UVs;
 
-  static int chunkLength = 2; // x  (I had to make these static so I could use them to make the cube map)
-  static int chunkHeight = 2; // y
-  static int chunkWidth = 2; // z
+  static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
+  static int chunkHeight = 15; // y
+  static int chunkWidth = 15; // z
   
   // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
   bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
@@ -39,6 +39,8 @@ public class Container : MonoBehaviour
 
     ClearData();
 
+    FillCubeMap();
+
     GenerateMesh();
 
     UploadMesh();
@@ -52,9 +54,8 @@ public class Container : MonoBehaviour
     mesh.Clear();
   }
 
-  public void GenerateMesh()
+  void FillCubeMap()
   {
-    // Cube Map
     for (int x = 0; x < chunkLength; x++)
     {
       for (int y = 0; y < chunkHeight; y++)
@@ -65,9 +66,51 @@ public class Container : MonoBehaviour
         }
       }
     }
+  }
 
+  bool CheckForNeighbouringCube(int x, int y, int z, int faceIndex) // Returns true if neighbour exists
+  {
+    if (faceIndex == 0) // Vector3.backward
+    {
+      if (Mathf.Sign(z - 1) == -1)
+        return false;
+      return cubeMap[x,y,z - 1];
+    }
+    if (faceIndex == 1) // Vector3.forward
+    {
+      if (z + 1 >= chunkWidth)
+        return false;
+      return cubeMap[x,y,z + 1];
+    }
+    if (faceIndex == 2) // Vector3.left
+    {
+      if (Mathf.Sign(x - 1) == -1)
+        return false;
+      return cubeMap[x - 1,y,z];
+    }
+    if (faceIndex == 3) // Vector3.right
+    {
+      if (x + 1 >= chunkLength)
+        return false;
+      return cubeMap[x + 1,y,z];
+    }
+    if (faceIndex == 4) // Vector3.down
+    {
+      if (Mathf.Sign(y - 1) == -1)
+        return false;
+      return cubeMap[x,y - 1,z];
+    }
+    if (faceIndex == 5) // Vector3.up
+    {
+      if (y + 1 >= chunkHeight)
+        return false;
+      return cubeMap[x,y + 1,z];
+    }
+    return false;
+  }
 
-    
+  public void GenerateMesh()
+  {
     for (int x = 0; x < chunkLength; x++)
     {
       for (int y = 0; y < chunkHeight; y++)
@@ -76,35 +119,20 @@ public class Container : MonoBehaviour
         {
           for (int faceIndex = 0; faceIndex < 6; faceIndex++)
           {
-            int[] lastFourVertexIndicesAdded = new int[4];
-            for (int vertexIndex = 0; vertexIndex < 4; vertexIndex++)
+            if (!CheckForNeighbouringCube(x, y, z, faceIndex))
             {
-              vertices.Add(voxelVertices[voxelVertexIndex[faceIndex, vertexIndex]] + new Vector3(x,y,z));
-              lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
+              int[] lastFourVertexIndicesAdded = new int[4];
+              for (int vertexIndex = 0; vertexIndex < 4; vertexIndex++)
+              {
+                Vector3 vertexPosition = voxelVertices[voxelVertexIndex[faceIndex, vertexIndex]] + new Vector3(x,y,z);
+                vertices.Add(vertexPosition);
+                lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
+              }
+              for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
+              {
+                triangles.Add(lastFourVertexIndicesAdded[voxelTris[faceIndex,vertexIndex]]);
+              }
             }
-            for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
-            {
-              triangles.Add(lastFourVertexIndicesAdded[voxelTris[faceIndex,vertexIndex]]);
-            }
-            // EXPLANATION:
-            // Before:
-            // We were making exactly 8 vertices for each cube. No overlapping vertices... EFFICIENT!
-            // We were carefully organizing triangles around each of the 8 vertices to draw faces...
-            // And whenever we wanted to draw triangles for the next cube in the list, we used a "cubeIndex" variable to count what cube we were on...
-            // then multiplied that count by 8 (since it was assumed that each cube has 8 vertices and the next set of vertices we needed to draw...
-            // triangels between was also a set of 8 vertices)...
-            // THIS WAS A PROBLEM because if we wanted to move to the next step where we were deciding which vertices to remove and which to keep,
-            // we would no longer be able to reliably tell how much we had to multiply blockIndex by (since we no longer knew how many vertices were
-            // made in the last set AND we didn't know what order they were in if some vertices were removed!).
-            // SOLUTION:
-            // Once I learned that this was the problem, i changed it to NO LONGER ADD EXACTLY 8 VERTICES FOR EACH CUBE...
-            // and to instead add 4 VERTICES FOR EACH FACE... INEFFICIENT!!!
-            // This, however, solves the problem where we don't know what order the list of vertices is in anymore.
-            // All we need to do now is draw triangles between the LAST 4 CREATED VERTICES instead of picking out vertices in the total list to draw between.
-            // NOTE that despite INEFFICIENTLY creating 4 vertices per cube face (which could potentially lead to a total of 24 vertices if the cube is alone)...
-            // after doing the next step of culling out the faces that won't be used it will actually end up being MORE efficient than if we didn't do any culling
-            // and just kept our old solution of 8 shared vertices per cube.
-            // MAYBE in the future if I become a god-tier programmer I can figure out how to share vertices between faces WHILE ALSO culling faces that are hidden.
           }
         }
       }
@@ -145,12 +173,12 @@ public class Container : MonoBehaviour
   // that make up that face's 4 corner vertices.
   static readonly int[,] voxelVertexIndex = new int[6, 4]
   {
-    {0,1,2,3},
-    {4,5,6,7},
-    {4,0,6,2},
-    {5,1,7,3},
-    {0,1,4,5},
-    {2,3,6,7},
+    {0,1,2,3}, // Vector3.backward
+    {4,5,6,7}, // Vector3.forward
+    {4,0,6,2}, // Vector3.left
+    {5,1,7,3}, // Vector3.right
+    {0,1,4,5}, // Vector3.down
+    {2,3,6,7}, // Vector3.up
   };
 
   // For each of the 6 faces, this defines which of the 4 face vertices
