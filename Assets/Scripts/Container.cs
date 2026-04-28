@@ -47,7 +47,12 @@ public class Container : MonoBehaviour
 
     UploadMesh();
 
-    DrawWallButBetter(new Vector3(0, groundHeight+1, 0), new Vector3(7, groundHeight+2, 3));
+    DrawBlocks(new Vector3(1, groundHeight+1, 1), new Vector3(8, groundHeight+8, 8), true); // Giant cube
+    DrawBlocks(new Vector3(2, groundHeight+1, 2), new Vector3(7, groundHeight+7, 7), false); // Hollow out cube
+    DrawBlocks(new Vector3(8, groundHeight+1, 5), new Vector3(8, groundHeight+2, 5), false); // Door
+    DrawBlocks(new Vector3(8, groundHeight+2, 3), new Vector3(8, groundHeight+2, 3), false); // Window next to door
+    for (int i = 0; i < 3; i++)
+      DrawBlocks(new Vector3(0 + i, groundHeight+8 + i, 0 + i), new Vector3(9 - i, groundHeight+8 + i, 9 - i), true); // Roof Layers
 
     ClearData();
 
@@ -56,26 +61,7 @@ public class Container : MonoBehaviour
     UploadMesh();
   }
 
-  void DrawWall(Vector3 startingPoint, Vector3 endingPoint)
-  {
-    for (int x = 0; x < chunkLength; x++) // Iterating through the ENTIRE CHUNK seems a little inefficient but whatever lol
-    {
-      for (int y = 0; y < chunkHeight; y++)
-      {
-        for (int z = 0; z < chunkWidth; z++)
-        {
-          if (x >= startingPoint.x && x <= endingPoint.x &&
-              y >= startingPoint.y && y <= endingPoint.y &&
-              z >= startingPoint.z && z <= endingPoint.z)
-          {
-            cubeMap[x,y,z] = true;
-          }
-        }
-      }
-    }
-  }
-
-  void DrawWallButBetter(Vector3 startingPoint, Vector3 endingPoint) // inefficiency FIXED!
+  void DrawBlocks(Vector3 startingPoint, Vector3 endingPoint, bool draw = true)
   {
     for (int x = (int)startingPoint.x; x <= (int)endingPoint.x; x++)
     {
@@ -83,7 +69,7 @@ public class Container : MonoBehaviour
       {
         for (int z = (int)startingPoint.z; z <= (int)endingPoint.z; z++)
         {
-          cubeMap[x,y,z] = true;
+          cubeMap[x,y,z] = draw;
         }
       }
     }
