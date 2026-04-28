@@ -19,11 +19,13 @@ public class Container : MonoBehaviour
   public List<Vector2> UVs;
 
   static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
-  static int chunkHeight = 15; // y
+  static int chunkHeight = 40; // y
   static int chunkWidth = 15; // z
   
   // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
-  bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
+  [SerializeField] bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
+
+  int groundHeight = 20;
 
   void Start()
   {
@@ -44,14 +46,47 @@ public class Container : MonoBehaviour
     GenerateMesh();
 
     UploadMesh();
+
+    DrawWallButBetter(new Vector3(0, groundHeight+1, 0), new Vector3(7, groundHeight+2, 3));
+
+    ClearData();
+
+    GenerateMesh();
+
+    UploadMesh();
   }
 
-  public void ClearData()
+  void DrawWall(Vector3 startingPoint, Vector3 endingPoint)
   {
-    vertices.Clear();
-    triangles.Clear();
-    UVs.Clear();
-    mesh.Clear();
+    for (int x = 0; x < chunkLength; x++) // Iterating through the ENTIRE CHUNK seems a little inefficient but whatever lol
+    {
+      for (int y = 0; y < chunkHeight; y++)
+      {
+        for (int z = 0; z < chunkWidth; z++)
+        {
+          if (x >= startingPoint.x && x <= endingPoint.x &&
+              y >= startingPoint.y && y <= endingPoint.y &&
+              z >= startingPoint.z && z <= endingPoint.z)
+          {
+            cubeMap[x,y,z] = true;
+          }
+        }
+      }
+    }
+  }
+
+  void DrawWallButBetter(Vector3 startingPoint, Vector3 endingPoint) // inefficiency FIXED!
+  {
+    for (int x = (int)startingPoint.x; x <= (int)endingPoint.x; x++)
+    {
+      for (int y = (int)startingPoint.y; y <= (int)endingPoint.y; y++)
+      {
+        for (int z = (int)startingPoint.z; z <= (int)endingPoint.z; z++)
+        {
+          cubeMap[x,y,z] = true;
+        }
+      }
+    }
   }
 
   void FillCubeMap()
@@ -62,7 +97,7 @@ public class Container : MonoBehaviour
       {
         for (int z = 0; z < chunkWidth; z++)
         {
-          if (y == 5 || y == 6 || y == 7 || x == 5 || x == 8 || z == 3 || z == 6)
+          if (y > groundHeight)
           {
             cubeMap[x,y,z] = false;
             continue;
@@ -147,6 +182,14 @@ public class Container : MonoBehaviour
       }
     }
 
+  }
+
+  public void ClearData()
+  {
+    vertices.Clear();
+    triangles.Clear();
+    UVs.Clear();
+    mesh.Clear();
   }
 
   public void UploadMesh()
