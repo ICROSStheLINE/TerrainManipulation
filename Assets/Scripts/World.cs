@@ -12,16 +12,39 @@ public class World : MonoBehaviour
     void Start()
     {
         FillChunkMap();
+        GenerateAllChunkMeshes();
     }
 
     void FillChunkMap()
     {
         for (int x = 0; x < worldLength; x++)
         {
-            for (int z = 0; z < worldWidth; z++)
+            for (int y = 0; y < worldWidth; y++)
             {
-                chunkMap[x,z] = new Chunk(new Vector3(x,0,z), this); // "this" passes in this script (not the gameObject)
+                chunkMap[x,y] = new Chunk(x,y, this); // "this" passes in this script (not the gameObject)
             }
         }
+    }
+
+    void GenerateAllChunkMeshes()
+    {
+        for (int x = 0; x < worldLength; x++)
+        {
+            for (int y = 0; y < worldWidth; y++)
+            {
+                chunkMap[x,y].GenerateMesh();
+                chunkMap[x,y].UploadMesh();
+            }
+        }
+    }
+
+    public bool CheckCubeInChunk(int chunkX, int chunkY, int cubeX, int cubeY, int cubeZ)
+    {
+        if (chunkX < 0 || chunkX >= worldLength || chunkY < 0 || chunkY >= worldWidth)
+        {
+            return false;
+        }
+
+        return chunkMap[chunkX,chunkY].CheckForCube(cubeX,cubeY,cubeZ);
     }
 }

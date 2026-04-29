@@ -23,20 +23,29 @@ public class Chunk
   static int chunkWidth = chunkLength; // z
   
   // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
-  bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
+  public bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
 
   int groundHeight = 20;
 
-  public Chunk(Vector3 chunkPosition, World worldScript)
+  int chunkX;
+  int chunkY;
+  World worldScript;
+
+  public Chunk(int chunkX_, int chunkY_, World worldScript_)
   // This constructor == void Start()
   // We can't use void Start cause this script will NOT be present in the gameObject
   // Since we are creating the gameobject with the class we cant just add it to the chunk (chicken vs egg scenario)
 	{
+    chunkX = chunkX_;
+    chunkY = chunkY_;
+    worldScript = worldScript_;
 		GameObject chunkObject = new GameObject();
-    chunkObject.transform.position = chunkPosition * chunkLength;
+    chunkObject.transform.position = new Vector3(chunkX, 0, chunkY) * chunkLength;
+    chunkObject.transform.SetParent(worldScript_.transform);
+    chunkObject.name = "Chunk [" + chunkX + "," + chunkY + "]";
 		meshFilter = chunkObject.AddComponent<MeshFilter>();
 		meshRenderer = chunkObject.AddComponent<MeshRenderer>();
-		meshRenderer.sharedMaterial = worldScript.blockMaterial;
+		meshRenderer.sharedMaterial = worldScript_.blockMaterial;
     meshCollider = chunkObject.AddComponent<MeshCollider>();
 		
 		vertices = new List<Vector3>();
@@ -48,17 +57,7 @@ public class Chunk
 
     FillCubeMap();
 
-    GenerateMesh();
-
-    UploadMesh();
-
     DrawHouse(new Vector3(1, groundHeight+1, 1));
-
-    ClearData();
-
-    GenerateMesh();
-
-    UploadMesh();
 	}
 
   void DrawHouse(Vector3 startingPoint)
@@ -104,43 +103,69 @@ public class Chunk
     }
   }
 
+  public bool CheckForCube(int x, int y, int z)
+  {
+    if (z < 0)
+    {
+      int targetChunkX = chunkX; int targetChunkY = chunkY - 1;
+      int targetBlockX = x; int targetBlockY = y; int targetBlockZ = z + chunkWidth;
+      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+    }
+    if (z >= chunkWidth)
+    {
+      int targetChunkX = chunkX; int targetChunkY = chunkY + 1;
+      int targetBlockX = x; int targetBlockY = y; int targetBlockZ = z - chunkWidth;
+      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+    }
+    if (x < 0)
+    {
+      int targetChunkX = chunkX - 1; int targetChunkY = chunkY;
+      int targetBlockX = x + chunkLength; int targetBlockY = y; int targetBlockZ = z;
+      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+    }
+    if (x >= chunkLength) // If it's out of bounds
+    {
+      int targetChunkX = chunkX + 1; int targetChunkY = chunkY;
+      int targetBlockX = x - chunkLength; int targetBlockY = y; int targetBlockZ = z;
+      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+    }
+    if (y < 0)
+    {
+      return false;
+    }
+    if (y >= chunkHeight)
+    {
+      return false;
+    }
+
+    return cubeMap[x,y,z];
+  }
+
   bool CheckForNeighbouringCube(int x, int y, int z, int faceIndex) // Returns true if neighbour exists
   {
     if (faceIndex == 0) // Vector3.backward
     {
-      if (Mathf.Sign(z - 1) == -1) // These if statements are to check if the neighbour we're looking for even exists in the chunk's bounds
-        return false;
-      return cubeMap[x,y,z - 1];
+      return CheckForCube(x,y,z - 1);
     }
     if (faceIndex == 1) // Vector3.forward
     {
-      if (z + 1 >= chunkWidth)
-        return false;
-      return cubeMap[x,y,z + 1];
+      return CheckForCube(x,y,z + 1);
     }
     if (faceIndex == 2) // Vector3.left
     {
-      if (Mathf.Sign(x - 1) == -1)
-        return false;
-      return cubeMap[x - 1,y,z];
+      return CheckForCube(x - 1,y,z);
     }
     if (faceIndex == 3) // Vector3.right
     {
-      if (x + 1 >= chunkLength)
-        return false;
-      return cubeMap[x + 1,y,z];
+      return CheckForCube(x + 1,y,z);
     }
     if (faceIndex == 4) // Vector3.down
     {
-      if (Mathf.Sign(y - 1) == -1)
-        return false;
-      return cubeMap[x,y - 1,z];
+      return CheckForCube(x,y - 1,z);
     }
     if (faceIndex == 5) // Vector3.up
     {
-      if (y + 1 >= chunkHeight)
-        return false;
-      return cubeMap[x,y + 1,z];
+      return CheckForCube(x,y + 1,z);
     }
     return false;
   }
