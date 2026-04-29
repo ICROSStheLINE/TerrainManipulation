@@ -6,13 +6,13 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 
-public class Container : MonoBehaviour
+public class Chunk
 {
   MeshFilter meshFilter;
   MeshRenderer meshRenderer;
   MeshCollider meshCollider;
 
-  [SerializeField] Material mat;
+ 
   [HideInInspector] public Mesh mesh;
   [HideInInspector] public List<Vector3> vertices;
   [HideInInspector] public List<int> triangles;
@@ -20,21 +20,26 @@ public class Container : MonoBehaviour
 
   static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
   static int chunkHeight = 40; // y
-  static int chunkWidth = 15; // z
+  static int chunkWidth = chunkLength; // z
   
   // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
-  [SerializeField] bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
+  bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
 
   int groundHeight = 20;
 
-  void Start()
-  {
-    meshFilter = GetComponent<MeshFilter>();
-    meshRenderer = GetComponent<MeshRenderer>();
-    meshRenderer.sharedMaterial = mat;
-    meshCollider = GetComponent<MeshCollider>();
-
-    vertices = new List<Vector3>();
+  public Chunk(Vector3 chunkPosition, World worldScript)
+  // This constructor == void Start()
+  // We can't use void Start cause this script will NOT be present in the gameObject
+  // Since we are creating the gameobject with the class we cant just add it to the chunk (chicken vs egg scenario)
+	{
+		GameObject chunkObject = new GameObject();
+    chunkObject.transform.position = chunkPosition * chunkLength;
+		meshFilter = chunkObject.AddComponent<MeshFilter>();
+		meshRenderer = chunkObject.AddComponent<MeshRenderer>();
+		meshRenderer.sharedMaterial = worldScript.blockMaterial;
+    meshCollider = chunkObject.AddComponent<MeshCollider>();
+		
+		vertices = new List<Vector3>();
     triangles = new List<int>();
     UVs = new List<Vector2>();
     mesh = new Mesh();
@@ -47,18 +52,23 @@ public class Container : MonoBehaviour
 
     UploadMesh();
 
-    DrawBlocks(new Vector3(1, groundHeight+1, 1), new Vector3(8, groundHeight+8, 8), true); // Giant cube
-    DrawBlocks(new Vector3(2, groundHeight+1, 2), new Vector3(7, groundHeight+7, 7), false); // Hollow out cube
-    DrawBlocks(new Vector3(8, groundHeight+1, 5), new Vector3(8, groundHeight+2, 5), false); // Door
-    DrawBlocks(new Vector3(8, groundHeight+2, 3), new Vector3(8, groundHeight+2, 3), false); // Window next to door
-    for (int i = 0; i < 3; i++)
-      DrawBlocks(new Vector3(0 + i, groundHeight+8 + i, 0 + i), new Vector3(9 - i, groundHeight+8 + i, 9 - i), true); // Roof Layers
+    DrawHouse(new Vector3(1, groundHeight+1, 1));
 
     ClearData();
 
     GenerateMesh();
 
     UploadMesh();
+	}
+
+  void DrawHouse(Vector3 startingPoint)
+  { // startingPoint = new Vector3(1, groundHeight+1, 1)
+    DrawBlocks(startingPoint, startingPoint + new Vector3(7,7,7), true); // Giant cube
+    DrawBlocks(startingPoint + new Vector3(1,0,1), startingPoint + new Vector3(6, 6, 6), false); // Hollow out cube
+    DrawBlocks(startingPoint + new Vector3(7,0,4), startingPoint + new Vector3(7,1,4), false); // Door
+    DrawBlocks(startingPoint + new Vector3(7,1,2), startingPoint + new Vector3(7,1,2), false); // Window next to door
+    for (int i = 0; i < 3; i++)
+      DrawBlocks(startingPoint + new Vector3(-1 + i, 7 + i, -1 + i), startingPoint + new Vector3(8 - i, 7 + i, 8 - i), true); // Roof Layers
   }
 
   void DrawBlocks(Vector3 startingPoint, Vector3 endingPoint, bool draw = true)
