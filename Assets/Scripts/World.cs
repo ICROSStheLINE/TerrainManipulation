@@ -48,25 +48,33 @@ public class World : MonoBehaviour
                    int chunkX, int chunkY,
                    bool draw)
     {
+        if (chunkX < 0 || chunkX >= worldLength || chunkY < 0 || chunkY >= worldWidth)
+        {
+            return;
+        }
         if (z < 0)
         {
             chunkY -= 1;
             z += Chunk.chunkWidth;
+            DrawBlock(x,y,z,chunkX,chunkY,draw);
         }
         if (z >= Chunk.chunkWidth)
         {
             chunkY += 1;
             z -= Chunk.chunkWidth;
+            DrawBlock(x,y,z,chunkX,chunkY,draw);
         }
         if (x < 0)
         {
             chunkX -= 1;
             x += Chunk.chunkLength;
+            DrawBlock(x,y,z,chunkX,chunkY,draw);
         }
         if (x >= Chunk.chunkLength) // If it's out of bounds
         {
             chunkX += 1;
             x -= Chunk.chunkLength;
+            DrawBlock(x,y,z,chunkX,chunkY,draw);
         }
         if (y < 0)
         {
