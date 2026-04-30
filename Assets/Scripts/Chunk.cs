@@ -13,9 +13,10 @@ public class Chunk
   MeshCollider meshCollider;
 
  
-  [HideInInspector] public Mesh mesh;
-  [HideInInspector] public List<Vector3> vertices;
-  [HideInInspector] public List<int> triangles;
+  Mesh mesh;
+  List<Vector3> vertices;
+  List<int> triangles;
+  List<Color> colors; // refer to https://docs.unity3d.com/ScriptReference/Mesh-colors.html
 
   public static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
   public static int chunkHeight = 40; // y
@@ -49,6 +50,7 @@ public class Chunk
 		
 		vertices = new List<Vector3>();
     triangles = new List<int>();
+    colors = new List<Color>();
     mesh = new Mesh();
 
     ClearData();
@@ -168,6 +170,14 @@ public class Chunk
               Vector3 vertexPosition = voxelVertices[voxelVertexIndex[faceIndex, vertexIndex]] + new Vector3(x,y,z);
               vertices.Add(vertexPosition);
               lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
+
+              // Check to see what block type cubeMap[x,y,z] is and then apply its required colours
+              // ...Also add block types
+
+              if (y > groundHeight)
+                colors.Add(Color.green);
+              else
+                colors.Add(Color.red);
             }
             for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
             {
@@ -184,6 +194,7 @@ public class Chunk
   {
     vertices.Clear();
     triangles.Clear();
+    colors.Clear();
     mesh.Clear();
   }
 
@@ -191,6 +202,7 @@ public class Chunk
   {
     mesh.SetVertices(vertices);
     mesh.SetTriangles(triangles, 0, false);
+    mesh.SetColors(colors);
 
     mesh.RecalculateNormals();
 
