@@ -18,14 +18,14 @@ public class Chunk
   [HideInInspector] public List<int> triangles;
   public List<Vector2> UVs;
 
-  static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
-  static int chunkHeight = 40; // y
-  static int chunkWidth = chunkLength; // z
+  public static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
+  public static int chunkHeight = 40; // y
+  public static int chunkWidth = chunkLength; // z
   
   // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
   public bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
 
-  int groundHeight = 20;
+  public static int groundHeight = 20;
 
   int chunkX;
   int chunkY;
