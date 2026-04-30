@@ -16,7 +16,6 @@ public class Chunk
   [HideInInspector] public Mesh mesh;
   [HideInInspector] public List<Vector3> vertices;
   [HideInInspector] public List<int> triangles;
-  public List<Vector2> UVs;
 
   public static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
   public static int chunkHeight = 40; // y
@@ -50,7 +49,6 @@ public class Chunk
 		
 		vertices = new List<Vector3>();
     triangles = new List<int>();
-    UVs = new List<Vector2>();
     mesh = new Mesh();
 
     ClearData();
@@ -171,10 +169,6 @@ public class Chunk
               vertices.Add(vertexPosition);
               lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
             }
-            UVs.Add(new Vector2(0, 0));
-            UVs.Add(new Vector2(1, 0));
-            UVs.Add(new Vector2(0, 1));
-            UVs.Add(new Vector2(1, 1));
             for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
             {
               triangles.Add(lastFourVertexIndicesAdded[voxelTris[faceIndex,vertexIndex]]);
@@ -190,7 +184,6 @@ public class Chunk
   {
     vertices.Clear();
     triangles.Clear();
-    UVs.Clear();
     mesh.Clear();
   }
 
@@ -198,7 +191,6 @@ public class Chunk
   {
     mesh.SetVertices(vertices);
     mesh.SetTriangles(triangles, 0, false);
-    mesh.SetUVs(0, UVs);
 
     mesh.RecalculateNormals();
 
