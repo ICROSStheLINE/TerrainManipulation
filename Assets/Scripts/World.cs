@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    static int worldLength = 5;
-    static int worldWidth = 5;
+    static int worldLength = 1;
+    static int worldWidth = 1;
 
     Chunk[,] chunkMap = new Chunk[worldLength, worldWidth];
     public Material blockMaterial;
@@ -13,10 +13,10 @@ public class World : MonoBehaviour
     void Start()
     {
         FillChunkMap();
-        
+
         int houseChunkX = Mathf.FloorToInt(worldLength/2);
         int houseChunkY = Mathf.FloorToInt(worldWidth/2);
-        DrawHouse(-2, Chunk.groundHeight+1, -2, houseChunkX, houseChunkY);
+        DrawHouse(1, Chunk.groundHeight+1, 1, houseChunkX, houseChunkY);
 
         GenerateAllChunkMeshes();
     }
@@ -103,7 +103,7 @@ public class World : MonoBehaviour
         }
     }
 
-    public bool CheckCubeInChunk(int chunkX, int chunkY, int cubeX, int cubeY, int cubeZ)
+    public bool CheckCubeInChunk(int cubeX, int cubeY, int cubeZ, int chunkX, int chunkY)
     {
         if (chunkX < 0 || chunkX >= worldLength || chunkY < 0 || chunkY >= worldWidth)
         {

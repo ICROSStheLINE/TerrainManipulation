@@ -80,29 +80,31 @@ public class Chunk
 
   public bool CheckForCube(int x, int y, int z)
   {
+    int chunkX = this.chunkX; 
+    int chunkY = this.chunkY;
     if (z < 0)
     {
-      int targetChunkX = chunkX; int targetChunkY = chunkY - 1;
-      int targetBlockX = x; int targetBlockY = y; int targetBlockZ = z + chunkWidth;
-      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+      chunkY -= 1;
+      z += chunkWidth;
+      return worldScript.CheckCubeInChunk(x,y,z,chunkX,chunkY);
     }
     if (z >= chunkWidth)
     {
-      int targetChunkX = chunkX; int targetChunkY = chunkY + 1;
-      int targetBlockX = x; int targetBlockY = y; int targetBlockZ = z - chunkWidth;
-      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+      chunkY += 1;
+      z -= chunkWidth;
+      return worldScript.CheckCubeInChunk(x,y,z,chunkX,chunkY);
     }
     if (x < 0)
     {
-      int targetChunkX = chunkX - 1; int targetChunkY = chunkY;
-      int targetBlockX = x + chunkLength; int targetBlockY = y; int targetBlockZ = z;
-      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+      chunkX -= 1;
+      x += chunkLength;
+      return worldScript.CheckCubeInChunk(x,y,z,chunkX,chunkY);
     }
-    if (x >= chunkLength) // If it's out of bounds
+    if (x >= chunkLength)
     {
-      int targetChunkX = chunkX + 1; int targetChunkY = chunkY;
-      int targetBlockX = x - chunkLength; int targetBlockY = y; int targetBlockZ = z;
-      return worldScript.CheckCubeInChunk(targetChunkX, targetChunkY, targetBlockX, targetBlockY, targetBlockZ);
+      chunkX += 1;
+      x -= chunkLength;
+      return worldScript.CheckCubeInChunk(x,y,z,chunkX,chunkY);
     }
     if (y < 0)
     {
@@ -112,7 +114,7 @@ public class Chunk
     {
       return false;
     }
-
+    
     return cubeMap[x,y,z];
   }
 
