@@ -23,7 +23,7 @@ public class Chunk
   public static int chunkWidth = chunkLength; // z
   
   // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
-  public bool[,,] cubeMap = new bool[chunkLength,chunkHeight,chunkWidth];
+  public Block[,,] cubeMap = new Block[chunkLength,chunkHeight,chunkWidth];
 
   public static int groundHeight = 20;
 
@@ -67,12 +67,13 @@ public class Chunk
       {
         for (int z = 0; z < chunkWidth; z++)
         {
+          cubeMap[x,y,z] = new Block();
           if (y > groundHeight)
           {
-            cubeMap[x,y,z] = false;
+            cubeMap[x,y,z].isSolid = false;
             continue;
           }
-          cubeMap[x,y,z] = true;
+          cubeMap[x,y,z].isSolid = true;
         }
       }
     }
@@ -115,7 +116,7 @@ public class Chunk
       return false;
     }
     
-    return cubeMap[x,y,z];
+    return cubeMap[x,y,z].isSolid;
   }
 
   bool CheckForNeighbouringCube(int x, int y, int z, int faceIndex) // Returns true if neighbour exists
@@ -155,7 +156,7 @@ public class Chunk
       {
         for (int z = 0; z < chunkWidth; z++)
         {
-          if (!cubeMap[x,y,z]) // If this cube position is supposed to be empty
+          if (!cubeMap[x,y,z].isSolid) // If this cube position is supposed to be empty
           {
             continue;
           }

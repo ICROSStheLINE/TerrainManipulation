@@ -84,7 +84,7 @@ public class World : MonoBehaviour
         {
             return;
         }
-        chunkMap[chunkX,chunkY].cubeMap[x,y,z] = draw;
+        chunkMap[chunkX,chunkY].cubeMap[x,y,z].isSolid = draw;
     }
 
     void FillChunkMap()
