@@ -56,33 +56,8 @@ public class Chunk
     ClearData();
 
     FillCubeMap();
-
-    DrawHouse(new Vector3(1, groundHeight+1, 1));
 	}
 
-  void DrawHouse(Vector3 startingPoint)
-  { // startingPoint = new Vector3(1, groundHeight+1, 1)
-    DrawBlocks(startingPoint, startingPoint + new Vector3(7,7,7), true); // Giant cube
-    DrawBlocks(startingPoint + new Vector3(1,0,1), startingPoint + new Vector3(6, 6, 6), false); // Hollow out cube
-    DrawBlocks(startingPoint + new Vector3(7,0,4), startingPoint + new Vector3(7,1,4), false); // Door
-    DrawBlocks(startingPoint + new Vector3(7,1,2), startingPoint + new Vector3(7,1,2), false); // Window next to door
-    for (int i = 0; i < 3; i++)
-      DrawBlocks(startingPoint + new Vector3(-1 + i, 7 + i, -1 + i), startingPoint + new Vector3(8 - i, 7 + i, 8 - i), true); // Roof Layers
-  }
-
-  void DrawBlocks(Vector3 startingPoint, Vector3 endingPoint, bool draw = true)
-  {
-    for (int x = (int)startingPoint.x; x <= (int)endingPoint.x; x++)
-    {
-      for (int y = (int)startingPoint.y; y <= (int)endingPoint.y; y++)
-      {
-        for (int z = (int)startingPoint.z; z <= (int)endingPoint.z; z++)
-        {
-          cubeMap[x,y,z] = draw;
-        }
-      }
-    }
-  }
 
   void FillCubeMap()
   {
