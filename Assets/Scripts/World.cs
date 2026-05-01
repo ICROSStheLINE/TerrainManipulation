@@ -24,29 +24,29 @@ public class World : MonoBehaviour
     void DrawHouse(int x, int y, int z, 
                    int chunkX, int chunkY)
     {
-        DrawBlocks(x,y,z, x+7,y+7,z+7, chunkX, chunkY, true); // Giant cube
-        DrawBlocks(x+1,y+0,z+1, x+6,y+6,z+6, chunkX, chunkY, false); // Hollow out cube
-        DrawBlocks(x+7,y+0,z+4, x+7,y+1,z+4, chunkX, chunkY, false); // Door
-        DrawBlocks(x+7,y+1,z+2, x+7,y+1,z+2, chunkX, chunkY, false); // Window next to door
+        DrawBlocks(x,y,z, x+7,y+7,z+7, chunkX, chunkY, Block.BlockType.Stone); // Giant cube
+        DrawBlocks(x+1,y+0,z+1, x+6,y+6,z+6, chunkX, chunkY, Block.BlockType.Air); // Hollow out cube
+        DrawBlocks(x+7,y+0,z+4, x+7,y+1,z+4, chunkX, chunkY, Block.BlockType.Air); // Door
+        DrawBlocks(x+7,y+1,z+2, x+7,y+1,z+2, chunkX, chunkY, Block.BlockType.Air); // Window next to door
         for (int i = 0; i < 3; i++)
-        DrawBlocks(x+(-1+i),y+(7+i),z+(-1+i), x+(8-i),y+(7+i),z+(8-i), chunkX, chunkY, true); // Roof Layers
+        DrawBlocks(x+(-1+i),y+(7+i),z+(-1+i), x+(8-i),y+(7+i),z+(8-i), chunkX, chunkY, Block.BlockType.Stone); // Roof Layers
     }
 
     void DrawBlocks(int startX, int startY, int startZ, 
                     int endX, int endY, int endZ,
                     int chunkX, int chunkY,
-                    bool draw) 
+                    Block.BlockType blockType) 
     {
         for (int x = startX; x <= endX; x++) {
         for (int y = startY; y <= endY; y++) {
         for (int z = startZ; z <= endZ; z++) {
-            DrawBlock(x,y,z,chunkX,chunkY,draw);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType);
         }}}
     }
 
     void DrawBlock(int x, int y, int z,
                    int chunkX, int chunkY,
-                   bool draw)
+                   Block.BlockType blockType)
     {
         if (chunkX < 0 || chunkX >= worldLength || chunkY < 0 || chunkY >= worldWidth)
         {
@@ -56,25 +56,25 @@ public class World : MonoBehaviour
         {
             chunkY -= 1;
             z += Chunk.chunkWidth;
-            DrawBlock(x,y,z,chunkX,chunkY,draw);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType);
         }
         if (z >= Chunk.chunkWidth)
         {
             chunkY += 1;
             z -= Chunk.chunkWidth;
-            DrawBlock(x,y,z,chunkX,chunkY,draw);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType);
         }
         if (x < 0)
         {
             chunkX -= 1;
             x += Chunk.chunkLength;
-            DrawBlock(x,y,z,chunkX,chunkY,draw);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType);
         }
         if (x >= Chunk.chunkLength) // If it's out of bounds
         {
             chunkX += 1;
             x -= Chunk.chunkLength;
-            DrawBlock(x,y,z,chunkX,chunkY,draw);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType);
         }
         if (y < 0)
         {
@@ -84,7 +84,7 @@ public class World : MonoBehaviour
         {
             return;
         }
-        chunkMap[chunkX,chunkY].cubeMap[x,y,z].isSolid = draw;
+        chunkMap[chunkX,chunkY].cubeMap[x,y,z].SetBlock(blockType);
     }
 
     void FillChunkMap()

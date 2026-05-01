@@ -67,13 +67,13 @@ public class Chunk
       {
         for (int z = 0; z < chunkWidth; z++)
         {
-          cubeMap[x,y,z] = new Block();
+          
           if (y > groundHeight)
           {
-            cubeMap[x,y,z].isSolid = false;
+            cubeMap[x,y,z] = new Block(Block.BlockType.Air);
             continue;
           }
-          cubeMap[x,y,z].isSolid = true;
+          cubeMap[x,y,z] = new Block(Block.BlockType.Grass);
         }
       }
     }
@@ -172,13 +172,7 @@ public class Chunk
               vertices.Add(vertexPosition);
               lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
 
-              // Check to see what block type cubeMap[x,y,z] is and then apply its required colours
-              // ...Also add block types
-
-              if (y > groundHeight)
-                colors.Add(Color.green);
-              else
-                colors.Add(Color.red);
+              colors.Add(cubeMap[x,y,z].color);
             }
             for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
             {
