@@ -16,14 +16,14 @@ public class Chunk
   Mesh mesh;
   List<Vector3> vertices;
   List<int> triangles;
-  List<Color> colors; // refer to https://docs.unity3d.com/ScriptReference/Mesh-colors.html
+  List<Color> colors;
 
   public static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
   public static int chunkHeight = 40; // y
   public static int chunkWidth = chunkLength; // z
   
-  // 3D array docs: https://www.w3schools.com/cs/cs_arrays_multi.php
-  public Block[,,] cubeMap = new Block[chunkLength,chunkHeight,chunkWidth];
+  // Apparently storing this as BlockType is much more memory efficient??
+  public Block.BlockType[,,] cubeMap = new Block.BlockType[chunkLength,chunkHeight,chunkWidth]; 
 
   public static int groundHeight = 20;
 
@@ -32,9 +32,6 @@ public class Chunk
   World worldScript;
 
   public Chunk(int chunkX_, int chunkY_, World worldScript_)
-  // This constructor == void Start()
-  // We can't use void Start cause this script will NOT be present in the gameObject
-  // Since we are creating the gameobject with the class we cant just add it to the chunk (chicken vs egg scenario)
 	{
     chunkX = chunkX_;
     chunkY = chunkY_;
@@ -67,17 +64,17 @@ public class Chunk
       {
         for (int z = 0; z < chunkWidth; z++)
         {
-          
           if (y > groundHeight)
           {
-            cubeMap[x,y,z] = new Block(Block.BlockType.Air);
+            cubeMap[x,y,z] = Block.BlockType.Air; // CHANGE: assign enum directly
             continue;
           }
-          cubeMap[x,y,z] = new Block(Block.BlockType.Grass);
+          cubeMap[x,y,z] = Block.BlockType.Grass; // CHANGE: assign enum directly
         }
       }
     }
   }
+
 
   public bool CheckForCube(int x, int y, int z)
   {
@@ -116,7 +113,7 @@ public class Chunk
       return false;
     }
     
-    return cubeMap[x,y,z].isSolid;
+    return Block.IsSolid(cubeMap[x,y,z]);
   }
 
   bool CheckForNeighbouringCube(int x, int y, int z, int faceIndex) // Returns true if neighbour exists
@@ -156,7 +153,7 @@ public class Chunk
       {
         for (int z = 0; z < chunkWidth; z++)
         {
-          if (!cubeMap[x,y,z].isSolid) // If this cube position is supposed to be empty
+          if (!Block.IsSolid(cubeMap[x,y,z])) // If this cube position is supposed to be empty
           {
             continue;
           }
@@ -172,7 +169,7 @@ public class Chunk
               vertices.Add(vertexPosition);
               lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
 
-              colors.Add(cubeMap[x,y,z].color);
+              colors.Add(Block.GetColor(cubeMap[x,y,z]));
             }
             for (int vertexIndex = 0; vertexIndex < 6; vertexIndex++)
             {

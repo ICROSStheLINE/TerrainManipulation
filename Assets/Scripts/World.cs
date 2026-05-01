@@ -84,7 +84,7 @@ public class World : MonoBehaviour
         {
             return;
         }
-        chunkMap[chunkX,chunkY].cubeMap[x,y,z].SetBlock(blockType);
+        chunkMap[chunkX,chunkY].cubeMap[x,y,z] = blockType;
     }
 
     void FillChunkMap()
