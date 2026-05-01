@@ -40,7 +40,7 @@ public class Chunk
     chunkY = chunkY_;
     worldScript = worldScript_;
 		GameObject chunkObject = new GameObject();
-    chunkObject.transform.position = new Vector3(chunkX, 0, chunkY) * chunkLength;
+    chunkObject.transform.position = new Vector3(chunkX, 0, chunkY) * chunkLength*voxelSize;
     chunkObject.transform.SetParent(worldScript_.transform);
     chunkObject.name = "Chunk [" + chunkX + "," + chunkY + "]";
 		meshFilter = chunkObject.AddComponent<MeshFilter>();
@@ -168,7 +168,7 @@ public class Chunk
             int[] lastFourVertexIndicesAdded = new int[4];
             for (int vertexIndex = 0; vertexIndex < 4; vertexIndex++)
             {
-              Vector3 vertexPosition = voxelVertices[voxelVertexIndex[faceIndex, vertexIndex]] + new Vector3(x,y,z);
+              Vector3 vertexPosition = voxelVertices[voxelVertexIndex[faceIndex, vertexIndex]] + new Vector3(x*voxelSize,y*voxelSize,z*voxelSize);
               vertices.Add(vertexPosition);
               lastFourVertexIndicesAdded[vertexIndex] = vertices.Count - 1;
 
@@ -210,17 +210,18 @@ public class Chunk
 
   #region Static Variables
 
+  static readonly float voxelSize = 1f;
   // The 8 corner positions of a unit cube (from (0,0,0) to (1,1,1)).
   static readonly Vector3[] voxelVertices = new Vector3[8]
   {
     new Vector3(0,0,0),//0
-    new Vector3(1,0,0),//1
-    new Vector3(0,1,0),//2
-    new Vector3(1,1,0),//3
-    new Vector3(0,0,1),//4
-    new Vector3(1,0,1),//5
-    new Vector3(0,1,1),//6
-    new Vector3(1,1,1),//7
+    new Vector3(voxelSize,0,0),//1
+    new Vector3(0,voxelSize,0),//2
+    new Vector3(voxelSize,voxelSize,0),//3
+    new Vector3(0,0,voxelSize),//4
+    new Vector3(voxelSize,0,voxelSize),//5
+    new Vector3(0,voxelSize,voxelSize),//6
+    new Vector3(voxelSize,voxelSize,voxelSize),//7
   };
 
   // For each of the 6 faces, this gives the indices into voxelVertices

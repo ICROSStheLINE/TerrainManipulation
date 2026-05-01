@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    static int worldLength = 1;
-    static int worldWidth = 1;
+    static int worldLength = 3;
+    static int worldWidth = 3;
 
     Chunk[,] chunkMap = new Chunk[worldLength, worldWidth];
     public Material blockMaterial;
