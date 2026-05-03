@@ -14,20 +14,28 @@ public class SimpleFPSController : MonoBehaviour
     private Rigidbody rb;
     private float xRotation = 0f;
     private bool isGrounded;
+    bool canLookAround;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
 
-        // Lock cursor
+        canLookAround = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update()
     {
-        HandleMouseLook();
+        if (canLookAround) { HandleMouseLook(); }
         HandleJump();
+    }
+
+    public void SetCameraState(bool state)
+    {
+        canLookAround = state;
+        Cursor.lockState = !state ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = !state;
     }
 
     void FixedUpdate()
