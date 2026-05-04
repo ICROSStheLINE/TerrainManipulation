@@ -31,7 +31,7 @@ public class SimpleFPSController : MonoBehaviour
         HandleJump();
     }
 
-    public void SetCameraState(bool state)
+    public void SetCameraUseState(bool state)
     {
         canLookAround = state;
         Cursor.lockState = !state ? CursorLockMode.None : CursorLockMode.Locked;

@@ -8,37 +8,57 @@ public class SpellMenu : MonoBehaviour
 
     SimpleFPSController simpleFPSController;
     [SerializeField] GameObject buttonGameObjectPrefab;
-    static int menuLength = 5;
+    static int menuWidth = 5;
     static int menuHeight = 3;
-    GameObject[,] buttonGameObject = new GameObject[menuLength,menuHeight];
+    float buttonWidth = 100;
+    float buttonHeight = 100;
+    float startingPointX = 100;
+    float startingPointY = 000;
+    GameObject[,] spellMenuButtonMap = new GameObject[menuHeight,menuWidth];
+    [SerializeField] Transform canvasTransform;
+    GameObject[] spellInventoryMap = new GameObject[3];
 
 
     void Start()
     {
         simpleFPSController = GetComponent<SimpleFPSController>();
-        for (int i = 0; i < menuLength; i++)
-        {
-            for (int j = 0; j < menuHeight; j++)
-            {
-                // buttonGameObject[i,j] = Instantiate(
-                //     buttonGameObjectPrefab, 
-                // );
-                // TODO: Finish later
-            }
-        }
+        PopulateSpellMenuMap();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            simpleFPSController.SetCameraState(false);
-            
+            OpenSpellMenu(true);
         }
+
         if (Input.GetKeyDown(KeyCode.J))
         {
-            simpleFPSController.SetCameraState(true);
-            
+            OpenSpellMenu(false);
+        }
+    }
+
+    void PopulateSpellMenuMap()
+    {
+        for (int i = 0; i < menuHeight; i++)
+        {
+            for (int j = 0; j < menuWidth; j++)
+            {
+                spellMenuButtonMap[i,j] = Instantiate(buttonGameObjectPrefab);
+                spellMenuButtonMap[i,j].transform.SetParent(canvasTransform, false);
+                spellMenuButtonMap[i,j].transform.localPosition = new Vector3(startingPointX + (buttonWidth * j), startingPointY + (buttonHeight * i), 0);
+                spellMenuButtonMap[i,j].SetActive(false);
+            }
+        }
+    }
+    
+    void OpenSpellMenu(bool openState)
+    {
+        simpleFPSController.SetCameraUseState(!openState);
+        for (int i = 0; i < menuHeight; i++) {
+            for (int j = 0; j < menuWidth; j++) {
+                spellMenuButtonMap[i,j].SetActive(openState);
+            }
         }
     }
 }
