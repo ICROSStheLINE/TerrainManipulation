@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    static int worldLength = 3;
-    static int worldWidth = 3;
+    static int worldLength = 1;
+    static int worldWidth = 1;
 
     Chunk[,] chunkMap = new Chunk[worldLength, worldWidth];
     public Material blockMaterial;
@@ -14,10 +14,14 @@ public class World : MonoBehaviour
     {
         FillChunkMap();
 
-        int houseChunkX = Mathf.FloorToInt(worldLength/2);
-        int houseChunkY = Mathf.FloorToInt(worldWidth/2);
-        DrawHouse(1, Chunk.groundHeight+1, 1, houseChunkX, houseChunkY);
+        // int houseChunkX = Mathf.FloorToInt(worldLength/2);
+        // int houseChunkY = Mathf.FloorToInt(worldWidth/2);
+        // DrawHouse(1, Chunk.groundHeight+1, 1, houseChunkX, houseChunkY);
 
+        GenerateAllChunkMeshes();
+    }
+    void Update()
+    {
         GenerateAllChunkMeshes();
     }
 
@@ -44,7 +48,7 @@ public class World : MonoBehaviour
         }}}
     }
 
-    void DrawBlock(int x, int y, int z,
+    public void DrawBlock(int x, int y, int z,
                    int chunkX, int chunkY,
                    Block.BlockType blockType)
     {
@@ -119,5 +123,26 @@ public class World : MonoBehaviour
         }
 
         return chunkMap[chunkX,chunkY].CheckForCube(cubeX,cubeY,cubeZ);
+    }
+
+    static public (int,int,int,int,int) ConvertWorldPositionToCubeInChunk(Vector3 worldPosition)
+    {
+        int blockX;
+        int blockY;
+        int blockZ;
+        int chunkX;
+        int chunkY;
+
+        blockX = Mathf.FloorToInt(worldPosition.x);
+        blockY = Mathf.FloorToInt(worldPosition.y);
+        blockZ = Mathf.FloorToInt(worldPosition.z);
+
+        chunkX = Mathf.FloorToInt(blockX / Chunk.chunkLength);
+        chunkY = Mathf.FloorToInt(blockZ / Chunk.chunkWidth);
+
+        blockX = blockX - (chunkX * Chunk.chunkLength);
+        blockZ = blockZ - (chunkY * Chunk.chunkWidth);
+
+        return (blockX, blockY, blockZ, chunkX, chunkY);
     }
 }
