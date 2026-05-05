@@ -807,18 +807,6 @@ PrefabInstance:
       value: DestructoBall
       objectReference: {fileID: 0}
     - target: {fileID: 8500072047837416200, guid: 46faddbfa1f157940a91a2da3cbfb4a8, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8500072047837416200, guid: 46faddbfa1f157940a91a2da3cbfb4a8, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8500072047837416200, guid: 46faddbfa1f157940a91a2da3cbfb4a8, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8500072047837416200, guid: 46faddbfa1f157940a91a2da3cbfb4a8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.89
       objectReference: {fileID: 0}
