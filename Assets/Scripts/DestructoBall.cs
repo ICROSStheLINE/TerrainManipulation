@@ -23,6 +23,6 @@ public class DestructoBall : MonoBehaviour
         int chunkX;
         int chunkY;
         (x,y,z,chunkX,chunkY) = World.ConvertWorldPositionToCubeInChunk(transform.position);
-        world.DrawBlock(x,y,z,chunkX,chunkY,Block.BlockType.Air);
+        world.DrawBlock(x,y,z,chunkX,chunkY,Block.BlockType.Air,true);
     }
 }

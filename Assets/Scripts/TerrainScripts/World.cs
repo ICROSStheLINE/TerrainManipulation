@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    static int worldLength = 1;
-    static int worldWidth = 1;
+    static int worldLength = 3;
+    static int worldWidth = 3;
 
     Chunk[,] chunkMap = new Chunk[worldLength, worldWidth];
     public Material blockMaterial;
@@ -20,37 +20,35 @@ public class World : MonoBehaviour
 
         GenerateAllChunkMeshes();
     }
-    void Update()
-    {
-        GenerateAllChunkMeshes();
-    }
 
     void DrawHouse(int x, int y, int z, 
                    int chunkX, int chunkY)
     {
-        DrawBlocks(x,y,z, x+7,y+7,z+7, chunkX, chunkY, Block.BlockType.Stone); // Giant cube
-        DrawBlocks(x+1,y+0,z+1, x+6,y+6,z+6, chunkX, chunkY, Block.BlockType.Air); // Hollow out cube
-        DrawBlocks(x+7,y+0,z+4, x+7,y+1,z+4, chunkX, chunkY, Block.BlockType.Air); // Door
-        DrawBlocks(x+7,y+1,z+2, x+7,y+1,z+2, chunkX, chunkY, Block.BlockType.Air); // Window next to door
+        DrawBlocks(x,y,z, x+7,y+7,z+7, chunkX, chunkY, Block.BlockType.Stone, false); // Giant cube
+        DrawBlocks(x+1,y+0,z+1, x+6,y+6,z+6, chunkX, chunkY, Block.BlockType.Air, false); // Hollow out cube
+        DrawBlocks(x+7,y+0,z+4, x+7,y+1,z+4, chunkX, chunkY, Block.BlockType.Air, false); // Door
+        DrawBlocks(x+7,y+1,z+2, x+7,y+1,z+2, chunkX, chunkY, Block.BlockType.Air, false); // Window next to door
         for (int i = 0; i < 3; i++)
-        DrawBlocks(x+(-1+i),y+(7+i),z+(-1+i), x+(8-i),y+(7+i),z+(8-i), chunkX, chunkY, Block.BlockType.Stone); // Roof Layers
+        DrawBlocks(x+(-1+i),y+(7+i),z+(-1+i), x+(8-i),y+(7+i),z+(8-i), chunkX, chunkY, Block.BlockType.Stone, true); // Roof Layers
     }
 
     void DrawBlocks(int startX, int startY, int startZ, 
                     int endX, int endY, int endZ,
                     int chunkX, int chunkY,
-                    Block.BlockType blockType) 
+                    Block.BlockType blockType,
+                    bool regenMesh)
     {
         for (int x = startX; x <= endX; x++) {
         for (int y = startY; y <= endY; y++) {
         for (int z = startZ; z <= endZ; z++) {
-            DrawBlock(x,y,z,chunkX,chunkY,blockType);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType, regenMesh);
         }}}
     }
 
     public void DrawBlock(int x, int y, int z,
                    int chunkX, int chunkY,
-                   Block.BlockType blockType)
+                   Block.BlockType blockType,
+                   bool regenMesh)
     {
         if (chunkX < 0 || chunkX >= worldLength || chunkY < 0 || chunkY >= worldWidth)
         {
@@ -60,25 +58,25 @@ public class World : MonoBehaviour
         {
             chunkY -= 1;
             z += Chunk.chunkWidth;
-            DrawBlock(x,y,z,chunkX,chunkY,blockType);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
         }
         if (z >= Chunk.chunkWidth)
         {
             chunkY += 1;
             z -= Chunk.chunkWidth;
-            DrawBlock(x,y,z,chunkX,chunkY,blockType);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
         }
         if (x < 0)
         {
             chunkX -= 1;
             x += Chunk.chunkLength;
-            DrawBlock(x,y,z,chunkX,chunkY,blockType);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
         }
         if (x >= Chunk.chunkLength) // If it's out of bounds
         {
             chunkX += 1;
             x -= Chunk.chunkLength;
-            DrawBlock(x,y,z,chunkX,chunkY,blockType);
+            DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
         }
         if (y < 0)
         {
@@ -89,6 +87,18 @@ public class World : MonoBehaviour
             return;
         }
         chunkMap[chunkX,chunkY].cubeMap[x,y,z] = blockType;
+        if (regenMesh)
+        {
+            chunkMap[chunkX,chunkY].RegenMesh();
+            if (z == 0)
+                chunkMap[chunkX,chunkY -= 1].RegenMesh();
+            if (z == Chunk.chunkWidth - 1)
+                chunkMap[chunkX,chunkY += 1].RegenMesh();
+            if (x == 0)
+                chunkMap[chunkX -= 1,chunkY].RegenMesh();
+            if (x == Chunk.chunkLength - 1)
+                chunkMap[chunkX += 1,chunkY].RegenMesh();
+        }
     }
 
     void FillChunkMap()
@@ -108,9 +118,7 @@ public class World : MonoBehaviour
         {
             for (int y = 0; y < worldWidth; y++)
             {
-                chunkMap[x,y].ClearData();
-                chunkMap[x,y].GenerateMesh();
-                chunkMap[x,y].UploadMesh();
+                chunkMap[x,y].RegenMesh();
             }
         }
     }

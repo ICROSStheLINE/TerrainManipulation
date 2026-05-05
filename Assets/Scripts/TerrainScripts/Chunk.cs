@@ -205,6 +205,13 @@ public class Chunk
     meshCollider.sharedMesh = mesh;
   }
 
+  public void RegenMesh()
+  {
+    ClearData();
+    GenerateMesh();
+    UploadMesh();
+  }
+
   #region Static Variables
 
   static readonly float voxelSize = 1f;
