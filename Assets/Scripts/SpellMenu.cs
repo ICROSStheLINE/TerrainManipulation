@@ -106,6 +106,9 @@ public class SpellMenu : MonoBehaviour
                     menuStartingPointY + (buttonHeight * i)
                 );
                 spellMenuButtonMap[i,j].uiObject.SetActive(false);
+                Button button = spellMenuButtonMap[i,j].uiObject.GetComponent<Button>();
+                SpellSlot spellSlot = spellMenuButtonMap[i,j];
+                button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
                 spellMenuButtonMap[i,j].uiObject.name = "spellMenuButton[" + i + "," + j + "]";
             }
         }
