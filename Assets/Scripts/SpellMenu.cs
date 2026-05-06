@@ -9,13 +9,23 @@ public class SpellMenu : MonoBehaviour
 
     SimpleFPSController simpleFPSController;
     [SerializeField] GameObject buttonGameObjectPrefab;
-    static int spellMenuWidth = 5;
-    static int spellMenuHeight = 3;
     float buttonWidth = 75;
     float buttonHeight = 75;
-    float menuStartingPointX = 100;
-    float menuStartingPointY = 0;
-    SpellSlot[,] spellMenuButtonMap = new SpellSlot[spellMenuHeight,spellMenuWidth];
+    static int castStartWidth = 3;
+    static int castStartHeight = 1;
+    float castStartStartingPointX = 100;
+    float castStartStartingPointY = 200;
+    SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
+    static int castContinuousWidth = 3;
+    static int castContinuousHeight = 1;
+    float castContinuousStartingPointX = 100;
+    float castContinuousStartingPointY = 0;
+    SpellSlot[,] castContinuousMap = new SpellSlot[castContinuousHeight,castContinuousWidth];
+    static int castEndWidth = 3;
+    static int castEndHeight = 1;
+    float castEndStartingPointX = 100;
+    float castEndStartingPointY = -200;
+    SpellSlot[,] castEndMap = new SpellSlot[castEndHeight,castEndWidth];
     [SerializeField] Transform canvasTransform;
     static int inventoryWidth = 1;
     static int inventoryHeight = 3;
@@ -28,7 +38,7 @@ public class SpellMenu : MonoBehaviour
     void Start()
     {
         simpleFPSController = GetComponent<SimpleFPSController>();
-        PopulateSpellMenuMap();
+        PopulateSpellMenuMaps();
         PopulateSpellInventoryMap();
         spellInventoryMap[0,0].AssignSpell(SpellSlot.SpellType.Ball);
     }
@@ -92,25 +102,65 @@ public class SpellMenu : MonoBehaviour
         }
     }
 
-    void PopulateSpellMenuMap()
+    void PopulateSpellMenuMaps()
     {
-        for (int i = 0; i < spellMenuHeight; i++)
+        for (int i = 0; i < castStartHeight; i++)
         {
-            for (int j = 0; j < spellMenuWidth; j++)
+            for (int j = 0; j < castStartWidth; j++)
             {
-                spellMenuButtonMap[i,j] = new SpellSlot();
-                spellMenuButtonMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
-                spellMenuButtonMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
-                RectTransform rect = spellMenuButtonMap[i,j].uiObject.GetComponent<RectTransform>();
+                castStartMap[i,j] = new SpellSlot();
+                castStartMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
+                castStartMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
+                RectTransform rect = castStartMap[i,j].uiObject.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(
-                    menuStartingPointX + (buttonWidth * j),
-                    menuStartingPointY + (buttonHeight * i)
+                    castStartStartingPointX + (buttonWidth * j),
+                    castStartStartingPointY + (buttonHeight * i)
                 );
-                spellMenuButtonMap[i,j].uiObject.SetActive(false);
-                Button button = spellMenuButtonMap[i,j].uiObject.GetComponent<Button>();
-                SpellSlot spellSlot = spellMenuButtonMap[i,j];
+                castStartMap[i,j].uiObject.SetActive(false);
+                Button button = castStartMap[i,j].uiObject.GetComponent<Button>();
+                SpellSlot spellSlot = castStartMap[i,j];
                 button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
-                spellMenuButtonMap[i,j].uiObject.name = "spellMenuButton[" + i + "," + j + "]";
+                castStartMap[i,j].uiObject.name = "spellStartButton[" + i + "," + j + "]";
+            }
+        }
+
+        for (int i = 0; i < castContinuousHeight; i++)
+        {
+            for (int j = 0; j < castContinuousWidth; j++)
+            {
+                castContinuousMap[i,j] = new SpellSlot();
+                castContinuousMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
+                castContinuousMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
+                RectTransform rect = castContinuousMap[i,j].uiObject.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(
+                    castContinuousStartingPointX + (buttonWidth * j),
+                    castContinuousStartingPointY + (buttonHeight * i)
+                );
+                castContinuousMap[i,j].uiObject.SetActive(false);
+                Button button = castContinuousMap[i,j].uiObject.GetComponent<Button>();
+                SpellSlot spellSlot = castContinuousMap[i,j];
+                button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+                castContinuousMap[i,j].uiObject.name = "spellContinuousButton[" + i + "," + j + "]";
+            }
+        }
+
+        for (int i = 0; i < castEndHeight; i++)
+        {
+            for (int j = 0; j < castEndWidth; j++)
+            {
+                castEndMap[i,j] = new SpellSlot();
+                castEndMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
+                castEndMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
+                RectTransform rect = castEndMap[i,j].uiObject.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(
+                    castEndStartingPointX + (buttonWidth * j),
+                    castEndStartingPointY + (buttonHeight * i)
+                );
+                castEndMap[i,j].uiObject.SetActive(false);
+                Button button = castEndMap[i,j].uiObject.GetComponent<Button>();
+                SpellSlot spellSlot = castEndMap[i,j];
+                button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+                castEndMap[i,j].uiObject.name = "spellEndButton[" + i + "," + j + "]";
             }
         }
     }
@@ -126,9 +176,19 @@ public class SpellMenu : MonoBehaviour
 
     void OpenSpellMenu(bool openState)
     {
-        for (int i = 0; i < spellMenuHeight; i++) {
-            for (int j = 0; j < spellMenuWidth; j++) {
-                spellMenuButtonMap[i,j].uiObject.SetActive(openState);
+        for (int i = 0; i < castStartHeight; i++) {
+            for (int j = 0; j < castStartWidth; j++) {
+                castStartMap[i,j].uiObject.SetActive(openState);
+            }
+        }
+        for (int i = 0; i < castContinuousHeight; i++) {
+            for (int j = 0; j < castContinuousWidth; j++) {
+                castContinuousMap[i,j].uiObject.SetActive(openState);
+            }
+        }
+        for (int i = 0; i < castEndHeight; i++) {
+            for (int j = 0; j < castEndWidth; j++) {
+                castEndMap[i,j].uiObject.SetActive(openState);
             }
         }
     }
@@ -149,7 +209,6 @@ public class SpellSlot
 
         GameObject.Destroy(spellIcon);
 
-        Debug.Log(spellType + " has been picked up from " + uiObject.name);
         spellType = SpellType.Empty;
     }
     public void AssignSpell(SpellType spellType)
@@ -162,7 +221,6 @@ public class SpellSlot
         CreateSpellIcon(spellType);
 
         this.spellType = spellType;
-        Debug.Log(this.spellType + " has been assigned to " + uiObject.name);
     }
 
     void CreateSpellIcon(SpellType spellType)
