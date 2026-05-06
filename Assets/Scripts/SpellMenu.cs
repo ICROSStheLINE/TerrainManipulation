@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SpellMenu : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class SpellMenu : MonoBehaviour
     [SerializeField] GameObject buttonGameObjectPrefab;
     static int spellMenuWidth = 5;
     static int spellMenuHeight = 3;
-    float buttonWidth = 100;
-    float buttonHeight = 100;
+    float buttonWidth = 75;
+    float buttonHeight = 75;
     float menuStartingPointX = 100;
     float menuStartingPointY = 0;
     SpellSlot[,] spellMenuButtonMap = new SpellSlot[spellMenuHeight,spellMenuWidth];
@@ -138,12 +139,15 @@ public class SpellSlot
     public GameObject uiObject;
     public enum SpellType { Empty, Ball, Cube }
     public SpellType spellType;
+    GameObject spellIcon;
     public void PickUpSpell()
     {
         if (spellType == SpellType.Empty)
         {
             return; // If it's empty then there's nothing to pick up!
         }
+
+        GameObject.Destroy(spellIcon);
 
         Debug.Log(spellType + " has been picked up from " + uiObject.name);
         spellType = SpellType.Empty;
@@ -155,7 +159,21 @@ public class SpellSlot
             return; // If it has something in the slot then you can't assign it something else! (TODO: Allow spell swapping)
         }
 
+        CreateSpellIcon(spellType);
+
         this.spellType = spellType;
         Debug.Log(this.spellType + " has been assigned to " + uiObject.name);
+    }
+
+    void CreateSpellIcon(SpellType spellType)
+    {
+        spellIcon = new GameObject();
+        spellIcon.name = spellType.ToString();
+        spellIcon.transform.SetParent(uiObject.transform, false);
+        TextMeshProUGUI tmp = spellIcon.AddComponent<TextMeshProUGUI>();
+        tmp.text = spellType.ToString();
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.fontSize = 24;
+        tmp.color = Color.black;
     }
 }
