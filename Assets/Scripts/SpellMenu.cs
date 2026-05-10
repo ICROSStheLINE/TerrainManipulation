@@ -10,13 +10,13 @@ public class SpellMenu : MonoBehaviour
     [SerializeField] GameObject buttonGameObjectPrefab;
     float buttonWidth = 75;
     float buttonHeight = 75;
-    static int castStartWidth = 3;
+    static int castStartWidth = 4;
     static int castStartHeight = 1;
     float castStartStartingPointX = 100;
     float castStartStartingPointY = 200;
     GameObject castStartLabel;
     SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
-    static int castContinuousWidth = 3;
+    static int castContinuousWidth = 1;
     static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
     float castContinuousStartingPointY = 0;
@@ -29,7 +29,7 @@ public class SpellMenu : MonoBehaviour
     SpellSlot[,] castEndMap = new SpellSlot[castEndHeight,castEndWidth];*/
     [SerializeField] Transform canvasTransform;
     static int inventoryWidth = 1;
-    static int inventoryHeight = 3;
+    static int inventoryHeight = 4;
     float inventoryStartingPointX = -600;
     float inventoryStartingPointY = 0;
     GameObject spellInventoryLabel;
@@ -37,6 +37,7 @@ public class SpellMenu : MonoBehaviour
     SpellSlot.SpellType heldSpell = SpellSlot.SpellType.Empty;
     [SerializeField] GameObject ballPrefab;
     ManaManager manaManager;
+    [SerializeField] GameObject eggPrefab;
 
 
     void Start()
@@ -47,6 +48,9 @@ public class SpellMenu : MonoBehaviour
         PopulateSpellInventoryMap();
         PopulateUILabels();
         spellInventoryMap[0,0].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.Egg);
+        spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.OpenParenthesis);
+        spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesis);
     }
 
     void FixedUpdate()
@@ -81,24 +85,68 @@ public class SpellMenu : MonoBehaviour
 
     void CastStart()
     {
-        // Iterate through the list of spell slots in the CastStartMap array.
-        // If a non-empty spell slot is found (AKA if spellSlot.spellType isn't empty)...
-        // ...do whatever unique action that spelltype is for.
-        // In the case of "Ball" (for testing purposes), summon a ball.
         for (int i = 0; i < castStartHeight; i++)
         {
             for (int j = 0; j < castStartWidth; j++)
             {
                 if (castStartMap[i,j].spellType == SpellSlot.SpellType.Empty)
                 { continue; }
-
                 if (castStartMap[i,j].spellType == SpellSlot.SpellType.Ball)
                 {
-                    if (manaManager.manaAmount > 0)
+                    if (manaManager.manaAmount <= 0)
+                    { continue; }
+                    
+                    Instantiate(ballPrefab, transform.position + transform.forward, transform.rotation);
+                    manaManager.LoseMana(5);
+                }
+                if (castStartMap[i,j].spellType == SpellSlot.SpellType.Egg) // if spell is an egg, then 
+                {
+                    if (manaManager.manaAmount <= 0)
+                    { continue; }
+
+                    GameObject spawnedEgg = Instantiate(eggPrefab, transform.position + transform.forward + transform.forward + transform.up + transform.up, transform.rotation);
+                    manaManager.LoseMana(5);
+
+                    int remainingIndices = castStartMap.GetLength(1) - 1 - j;
+                    if (remainingIndices == 0)
+                    { continue; }
+                    if (castStartMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesis) // check to see if the next spell is an open parenthesis.
+                    { continue; }
+
+                    int openParenthesesPassed = 0;
+                    int closeParenthesesPassed = 0;
+                    int closeParenthesisIndex = 0;
+                    for (int eggIndex = j + 1; eggIndex < castStartMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
                     {
-                        Instantiate(ballPrefab, transform.position + transform.forward, transform.rotation);
-                        manaManager.LoseMana(5);
+                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.OpenParenthesis)
+                        {
+                            openParenthesesPassed++;
+                        }
+                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.CloseParenthesis)
+                        {
+                            closeParenthesesPassed++;
+                            closeParenthesisIndex = eggIndex;
+                        }
+
+                        if (openParenthesesPassed == closeParenthesesPassed)
+                        { break; }
                     }
+                    if (openParenthesesPassed != closeParenthesesPassed) 
+                    { continue; }
+
+                    for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
+                    {
+                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Empty)
+                        { continue; }
+
+                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Ball)
+                        {
+                            if (manaManager.manaAmount <= 0) { continue; }
+                            Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                            manaManager.LoseMana(5);
+                        }
+                    }
+                    j = closeParenthesisIndex;
                 }
             }
         }
@@ -316,7 +364,7 @@ public class SpellMenu : MonoBehaviour
 public class SpellSlot
 {
     public GameObject uiObject;
-    public enum SpellType { Empty, Ball, Cube }
+    public enum SpellType { Empty, Ball, Cube, Egg, OpenParenthesis, CloseParenthesis }
     // ^^^ TODO: Change this from being an enum to being a whole class.
     // That way we can write the FUNCTION of each spelltype IN THE CLASS ITSELF.
     // Actually wait no.
@@ -357,6 +405,10 @@ public class SpellSlot
         spellIcon.transform.SetParent(uiObject.transform, false);
         TextMeshProUGUI tmp = spellIcon.AddComponent<TextMeshProUGUI>();
         tmp.text = spellType.ToString();
+        if (spellType == SpellType.OpenParenthesis)
+            { tmp.text = "("; }
+        if (spellType == SpellType.CloseParenthesis)
+            { tmp.text = ")"; }
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontSize = 24;
         tmp.color = Color.black;
