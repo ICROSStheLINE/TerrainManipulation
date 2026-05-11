@@ -10,7 +10,7 @@ public class SpellMenu : MonoBehaviour
     [SerializeField] GameObject buttonGameObjectPrefab;
     float buttonWidth = 75;
     float buttonHeight = 75;
-    static int castStartWidth = 4;
+    static int castStartWidth = 6;
     static int castStartHeight = 1;
     float castStartStartingPointX = 100;
     float castStartStartingPointY = 200;
@@ -29,7 +29,7 @@ public class SpellMenu : MonoBehaviour
     SpellSlot[,] castEndMap = new SpellSlot[castEndHeight,castEndWidth];*/
     [SerializeField] Transform canvasTransform;
     static int inventoryWidth = 1;
-    static int inventoryHeight = 4;
+    static int inventoryHeight = 6;
     float inventoryStartingPointX = -600;
     float inventoryStartingPointY = 0;
     GameObject spellInventoryLabel;
@@ -38,6 +38,7 @@ public class SpellMenu : MonoBehaviour
     [SerializeField] GameObject ballPrefab;
     ManaManager manaManager;
     [SerializeField] GameObject eggPrefab;
+    [SerializeField] GameObject sparkPrefab;
 
 
     void Start()
@@ -51,6 +52,8 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.Egg);
         spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.OpenParenthesis);
         spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesis);
+        spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.Spark);
     }
 
     void FixedUpdate()
@@ -141,12 +144,28 @@ public class SpellMenu : MonoBehaviour
 
                         if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Ball)
                         {
-                            if (manaManager.manaAmount <= 0) { continue; }
+                            if (manaManager.manaAmount <= 0) 
+                            { continue; }
                             Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                            manaManager.LoseMana(5);
+                        }
+                        if (castStartMap[i,j].spellType == SpellSlot.SpellType.Spark)
+                        {
+                            if (manaManager.manaAmount <= 0)
+                            { continue; }
+                            Instantiate(sparkPrefab, transform.position + transform.forward, transform.rotation);
                             manaManager.LoseMana(5);
                         }
                     }
                     j = closeParenthesisIndex;
+                }
+                if (castStartMap[i,j].spellType == SpellSlot.SpellType.Spark)
+                {
+                    if (manaManager.manaAmount <= 0)
+                    { continue; }
+                    
+                    Instantiate(sparkPrefab, transform.position + transform.forward, transform.rotation);
+                    manaManager.LoseMana(5);
                 }
             }
         }
@@ -364,12 +383,12 @@ public class SpellMenu : MonoBehaviour
 public class SpellSlot
 {
     public GameObject uiObject;
-    public enum SpellType { Empty, Ball, Cube, Egg, OpenParenthesis, CloseParenthesis }
+    public enum SpellType { Empty, Ball, Cube, Egg, OpenParenthesis, CloseParenthesis, Spark }
     // ^^^ TODO: Change this from being an enum to being a whole class.
     // That way we can write the FUNCTION of each spelltype IN THE CLASS ITSELF.
     // Actually wait no.
     // Instead, we can make the class, but make it a STATIC class that just returns the function of each one of these enum types.
-    // It would basically just be a static class with ONE function in it that is called "GetSpellTypeFunction" or something.
+    // It would basically just be a static class with ONE public function in it that is called "GetSpellTypeFunction" or something.
     // That function would have like a billion if statements checking which enum type was passed in as an argument.
     // Then it would return a thing to do, like spawning in a ball, or deleting a block.
     // But what datatype should that return be??

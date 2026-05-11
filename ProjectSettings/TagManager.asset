@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - World
+  - Spark
   layers:
   - Default
   - TransparentFX
