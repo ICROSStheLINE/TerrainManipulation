@@ -149,11 +149,11 @@ public class SpellMenu : MonoBehaviour
                             Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
                             manaManager.LoseMana(5);
                         }
-                        if (castStartMap[i,j].spellType == SpellSlot.SpellType.Spark)
+                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
                         {
                             if (manaManager.manaAmount <= 0)
                             { continue; }
-                            Instantiate(sparkPrefab, transform.position + transform.forward, transform.rotation);
+                            Instantiate(sparkPrefab, spawnedEgg.transform.position, transform.rotation);
                             manaManager.LoseMana(5);
                         }
                     }
