@@ -22,11 +22,6 @@ public class SpellMenu : MonoBehaviour
     float castContinuousStartingPointY = 0;
     GameObject castContinuousLabel;
     SpellSlot[,] castContinuousMap = new SpellSlot[castContinuousHeight,castContinuousWidth];
-    /*static int castEndWidth = 0;
-    static int castEndHeight = 0;
-    float castEndStartingPointX = 100;
-    float castEndStartingPointY = -200;
-    SpellSlot[,] castEndMap = new SpellSlot[castEndHeight,castEndWidth];*/
     [SerializeField] Transform canvasTransform;
     static int inventoryWidth = 1;
     static int inventoryHeight = 6;
@@ -275,26 +270,6 @@ public class SpellMenu : MonoBehaviour
                 castContinuousMap[i,j].uiObject.name = "spellContinuousButton[" + i + "," + j + "]";
             }
         }
-
-        /*for (int i = 0; i < castEndHeight; i++)
-        {
-            for (int j = 0; j < castEndWidth; j++)
-            {
-                castEndMap[i,j] = new SpellSlot();
-                castEndMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
-                castEndMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
-                RectTransform rect = castEndMap[i,j].uiObject.GetComponent<RectTransform>();
-                rect.anchoredPosition = new Vector2(
-                    castEndStartingPointX + (buttonWidth * j),
-                    castEndStartingPointY + (buttonHeight * i)
-                );
-                castEndMap[i,j].uiObject.SetActive(false);
-                Button button = castEndMap[i,j].uiObject.GetComponent<Button>();
-                SpellSlot spellSlot = castEndMap[i,j];
-                button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
-                castEndMap[i,j].uiObject.name = "spellEndButton[" + i + "," + j + "]";
-            }
-        }*/
     }
 
     void OpenInventory(bool openState)
@@ -321,11 +296,6 @@ public class SpellMenu : MonoBehaviour
                 castContinuousMap[i,j].uiObject.SetActive(openState);
             }
         }
-        /*for (int i = 0; i < castEndHeight; i++) {
-            for (int j = 0; j < castEndWidth; j++) {
-                castEndMap[i,j].uiObject.SetActive(openState);
-            }
-        }*/
     }
     
     void PopulateUILabels()
@@ -384,14 +354,6 @@ public class SpellSlot
 {
     public GameObject uiObject;
     public enum SpellType { Empty, Ball, Cube, Egg, OpenParenthesis, CloseParenthesis, Spark }
-    // ^^^ TODO: Change this from being an enum to being a whole class.
-    // That way we can write the FUNCTION of each spelltype IN THE CLASS ITSELF.
-    // Actually wait no.
-    // Instead, we can make the class, but make it a STATIC class that just returns the function of each one of these enum types.
-    // It would basically just be a static class with ONE public function in it that is called "GetSpellTypeFunction" or something.
-    // That function would have like a billion if statements checking which enum type was passed in as an argument.
-    // Then it would return a thing to do, like spawning in a ball, or deleting a block.
-    // But what datatype should that return be??
     public SpellType spellType;
     GameObject spellIcon;
     public void PickUpSpell()

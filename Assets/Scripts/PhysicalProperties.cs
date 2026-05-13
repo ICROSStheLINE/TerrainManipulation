@@ -6,6 +6,8 @@ public class PhysicalProperties : MonoBehaviour
 {
     float flashPoint = 10; // Flash Point: Temperature required to ignite using external source
     public float temperature = 0;
+    public bool isIgnited;
+    public float pressureGenerationRate = 2f;
 
     void Start()
     {
@@ -18,7 +20,7 @@ public class PhysicalProperties : MonoBehaviour
         {
             Glow();
         }
-        if (temperature >= flashPoint)
+        if (temperature >= flashPoint && !isIgnited)
         {
             Ignite();
         }
@@ -31,6 +33,7 @@ public class PhysicalProperties : MonoBehaviour
 
     void Ignite()
     {
+        isIgnited = true;
         gameObject.GetComponent<Renderer>().material.color = Color.red;
     }
 

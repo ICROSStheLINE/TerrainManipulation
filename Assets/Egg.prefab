@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1347280262911378125}
+  - component: {fileID: -3431108624657154254}
   - component: {fileID: 4260680038334623139}
   - component: {fileID: 4341006187094592320}
   - component: {fileID: 1826369882858721862}
@@ -18,6 +19,7 @@ GameObject:
   - component: {fileID: 5966434893538823686}
   - component: {fileID: 3241827064762292590}
   - component: {fileID: 2330534356102644244}
+  - component: {fileID: 1874089172873444235}
   m_Layer: 0
   m_Name: Egg
   m_TagString: Untagged
@@ -40,6 +42,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3431108624657154254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30962906337970838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c62782be10523d24fb75508963f62b04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressureLeakRate: 1
 --- !u!33 &4260680038334623139
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -246,3 +261,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.1, z: 0.5}
   m_Center: {x: 0, y: -0.25, z: 0}
+--- !u!65 &1874089172873444235
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30962906337970838}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 0.5, z: 0.5}
+  m_Center: {x: 0, y: 0, z: 0}
