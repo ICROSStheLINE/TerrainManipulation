@@ -16,7 +16,7 @@ public class SpellMenu : MonoBehaviour
     float castStartStartingPointY = 200;
     GameObject castStartLabel;
     SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
-    static int castContinuousWidth = 1;
+    static int castContinuousWidth = 2;
     static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
     float castContinuousStartingPointY = 0;
@@ -207,9 +207,9 @@ public class SpellMenu : MonoBehaviour
         {
             for (int j = 0; j < castContinuousWidth; j++)
             {
-                if (castStartMap[i,j].spellType == SpellSlot.SpellType.Empty)
+                if (castContinuousMap[i,j].spellType == SpellSlot.SpellType.Empty)
                 { continue; }
-                if (castStartMap[i,j].spellType == SpellSlot.SpellType.Ball)
+                if (castContinuousMap[i,j].spellType == SpellSlot.SpellType.Ball)
                 {
                     if (manaManager.manaAmount <= 0)
                     { continue; }
@@ -220,7 +220,7 @@ public class SpellMenu : MonoBehaviour
                     activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
                 }
-                if (castStartMap[i,j].spellType == SpellSlot.SpellType.Egg) // if spell is an egg, then 
+                if (castContinuousMap[i,j].spellType == SpellSlot.SpellType.Egg) // if spell is an egg, then 
                 {
                     if (manaManager.manaAmount <= 0)
                     { continue; }
@@ -231,22 +231,22 @@ public class SpellMenu : MonoBehaviour
                     activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
 
-                    int remainingIndices = castStartMap.GetLength(1) - 1 - j;
+                    int remainingIndices = castContinuousMap.GetLength(1) - 1 - j;
                     if (remainingIndices == 0)
                     { continue; }
-                    if (castStartMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesis) // check to see if the next spell is an open parenthesis.
+                    if (castContinuousMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesis) // check to see if the next spell is an open parenthesis.
                     { continue; }
 
                     int openParenthesesPassed = 0;
                     int closeParenthesesPassed = 0;
                     int closeParenthesisIndex = 0;
-                    for (int eggIndex = j + 1; eggIndex < castStartMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
+                    for (int eggIndex = j + 1; eggIndex < castContinuousMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
                     {
-                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.OpenParenthesis)
+                        if (castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.OpenParenthesis)
                         {
                             openParenthesesPassed++;
                         }
-                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.CloseParenthesis)
+                        if (castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.CloseParenthesis)
                         {
                             closeParenthesesPassed++;
                             closeParenthesisIndex = eggIndex;
@@ -260,17 +260,17 @@ public class SpellMenu : MonoBehaviour
 
                     for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
                     {
-                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Empty)
+                        if (castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Empty)
                         { continue; }
 
-                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Ball)
+                        if (castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Ball)
                         {
                             if (manaManager.manaAmount <= 0) 
                             { continue; }
                             Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
                             manaManager.LoseMana(5);
                         }
-                        if (castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
+                        if (castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
                         {
                             if (manaManager.manaAmount <= 0)
                             { continue; }
@@ -280,7 +280,7 @@ public class SpellMenu : MonoBehaviour
                     }
                     j = closeParenthesisIndex;
                 }
-                if (castStartMap[i,j].spellType == SpellSlot.SpellType.Spark)
+                if (castContinuousMap[i,j].spellType == SpellSlot.SpellType.Spark)
                 {
                     if (manaManager.manaAmount <= 0)
                     { continue; }
