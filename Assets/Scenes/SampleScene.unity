@@ -434,6 +434,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 625487111}
+  - component: {fileID: 625487114}
   - component: {fileID: 625487113}
   - component: {fileID: 625487112}
   - component: {fileID: 625487110}
@@ -596,6 +597,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonGameObjectPrefab: {fileID: 8112578801275760696, guid: 3711ad3ef5600ac4289d049759813c16, type: 3}
   canvasTransform: {fileID: 1810091147}
+--- !u!114 &625487114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625487106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f49305f475a1aac4eaaaa48bd7e92782, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   ballPrefab: {fileID: 1541034544196987380, guid: cdb83a978bd52b14f8882825b770486f, type: 3}
   eggPrefab: {fileID: 30962906337970838, guid: 8ba9b908f3b28b8419882eefb6801c3d, type: 3}
   sparkPrefab: {fileID: 1274411161981808580, guid: 6b9398f4616e0ea4aa1ccb8b018023f9, type: 3}
