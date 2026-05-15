@@ -18,7 +18,7 @@ public class ManaObject : MonoBehaviour
     {
         if (attachedToHand)
         {
-            transform.position = handTransform.position + Vector3.up;
+            transform.position = handTransform.position + transform.up;
             transform.rotation = handTransform.rotation;
         }
     }
@@ -28,7 +28,6 @@ public class ManaObject : MonoBehaviour
         handTransform = hand;
         attachedToHand = true;
 
-        rb.isKinematic = true;
         rb.useGravity = false;
     }
 
@@ -36,7 +35,6 @@ public class ManaObject : MonoBehaviour
     {
         attachedToHand = false;
 
-        rb.isKinematic = false;
         rb.useGravity = true;
     }
 }

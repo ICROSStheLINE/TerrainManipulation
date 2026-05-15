@@ -49,6 +49,13 @@ public class Egg : MonoBehaviour
 
         Destroy(gameObject);
     }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.root.tag == "World")
+        {
+            Explode();
+        }
+    }
 
     void OnTriggerEnter(Collider other)
     {

@@ -123,7 +123,7 @@ public class SpellMenu : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    GameObject ballObject = Instantiate(ballPrefab, handTransform.position + Vector3.up, transform.rotation);
+                    GameObject ballObject = Instantiate(ballPrefab, handTransform.position + handTransform.up, transform.rotation);
                     ManaObject manaObject = ballObject.transform.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
@@ -134,7 +134,7 @@ public class SpellMenu : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
 
-                    GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + Vector3.up, transform.rotation);
+                    GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
                     ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
@@ -214,7 +214,7 @@ public class SpellMenu : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    GameObject ballObject = Instantiate(ballPrefab, handTransform.position + Vector3.up, transform.rotation);
+                    GameObject ballObject = Instantiate(ballPrefab, handTransform.position + handTransform.up, transform.rotation);
                     ManaObject manaObject = ballObject.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
@@ -225,7 +225,7 @@ public class SpellMenu : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
 
-                    GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + Vector3.up, transform.rotation);
+                    GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
                     ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
