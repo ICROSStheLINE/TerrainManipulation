@@ -8,6 +8,9 @@ public class ManaObject : MonoBehaviour
 
     bool attachedToHand = false;
     Transform handTransform;
+    bool attachedToEgg = false;
+    Transform eggTransform;
+
 
     void Awake()
     {
@@ -21,6 +24,16 @@ public class ManaObject : MonoBehaviour
             transform.position = handTransform.position + transform.up;
             transform.rotation = handTransform.rotation;
         }
+    }
+
+    public void AttachToEgg(Transform egg)
+    {
+        eggTransform = egg;
+        attachedToEgg = true;
+
+        // Find the dimensions of the interior of the egg.
+        // If this object leaves the dimensions or approaches the edge then drag it back in.
+        // Or actually, maybe just make the object gravitate towards the centre of the egg?
     }
 
     public void AttachToHand(Transform hand)

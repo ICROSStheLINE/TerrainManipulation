@@ -127,7 +127,10 @@ public class CastLogic : MonoBehaviour
                         {
                             if (manaManager.manaAmount <= 0) 
                             { continue; }
-                            Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                            GameObject ballObject = Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                            ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
+                            innerManaObject.AttachToEgg(spawnedEgg.transform);
+                            activeManaObjects.Add(innerManaObject);
                             manaManager.LoseMana(5);
                         }
                         if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)

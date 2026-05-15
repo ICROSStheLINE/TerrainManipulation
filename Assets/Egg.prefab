@@ -149,7 +149,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!65 &3379295338825233507
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -169,7 +169,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.1, y: 0.5, z: 0.5}
+  m_Size: {x: 0.1, y: 0.6, z: 0.6}
   m_Center: {x: 0.25, y: 0, z: 0}
 --- !u!65 &596500626399156036
 BoxCollider:
@@ -190,7 +190,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.1, y: 0.5, z: 0.5}
+  m_Size: {x: 0.100000024, y: 0.6, z: 0.6}
   m_Center: {x: -0.25, y: 0, z: 0}
 --- !u!65 &5435415259473682627
 BoxCollider:
@@ -211,7 +211,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 0.5, z: 0.1}
+  m_Size: {x: 0.6, y: 0.6, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0.25}
 --- !u!65 &5966434893538823686
 BoxCollider:
@@ -232,7 +232,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 0.5, z: 0.1}
+  m_Size: {x: 0.6, y: 0.6, z: 0.1}
   m_Center: {x: 0, y: 0, z: -0.25}
 --- !u!65 &3241827064762292590
 BoxCollider:
@@ -253,7 +253,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 0.1, z: 0.5}
+  m_Size: {x: 0.6, y: 0.1, z: 0.6}
   m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!65 &2330534356102644244
 BoxCollider:
@@ -274,7 +274,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 0.1, z: 0.5}
+  m_Size: {x: 0.6, y: 0.1, z: 0.6}
   m_Center: {x: 0, y: -0.25, z: 0}
 --- !u!65 &1874089172873444235
 BoxCollider:
