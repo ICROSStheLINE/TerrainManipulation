@@ -28,6 +28,7 @@ public class ManaObject : MonoBehaviour
         handTransform = hand;
         attachedToHand = true;
 
+        rb.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
         rb.useGravity = false;
     }
 
@@ -35,6 +36,7 @@ public class ManaObject : MonoBehaviour
     {
         attachedToHand = false;
 
+        rb.constraints = RigidbodyConstraints.None;
         rb.useGravity = true;
     }
 }

@@ -166,9 +166,9 @@ public class CastLogic : MonoBehaviour
                     { continue; }
                     
                     GameObject ballObject = Instantiate(ballPrefab, handTransform.position + handTransform.up, transform.rotation);
-                    ManaObject manaObject = ballObject.GetComponent<ManaObject>();
-                    manaObject.AttachToHand(handTransform);
-                    activeManaObjects.Add(manaObject);
+                    // ManaObject manaObject = ballObject.GetComponent<ManaObject>();
+                    // manaObject.AttachToHand(handTransform);
+                    // activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
                 }
                 if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.Egg) // if spell is an egg, then 
@@ -177,9 +177,9 @@ public class CastLogic : MonoBehaviour
                     { continue; }
 
                     GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
-                    ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
-                    manaObject.AttachToHand(handTransform);
-                    activeManaObjects.Add(manaObject);
+                    // ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
+                    // manaObject.AttachToHand(handTransform);
+                    // activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
 
                     int remainingIndices = spellMenu.castContinuousMap.GetLength(1) - 1 - j;
