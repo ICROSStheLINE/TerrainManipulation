@@ -9,7 +9,7 @@ public class Egg : MonoBehaviour
 
     public float pressureLeakRate = 1f;
 
-    List<PhysicalProperties> contents = new List<PhysicalProperties>();
+    public List<Transform> contents = new List<Transform>();
 
     void Update()
     {
@@ -32,11 +32,14 @@ public class Egg : MonoBehaviour
 
     void GeneratePressure()
     {
-        foreach (PhysicalProperties obj in contents)
+        foreach (Transform obj in contents)
         {
-            if (obj.isIgnited)
+            PhysicalProperties objPhysProps = obj.GetComponent<PhysicalProperties>();
+            if (objPhysProps == null)
+                { continue; }
+            if (objPhysProps.isIgnited)
             {
-                pressure += obj.pressureGenerationRate * Time.deltaTime;
+                pressure += objPhysProps.pressureGenerationRate * Time.deltaTime;
             }
         }
     }
@@ -45,35 +48,36 @@ public class Egg : MonoBehaviour
     {
         Debug.Log("BOOM");
 
-        // Explosion physics here
+        foreach (Transform obj in contents)
+        {
+            ManaObject manaObj = obj.GetComponent<ManaObject>();
+            if (manaObj == null)
+                { continue; }
+
+            manaObj.Release();
+
+            Rigidbody rb = obj.GetComponent<Rigidbody>();
+            if (rb == null)
+                { continue; }
+
+            Vector3 dir =
+                (obj.position -
+                transform.position).normalized;
+
+            rb.AddForce(
+                dir * pressure * 1f,
+                ForceMode.Impulse
+            );
+        }
 
         Destroy(gameObject);
-    }
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.transform.root.tag == "World")
-        {
-            Explode();
-        }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        PhysicalProperties p = other.GetComponent<PhysicalProperties>();
-
-        if (p != null)
+        if (other.transform.root.tag == "World")
         {
-            contents.Add(p);
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        PhysicalProperties p = other.GetComponent<PhysicalProperties>();
-
-        if (p != null)
-        {
-            contents.Remove(p);
+            Explode();
         }
     }
 }

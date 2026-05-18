@@ -10,7 +10,7 @@ public class ManaObject : MonoBehaviour
     Transform handTransform;
     bool attachedToEgg = false;
     Transform eggTransform;
-
+    Egg eggProps;
 
     void Awake()
     {
@@ -24,16 +24,41 @@ public class ManaObject : MonoBehaviour
             transform.position = handTransform.position + transform.up;
             transform.rotation = handTransform.rotation;
         }
+        if (attachedToEgg)
+        {
+            SimulateEggContainment();
+        }
+    }
+
+    void SimulateEggContainment()
+    {
+        float axisSpeed = 1f + eggProps.pressure;
+        float orbitSpeed = 150f + eggProps.pressure;
+
+        float t = Time.time * axisSpeed;
+
+        Vector3 orbitAxis = new Vector3(
+            Mathf.Sin(t),
+            0f,
+            Mathf.Cos(t)
+        ).normalized;
+        transform.RotateAround(eggTransform.position, orbitAxis, orbitSpeed * Time.deltaTime);
     }
 
     public void AttachToEgg(Transform egg)
     {
         eggTransform = egg;
+        eggProps = eggTransform.GetComponent<Egg>();
+        eggProps.contents.Add(transform);
         attachedToEgg = true;
 
-        // Find the dimensions of the interior of the egg.
-        // If this object leaves the dimensions or approaches the edge then drag it back in.
-        // Or actually, maybe just make the object gravitate towards the centre of the egg?
+        rb.constraints = RigidbodyConstraints.FreezePosition |
+                     RigidbodyConstraints.FreezeRotation;
+
+        rb.useGravity = false;
+
+        transform.SetParent(eggTransform, false);
+        transform.position = eggTransform.position + (Vector3.forward * 0.5f);
     }
 
     public void AttachToHand(Transform hand)
@@ -47,7 +72,9 @@ public class ManaObject : MonoBehaviour
 
     public void Release()
     {
+        transform.SetParent(null);
         attachedToHand = false;
+        attachedToEgg = false;
 
         rb.constraints = RigidbodyConstraints.None;
         rb.useGravity = true;
