@@ -5,12 +5,12 @@ using UnityEngine;
 public class ManaObject : MonoBehaviour
 {
     Rigidbody rb;
-
     bool attachedToHand = false;
     Transform handTransform;
     bool attachedToEgg = false;
     Transform eggTransform;
     Egg eggProps;
+    Coroutine eggAttachmentCoroutine;
 
     void Awake()
     {
@@ -32,10 +32,9 @@ public class ManaObject : MonoBehaviour
 
     void SimulateEggContainment()
     {
-        float axisSpeed = 1f + eggProps.pressure;
         float orbitSpeed = 150f + eggProps.pressure;
 
-        float t = Time.time * axisSpeed;
+        float t = Time.time;
 
         Vector3 orbitAxis = new Vector3(
             Mathf.Sin(t),
@@ -50,15 +49,30 @@ public class ManaObject : MonoBehaviour
         eggTransform = egg;
         eggProps = eggTransform.GetComponent<Egg>();
         eggProps.contents.Add(transform);
-        attachedToEgg = true;
 
         rb.constraints = RigidbodyConstraints.FreezePosition |
                      RigidbodyConstraints.FreezeRotation;
 
         rb.useGravity = false;
 
-        transform.SetParent(eggTransform, false);
-        transform.position = eggTransform.position + (Vector3.forward * 0.5f);
+        StartCoroutine("MoveToEgg");
+    }
+
+    IEnumerator MoveToEgg()
+    {
+        transform.SetParent(eggTransform);
+        transform.position = eggTransform.position;
+        float randomX = Random.Range(-1, 1);
+        float randomY = Random.Range(-1, 1);
+        float randomZ = Random.Range(-1, 1);
+        Vector3 randomDir = new Vector3(randomX,randomY,randomZ);
+        Vector3 startingPosition = eggTransform.position + (randomDir.normalized/2);
+        while (transform.position != startingPosition)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, startingPosition, 1 * Time.deltaTime);
+            yield return null;
+        }
+        attachedToEgg = true;
     }
 
     public void AttachToHand(Transform hand)

@@ -54,5 +54,12 @@ public class PhysicalProperties : MonoBehaviour
         {
             temperature += 10;
         }
+        if (collision.gameObject.tag == "PhysicalObject")
+        {
+            if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
+            {
+                temperature += 0.2f;
+            }
+        }
     }
 }
