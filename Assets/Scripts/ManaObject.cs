@@ -32,7 +32,7 @@ public class ManaObject : MonoBehaviour
 
     void SimulateEggContainment()
     {
-        float orbitSpeed = 150f + eggProps.pressure;
+        float orbitSpeed = Random.Range(250f,450f) + eggProps.pressure;
 
         float t = Time.time;
 
@@ -55,20 +55,25 @@ public class ManaObject : MonoBehaviour
 
         rb.useGravity = false;
 
-        StartCoroutine("MoveToEgg");
+        eggAttachmentCoroutine = StartCoroutine("MoveToEgg");
     }
 
     IEnumerator MoveToEgg()
     {
         transform.SetParent(eggTransform);
         transform.position = eggTransform.position;
-        float randomX = Random.Range(-1, 1);
-        float randomY = Random.Range(-1, 1);
-        float randomZ = Random.Range(-1, 1);
-        Vector3 randomDir = new Vector3(randomX,randomY,randomZ);
+        Vector3 randomDir = Vector3.zero;
+        while (randomDir == Vector3.zero)
+        {
+            float randomX = Random.Range(-1, 1);
+            float randomY = Random.Range(-1, 1);
+            float randomZ = Random.Range(-1, 1);
+            randomDir = new Vector3(randomX,randomY,randomZ);
+        }
         Vector3 startingPosition = eggTransform.position + (randomDir.normalized/2);
         while (transform.position != startingPosition)
         {
+            startingPosition = eggTransform.position + (randomDir.normalized/2);
             transform.position = Vector3.MoveTowards(transform.position, startingPosition, 1 * Time.deltaTime);
             yield return null;
         }
@@ -89,6 +94,7 @@ public class ManaObject : MonoBehaviour
         transform.SetParent(null);
         attachedToHand = false;
         attachedToEgg = false;
+        if (eggAttachmentCoroutine != null) {StopCoroutine(eggAttachmentCoroutine);}
 
         rb.constraints = RigidbodyConstraints.None;
         rb.useGravity = true;
