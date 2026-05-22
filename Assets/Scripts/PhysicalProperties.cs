@@ -39,7 +39,7 @@ public class PhysicalProperties : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "PhysicalObject")
+        if (collision.gameObject.tag == "PhysicalSpell")
         {
             if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
             {
@@ -54,7 +54,7 @@ public class PhysicalProperties : MonoBehaviour
         {
             temperature += 10;
         }
-        if (collision.gameObject.tag == "PhysicalObject")
+        if (collision.gameObject.tag == "PhysicalSpell")
         {
             if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
             {
