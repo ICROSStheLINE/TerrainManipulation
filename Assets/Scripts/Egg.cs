@@ -80,4 +80,12 @@ public class Egg : MonoBehaviour
             Explode();
         }
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.root.tag == "World")
+        {
+            Explode();
+        }
+    }
 }
