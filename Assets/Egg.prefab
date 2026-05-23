@@ -69,7 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pressure: 0
   maxPressure: 100
-  pressureLeakRate: 1
+  pressureLeakRate: 4
   contents: []
 --- !u!33 &4260680038334623139
 MeshFilter:

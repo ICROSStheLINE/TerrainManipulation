@@ -9,10 +9,12 @@ public class PhysicalProperties : MonoBehaviour
     public bool isIgnited;
     public float pressureGenerationRate = 2f;
     Material material;
+    SphereCollider sphereCollider;
 
     void Start()
     {
         material = GetComponent<Renderer>().material;
+        sphereCollider = GetComponent<SphereCollider>();
     }
 
     void Update()
@@ -42,6 +44,7 @@ public class PhysicalProperties : MonoBehaviour
     IEnumerator Disintegrate()
     {
         float dissolveDuration = 5;
+        float hitboxDissolveDuration = dissolveDuration - (dissolveDuration / 5);
         float dissolveStrength;
         float elapsedTime = 0;
 
@@ -50,6 +53,8 @@ public class PhysicalProperties : MonoBehaviour
             elapsedTime += Time.deltaTime;
 
             dissolveStrength = Mathf.Lerp(-0.05f, 1f, elapsedTime / dissolveDuration);
+            sphereCollider.radius = Mathf.Lerp(0.5f, 0.0f, elapsedTime / hitboxDissolveDuration);
+            sphereCollider.center = new Vector3(0,Mathf.Lerp(0f, -0.5f, elapsedTime / hitboxDissolveDuration),0);
             material.SetFloat("_DissolveStrength", dissolveStrength);
 
             yield return null;
