@@ -77,7 +77,7 @@ public class Egg : MonoBehaviour
     {
         if (other.transform.root.tag == "World")
         {
-            Explode();
+            // Explode();
         }
     }
 
@@ -85,7 +85,7 @@ public class Egg : MonoBehaviour
     {
         if (collision.transform.root.tag == "World")
         {
-            Explode();
+            // Explode();
         }
     }
 }

@@ -10,9 +10,9 @@ public class SpellMenu : MonoBehaviour
     [SerializeField] GameObject buttonGameObjectPrefab;
     float buttonWidth = 75;
     float buttonHeight = 75;
-    public static int castStartWidth = 6;
+    public static int castStartWidth = 15;
     public static int castStartHeight = 1;
-    float castStartStartingPointX = 100;
+    float castStartStartingPointX = -300;
     float castStartStartingPointY = 200;
     GameObject castStartLabel;
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
@@ -23,7 +23,7 @@ public class SpellMenu : MonoBehaviour
     GameObject castContinuousLabel;
     public SpellSlot[,] castContinuousMap = new SpellSlot[castContinuousHeight,castContinuousWidth];
     [SerializeField] Transform canvasTransform;
-    static int inventoryWidth = 1;
+    static int inventoryWidth = 3;
     static int inventoryHeight = 6;
     float inventoryStartingPointX = -600;
     float inventoryStartingPointY = 0;
@@ -44,6 +44,18 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesis);
         spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.Spark);
+        spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[1,1].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[2,1].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[3,1].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[4,1].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[5,1].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[0,2].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[1,2].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[2,2].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[4,2].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[5,2].AssignSpell(SpellSlot.SpellType.Ball);
     }
 
     void Update()
