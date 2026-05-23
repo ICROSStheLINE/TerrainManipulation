@@ -59,6 +59,8 @@ public class PhysicalProperties : MonoBehaviour
 
             yield return null;
         }
+
+        Destroy(gameObject);
     }
 
     void OnCollisionStay(Collision collision)

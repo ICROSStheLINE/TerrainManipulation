@@ -39,9 +39,9 @@ public class SpellMenu : MonoBehaviour
         PopulateSpellInventoryMap();
         PopulateUILabels();
         spellInventoryMap[0,0].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.Egg);
-        spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.OpenParenthesis);
-        spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesis);
+        spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.EggA);
+        spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
+        spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
         spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.Spark);
         spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.Ball);
@@ -56,21 +56,6 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[4,2].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[5,2].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,0].AssignSpell(SpellSlot.SpellType.Egg);
-        castStartMap[0,1].AssignSpell(SpellSlot.SpellType.OpenParenthesis);
-        castStartMap[0,2].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,3].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,4].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,5].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,6].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,7].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,8].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,9].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,10].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,11].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,12].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,14].AssignSpell(SpellSlot.SpellType.CloseParenthesis);
-        
     }
 
     void Update()
@@ -256,7 +241,7 @@ public class SpellMenu : MonoBehaviour
 public class SpellSlot
 {
     public GameObject uiObject;
-    public enum SpellType { Empty, Ball, Cube, Egg, OpenParenthesis, CloseParenthesis, Spark }
+    public enum SpellType { Empty, Ball, Cube, EggA, OpenParenthesisA, CloseParenthesisA, Spark }
     public SpellType spellType;
     GameObject spellIcon;
     public void PickUpSpell()
@@ -289,10 +274,10 @@ public class SpellSlot
         spellIcon.transform.SetParent(uiObject.transform, false);
         TextMeshProUGUI tmp = spellIcon.AddComponent<TextMeshProUGUI>();
         tmp.text = spellType.ToString();
-        if (spellType == SpellType.OpenParenthesis)
-            { tmp.text = "("; }
-        if (spellType == SpellType.CloseParenthesis)
-            { tmp.text = ")"; }
+        if (spellType == SpellType.OpenParenthesisA)
+            { tmp.text = "(A"; }
+        if (spellType == SpellType.CloseParenthesisA)
+            { tmp.text = ")A"; }
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontSize = 24;
         tmp.color = Color.black;

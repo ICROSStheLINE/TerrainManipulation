@@ -80,7 +80,7 @@ public class CastLogic : MonoBehaviour
                     activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
                 }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.Egg) // if spell is an egg, then 
+                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.EggA) // if spell is an egg, then 
                 {
                     if (manaManager.manaAmount <= 0)
                     { continue; }
@@ -94,7 +94,7 @@ public class CastLogic : MonoBehaviour
                     int remainingIndices = spellMenu.castStartMap.GetLength(1) - 1 - j;
                     if (remainingIndices == 0)
                     { continue; }
-                    if (spellMenu.castStartMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesis) // check to see if the next spell is an open parenthesis.
+                    if (spellMenu.castStartMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesisA) // check to see if the next spell is an open parenthesis.
                     { continue; }
 
                     int openParenthesesPassed = 0;
@@ -102,20 +102,23 @@ public class CastLogic : MonoBehaviour
                     int closeParenthesisIndex = 0;
                     for (int eggIndex = j + 1; eggIndex < spellMenu.castStartMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
                     {
-                        if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.OpenParenthesis)
+                        if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.OpenParenthesisA)
                         {
                             openParenthesesPassed++;
                         }
-                        if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.CloseParenthesis)
+                        if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.CloseParenthesisA)
                         {
                             closeParenthesesPassed++;
                             closeParenthesisIndex = eggIndex;
                         }
 
+                        if (closeParenthesesPassed > openParenthesesPassed)
+                        { break; }
+
                         if (openParenthesesPassed == closeParenthesesPassed)
                         { break; }
                     }
-                    if (openParenthesesPassed != closeParenthesesPassed) 
+                    if (openParenthesesPassed != closeParenthesesPassed)
                     { continue; }
 
                     for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
@@ -173,7 +176,7 @@ public class CastLogic : MonoBehaviour
                     // activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
                 }
-                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.Egg) // if spell is an egg, then 
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.EggA) // if spell is an egg, then 
                 {
                     if (manaManager.manaAmount <= 0)
                     { continue; }
@@ -187,7 +190,7 @@ public class CastLogic : MonoBehaviour
                     int remainingIndices = spellMenu.castContinuousMap.GetLength(1) - 1 - j;
                     if (remainingIndices == 0)
                     { continue; }
-                    if (spellMenu.castContinuousMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesis) // check to see if the next spell is an open parenthesis.
+                    if (spellMenu.castContinuousMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesisA) // check to see if the next spell is an open parenthesis.
                     { continue; }
 
                     int openParenthesesPassed = 0;
@@ -195,11 +198,11 @@ public class CastLogic : MonoBehaviour
                     int closeParenthesisIndex = 0;
                     for (int eggIndex = j + 1; eggIndex < spellMenu.castContinuousMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
                     {
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.OpenParenthesis)
+                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.OpenParenthesisA)
                         {
                             openParenthesesPassed++;
                         }
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.CloseParenthesis)
+                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.CloseParenthesisA)
                         {
                             closeParenthesesPassed++;
                             closeParenthesisIndex = eggIndex;
