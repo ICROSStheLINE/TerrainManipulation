@@ -34,9 +34,13 @@ public class Egg : MonoBehaviour
     {
         foreach (Transform obj in contents)
         {
+            if (obj == null)
+            { continue; }
+            
             PhysicalProperties objPhysProps = obj.GetComponent<PhysicalProperties>();
             if (objPhysProps == null)
-                { continue; }
+            { continue; }
+
             if (objPhysProps.isIgnited)
             {
                 pressure += objPhysProps.pressureGenerationRate * Time.deltaTime;

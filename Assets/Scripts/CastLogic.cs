@@ -92,10 +92,10 @@ public class CastLogic : MonoBehaviour
                     manaManager.LoseMana(5);
 
                     int remainingIndices = spellMenu.castStartMap.GetLength(1) - 1 - j;
-                    if (remainingIndices == 0)
+                    if (remainingIndices <= 2)
                     { continue; }
-                    if (spellMenu.castStartMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesisA) // check to see if the next spell is an open parenthesis.
-                    { continue; }
+                    // if (spellMenu.castStartMap[i,j+1].spellType != SpellSlot.SpellType.OpenParenthesisA) // check to see if the next spell is an open parenthesis.
+                    // { continue; }
 
                     int openParenthesesPassed = 0;
                     int closeParenthesesPassed = 0;
@@ -115,7 +115,7 @@ public class CastLogic : MonoBehaviour
                         if (closeParenthesesPassed > openParenthesesPassed)
                         { break; }
 
-                        if (openParenthesesPassed == closeParenthesesPassed)
+                        if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
                         { break; }
                     }
                     if (openParenthesesPassed != closeParenthesesPassed)

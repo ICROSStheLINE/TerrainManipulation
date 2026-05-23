@@ -16,7 +16,7 @@ public class SpellMenu : MonoBehaviour
     float castStartStartingPointY = 200;
     GameObject castStartLabel;
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
-    public static int castContinuousWidth = 2;
+    public static int castContinuousWidth = 5;
     public static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
     float castContinuousStartingPointY = 0;
