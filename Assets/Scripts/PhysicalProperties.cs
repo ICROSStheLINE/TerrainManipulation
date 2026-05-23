@@ -8,10 +8,11 @@ public class PhysicalProperties : MonoBehaviour
     public float temperature = 0;
     public bool isIgnited;
     public float pressureGenerationRate = 2f;
+    Material material;
 
     void Start()
     {
-        
+        material = GetComponent<Renderer>().material;
     }
 
     void Update()
@@ -28,13 +29,31 @@ public class PhysicalProperties : MonoBehaviour
 
     void Glow()
     {
-        gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+        material.SetColor("_Color", Color.yellow);
     }
 
     void Ignite()
     {
         isIgnited = true;
-        gameObject.GetComponent<Renderer>().material.color = Color.red;
+        material.SetColor("_Color", Color.red);
+        StartCoroutine("Disintegrate");
+    }
+
+    IEnumerator Disintegrate()
+    {
+        float dissolveDuration = 5;
+        float dissolveStrength;
+        float elapsedTime = 0;
+
+        while ( elapsedTime < dissolveDuration )
+        {
+            elapsedTime += Time.deltaTime;
+
+            dissolveStrength = Mathf.Lerp(-0.05f, 1f, elapsedTime / dissolveDuration);
+            material.SetFloat("_DissolveStrength", dissolveStrength);
+
+            yield return null;
+        }
     }
 
     void OnCollisionStay(Collision collision)

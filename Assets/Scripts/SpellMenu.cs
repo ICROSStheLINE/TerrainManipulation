@@ -56,6 +56,21 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[4,2].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[5,2].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,0].AssignSpell(SpellSlot.SpellType.Egg);
+        castStartMap[0,1].AssignSpell(SpellSlot.SpellType.OpenParenthesis);
+        castStartMap[0,2].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,3].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,4].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,5].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,6].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,7].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,8].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,9].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,10].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,11].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,12].AssignSpell(SpellSlot.SpellType.Ball);
+        castStartMap[0,14].AssignSpell(SpellSlot.SpellType.CloseParenthesis);
+        
     }
 
     void Update()
