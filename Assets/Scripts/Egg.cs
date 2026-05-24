@@ -54,6 +54,9 @@ public class Egg : MonoBehaviour
 
         foreach (Transform obj in contents)
         {
+            if (obj == null)
+            { continue; }
+            
             ManaObject manaObj = obj.GetComponent<ManaObject>();
             if (manaObj == null)
                 { continue; }
