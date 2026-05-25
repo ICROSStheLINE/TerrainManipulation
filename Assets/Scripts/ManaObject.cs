@@ -7,7 +7,7 @@ public class ManaObject : MonoBehaviour
     Rigidbody rb;
     bool attachedToHand = false;
     Transform handTransform;
-    bool attachedToEgg = false;
+    // bool attachedToEgg = false;
     Transform eggTransform;
     Egg eggProps;
 
@@ -40,7 +40,7 @@ public class ManaObject : MonoBehaviour
         eggTransform = egg;
         eggProps = eggTransform.GetComponent<Egg>();
         eggProps.contents.Add(transform);
-        attachedToEgg = true;
+        // attachedToEgg = true;
     }
 
     public void AttachToHand(Transform hand)
@@ -54,17 +54,9 @@ public class ManaObject : MonoBehaviour
     public void Release()
     {
         attachedToHand = false;
-        attachedToEgg = false;
+        // attachedToEgg = false;
 
         rb.constraints = RigidbodyConstraints.None;
         rb.useGravity = true;
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.transform == eggTransform && attachedToEgg)
-        {
-            rb.MovePosition(eggTransform.position);
-        }
     }
 }

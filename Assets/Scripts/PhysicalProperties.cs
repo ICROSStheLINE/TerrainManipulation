@@ -63,23 +63,16 @@ public class PhysicalProperties : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag == "PhysicalSpell")
-        {
-            if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
-            {
-                temperature += 0.2f;
-            }
-        }
-    }
-
     void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "Spark")
         {
             temperature += 10;
         }
+    }
+
+    void OnTriggerStay(Collider collision)
+    {
         if (collision.gameObject.tag == "PhysicalSpell")
         {
             if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
