@@ -10,16 +10,28 @@ public class Egg : MonoBehaviour
     public float pressureLeakRate = 1f;
 
     public List<Transform> contents = new List<Transform>();
+    Material material;
+
+    void Start()
+    {
+        material = GetComponent<Renderer>().material;
+    }
 
     void Update()
     {
         GeneratePressure();
         LeakPressure();
+        VisualizePressure();
 
         if (pressure >= maxPressure)
         {
             Explode();
         }
+    }
+
+    void VisualizePressure()
+    {
+        material.SetFloat("_CrackStrength", (pressure/maxPressure) - 0.05f);
     }
 
     void LeakPressure()
