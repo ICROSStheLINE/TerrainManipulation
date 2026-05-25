@@ -71,6 +71,7 @@ MonoBehaviour:
   maxPressure: 100
   pressureLeakRate: 4
   contents: []
+  explosion: {fileID: 1274411161981808580, guid: 2ebc22cc9d08a9b4e92ad40f1b4e0f90, type: 3}
 --- !u!33 &4260680038334623139
 MeshFilter:
   m_ObjectHideFlags: 0

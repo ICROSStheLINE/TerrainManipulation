@@ -77,7 +77,7 @@ public class PhysicalProperties : MonoBehaviour
         {
             if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
             {
-                temperature += 0.2f;
+                temperature += 0.1f;
             }
         }
     }
