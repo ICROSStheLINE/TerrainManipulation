@@ -106,33 +106,14 @@ public class Egg : MonoBehaviour
         int chunkX;
         int chunkY;
         (x,y,z,chunkX,chunkY) = World.ConvertWorldPositionToCubeInChunk(transform.position);
-        world.DrawBlock(x,y,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y-1,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y-1,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y-1,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y-1,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y-1,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y-1,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y-1,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y-1,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y-1,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y+1,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y+1,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y+1,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x+1,y+1,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y+1,z,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y+1,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x-1,y+1,z-1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y+1,z+1,chunkX,chunkY,Block.BlockType.Air,true);
-        world.DrawBlock(x,y+1,z-1,chunkX,chunkY,Block.BlockType.Air,true);
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                for (int k = -1; k <= 1; k++)
+                {
+                    world.DrawBlock( x + i, y + j, z + k, chunkX, chunkY, Block.BlockType.Air, true);
+                }
+            }
+        }
     }
 
     void OnTriggerEnter(Collider other)
