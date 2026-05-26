@@ -62,6 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c77232cbf6b444c931e6b5f154ab35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flashPoint: 10
   temperature: 0
   isIgnited: 0
   pressureGenerationRate: 2

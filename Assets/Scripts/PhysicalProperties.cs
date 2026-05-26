@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PhysicalProperties : MonoBehaviour
 {
-    float flashPoint = 10; // Flash Point: Temperature required to ignite using external source
+    [SerializeField] float flashPoint; // Flash Point: Temperature required to ignite using external source
     public float temperature = 0;
     public bool isIgnited;
     public float pressureGenerationRate = 2f;
@@ -19,7 +19,7 @@ public class PhysicalProperties : MonoBehaviour
 
     void Update()
     {
-        if (temperature > flashPoint / 3 && temperature < 2 * flashPoint / 3)
+        if (temperature > 2 * flashPoint / 3 && temperature < flashPoint)
         {
             Glow();
         }
