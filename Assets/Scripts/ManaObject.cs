@@ -59,4 +59,10 @@ public class ManaObject : MonoBehaviour
         rb.constraints = RigidbodyConstraints.None;
         rb.useGravity = true;
     }
+
+    public void Propel(Vector3 direction, float strength)
+    {
+        Release();
+        rb.AddForce(direction * strength, ForceMode.VelocityChange);
+    }
 }

@@ -13,6 +13,7 @@ public class CastLogic : MonoBehaviour
     bool casting = false;
     [SerializeField] Transform handTransform;
     List<ManaObject> activeManaObjects = new List<ManaObject>();
+    float prepulsionStrength = 20f;
 
     void Start()
     {
@@ -34,6 +35,26 @@ public class CastLogic : MonoBehaviour
 
             ReleaseCurrentSpell();
         }
+        if (Input.GetKeyDown(KeyCode.Mouse0) && casting)
+        {
+            casting = false;
+            if (castCoroutine != null) StopCoroutine(castCoroutine);
+
+            PropelCurrentSpell();
+        }
+    }
+
+    void PropelCurrentSpell()
+    {
+        foreach (ManaObject obj in activeManaObjects)
+        {
+            if (obj != null)
+            {
+                obj.Propel(transform.forward, prepulsionStrength);
+            }
+        }
+
+        activeManaObjects.Clear();
     }
 
     void ReleaseCurrentSpell()
