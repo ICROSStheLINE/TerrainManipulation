@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 3918954204750696807}
   m_Layer: 0
   m_Name: Egg
-  m_TagString: Untagged
+  m_TagString: PhysicalObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -56,7 +56,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c77232cbf6b444c931e6b5f154ab35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashPoint: 500
+  flashPoint: 10000
   temperature: 0
   isIgnited: 0
   pressureGenerationRate: 2
@@ -120,8 +120,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aa2cf0350dbb14746ac32f456d5cf109, type: 2}
-  - {fileID: 2100000, guid: 965eb09ed6cb78f4288484ee2d70ff7c, type: 2}
+  - {fileID: 2100000, guid: 425a2946b29e7be41a7464fe65a54150, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

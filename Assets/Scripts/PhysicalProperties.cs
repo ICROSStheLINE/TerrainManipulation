@@ -19,7 +19,7 @@ public class PhysicalProperties : MonoBehaviour
 
     void Update()
     {
-        if (temperature > 2 * flashPoint / 3 && temperature < flashPoint)
+        if (temperature > 6 * flashPoint / 7 && temperature < flashPoint)
         {
             Glow();
         }
@@ -53,8 +53,11 @@ public class PhysicalProperties : MonoBehaviour
             elapsedTime += Time.deltaTime;
 
             dissolveStrength = Mathf.Lerp(-0.05f, 1f, elapsedTime / dissolveDuration);
-            sphereCollider.radius = Mathf.Lerp(0.5f, 0.0f, elapsedTime / hitboxDissolveDuration);
-            sphereCollider.center = new Vector3(0,Mathf.Lerp(0f, -0.5f, elapsedTime / hitboxDissolveDuration),0);
+            if (sphereCollider)
+            {
+                sphereCollider.radius = Mathf.Lerp(0.5f, 0.0f, elapsedTime / hitboxDissolveDuration);
+                sphereCollider.center = new Vector3(0,Mathf.Lerp(0f, -0.5f, elapsedTime / hitboxDissolveDuration),0);
+            }
             material.SetFloat("_DissolveStrength", dissolveStrength);
 
             yield return null;
@@ -73,7 +76,7 @@ public class PhysicalProperties : MonoBehaviour
 
     void OnTriggerStay(Collider collision)
     {
-        if (collision.gameObject.tag == "PhysicalSpell")
+        if (collision.gameObject.tag == "PhysicalObject")
         {
             if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
             {

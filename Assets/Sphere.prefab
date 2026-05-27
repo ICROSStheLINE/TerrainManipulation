@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: -3049127752484988743}
   m_Layer: 7
   m_Name: Sphere
-  m_TagString: PhysicalSpell
+  m_TagString: PhysicalObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
