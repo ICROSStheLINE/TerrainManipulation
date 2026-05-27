@@ -236,6 +236,8 @@ public class CastLogic : MonoBehaviour
                     }
                     if (openParenthesesPassed != closeParenthesesPassed)
                     { continue; }
+                    if (openParenthesesPassed == 0)
+                    { continue; }
 
                     for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
                     {
