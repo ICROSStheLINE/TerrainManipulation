@@ -10,6 +10,7 @@ public class PhysicalProperties : MonoBehaviour
     public float pressureGenerationRate = 2f;
     Material material;
     SphereCollider sphereCollider;
+    float heatConductivity = 0.1f;
 
     void Start()
     {
@@ -81,7 +82,7 @@ public class PhysicalProperties : MonoBehaviour
             PhysicalProperties collisionPhysicalProps = collision.gameObject.transform.GetComponent<PhysicalProperties>(); // Get reference
             if (collisionPhysicalProps.temperature >= temperature) // If the collided object's temperature is greater than THIS object's temperature...
             {
-                float temperatureTransferRate = collisionPhysicalProps.temperature/collisionPhysicalProps.flashPoint; // Make this the rate of heat siphoning
+                float temperatureTransferRate = Mathf.Abs(temperature - collisionPhysicalProps.temperature) * heatConductivity; // Multiply difference in temps by conductivity
                 temperature += 0.01f * temperatureTransferRate; // Add this much heat to THIS object
                 collisionPhysicalProps.temperature -= 0.01f * temperatureTransferRate; // Delete this much heat from the collided object
             }
