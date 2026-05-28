@@ -74,13 +74,16 @@ public class PhysicalProperties : MonoBehaviour
         }
     }
 
-    void OnTriggerStay(Collider collision)
+    void OnTriggerStay(Collider collision) // Call when touching something
     {
-        if (collision.gameObject.tag == "PhysicalObject")
+        if (collision.gameObject.tag == "PhysicalObject") // If touching physical object
         {
-            if (collision.gameObject.transform.GetComponent<PhysicalProperties>().temperature >= flashPoint)
+            PhysicalProperties collisionPhysicalProps = collision.gameObject.transform.GetComponent<PhysicalProperties>(); // Get reference
+            if (collisionPhysicalProps.temperature >= temperature) // If the collided object's temperature is greater than THIS object's temperature...
             {
-                temperature += 0.1f;
+                float temperatureTransferRate = collisionPhysicalProps.temperature/collisionPhysicalProps.flashPoint; // Make this the rate of heat siphoning
+                temperature += 0.01f * temperatureTransferRate; // Add this much heat to THIS object
+                collisionPhysicalProps.temperature -= 0.01f * temperatureTransferRate; // Delete this much heat from the collided object
             }
         }
     }
