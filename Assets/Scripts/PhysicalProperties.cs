@@ -10,7 +10,12 @@ public class PhysicalProperties : MonoBehaviour
     public float pressureGenerationRate = 2f;
     Material material;
     SphereCollider sphereCollider;
-    [SerializeField] float heatResistance;
+    [SerializeField] float heatResistance; // Resistance to EXTERNAL HEAT sources
+    [SerializeField] float manaConductivity; // How efficiently it can conduct mana (The compliment to internal heat resistance)
+    // NOTE: This is the opposite of mana resistance.
+    // To adhere to the magic system, the higher the magic resistance, the more internal heat is generated through a mana current.
+    // Therefore, the higher the MANA CONDUCTIVITY, the LESS heat is generated through a mana current.
+    // I might need some better nomenclature for ts...
 
     void Start()
     {
