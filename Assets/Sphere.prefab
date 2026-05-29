@@ -66,6 +66,7 @@ MonoBehaviour:
   temperature: 0
   isIgnited: 0
   pressureGenerationRate: 2
+  heatResistance: 1
 --- !u!33 &4635184798854759923
 MeshFilter:
   m_ObjectHideFlags: 0

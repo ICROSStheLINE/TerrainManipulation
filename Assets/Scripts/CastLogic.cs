@@ -161,7 +161,8 @@ public class CastLogic : MonoBehaviour
                         {
                             if (manaManager.manaAmount <= 0)
                             { continue; }
-                            Instantiate(sparkPrefab, spawnedEgg.transform.position, transform.rotation);
+                            GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position, transform.rotation);
+                            sparkObject.transform.SetParent(spawnedEgg.transform);
                             manaManager.LoseMana(5);
                         }
                     }
