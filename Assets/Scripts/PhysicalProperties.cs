@@ -70,13 +70,13 @@ public class PhysicalProperties : MonoBehaviour
         Destroy(gameObject);
     }
 
-    [ContextMenu("AddManaToTs")]
+    [ContextMenu("AddOneMana")]
     void AddOneMana() // This method exists to test in the inspector
     {
         AddMana(1f);
     }
 
-    void AddMana(float manaAmount)
+    public void AddMana(float manaAmount)
     {
         if (manaResistance == 0)
         { return; }
