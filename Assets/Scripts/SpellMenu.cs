@@ -29,7 +29,7 @@ public class SpellMenu : MonoBehaviour
     float inventoryStartingPointY = 0;
     GameObject spellInventoryLabel;
     public SpellSlot[,] spellInventoryMap = new SpellSlot[inventoryHeight,inventoryWidth];
-    SpellSlot.SpellType heldSpell = SpellSlot.SpellType.Empty;
+    SpellSlot heldSpellSlot = new SpellSlot();
 
 
     void Start()
@@ -78,17 +78,19 @@ public class SpellMenu : MonoBehaviour
     void InteractWithSlot(SpellSlot spellSlot)
     {
         if (spellSlot.spellType == SpellSlot.SpellType.Empty &&
-            heldSpell != SpellSlot.SpellType.Empty)
+            heldSpellSlot.spellType != SpellSlot.SpellType.Empty)
         {
-            spellSlot.AssignSpell(heldSpell);
-            heldSpell = SpellSlot.SpellType.Empty;
+            spellSlot.AssignSpell(heldSpellSlot.spellType);
+            spellSlot.CopySpellInputs(heldSpellSlot);
+            heldSpellSlot.ClearSpell();
             return;
         }
         
         if (spellSlot.spellType != SpellSlot.SpellType.Empty &&
-            heldSpell == SpellSlot.SpellType.Empty)
+            heldSpellSlot.spellType == SpellSlot.SpellType.Empty)
         {
-            heldSpell = spellSlot.spellType;
+            heldSpellSlot.spellType = spellSlot.spellType;
+            heldSpellSlot.CopySpellInputs(spellSlot);
             spellSlot.PickUpSpell();
             return;
         }
@@ -100,7 +102,7 @@ public class SpellMenu : MonoBehaviour
         {
             for (int j = 0; j < inventoryWidth; j++)
             {
-                spellInventoryMap[i,j] = new SpellSlot();
+                spellInventoryMap[i,j] = new SpellSlot(false);
                 spellInventoryMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
                 spellInventoryMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
                 RectTransform rect = spellInventoryMap[i,j].uiObject.GetComponent<RectTransform>();
@@ -123,7 +125,7 @@ public class SpellMenu : MonoBehaviour
         {
             for (int j = 0; j < castStartWidth; j++)
             {
-                castStartMap[i,j] = new SpellSlot();
+                castStartMap[i,j] = new SpellSlot(true);
                 castStartMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
                 castStartMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
                 RectTransform rect = castStartMap[i,j].uiObject.GetComponent<RectTransform>();
@@ -143,7 +145,7 @@ public class SpellMenu : MonoBehaviour
         {
             for (int j = 0; j < castContinuousWidth; j++)
             {
-                castContinuousMap[i,j] = new SpellSlot();
+                castContinuousMap[i,j] = new SpellSlot(false);
                 castContinuousMap[i,j].uiObject = Instantiate(buttonGameObjectPrefab);
                 castContinuousMap[i,j].uiObject.transform.SetParent(canvasTransform, false);
                 RectTransform rect = castContinuousMap[i,j].uiObject.GetComponent<RectTransform>();
@@ -243,7 +245,33 @@ public class SpellSlot
     public GameObject uiObject;
     public enum SpellType { Empty, Ball, Cube, EggA, OpenParenthesisA, CloseParenthesisA, Spark }
     public SpellType spellType;
+    public float manaResistance = 1;
     GameObject spellIcon;
+    List<GameObject> spellInputObjects = new List<GameObject>();
+    TMP_InputField manaResistanceInput;
+    bool showsSpellInputs;
+
+    public SpellSlot(bool showsSpellInputs = false)
+    {
+        this.showsSpellInputs = showsSpellInputs;
+    }
+
+    public void ClearSpell()
+    {
+        spellType = SpellType.Empty;
+        manaResistance = 1;
+    }
+
+    public void CopySpellInputs(SpellSlot spellSlot)
+    {
+        manaResistance = spellSlot.manaResistance;
+
+        if (manaResistanceInput != null)
+        {
+            manaResistanceInput.text = manaResistance.ToString();
+        }
+    }
+
     public void PickUpSpell()
     {
         if (spellType == SpellType.Empty)
@@ -252,8 +280,9 @@ public class SpellSlot
         }
 
         GameObject.Destroy(spellIcon);
+        DestroySpellInputs();
 
-        spellType = SpellType.Empty;
+        ClearSpell();
     }
     public void AssignSpell(SpellType spellType)
     {
@@ -265,6 +294,11 @@ public class SpellSlot
         CreateSpellIcon(spellType);
 
         this.spellType = spellType;
+
+        if (HasManaResistanceInput(spellType) && showsSpellInputs)
+        {
+            CreateManaResistanceInput();
+        }
     }
 
     void CreateSpellIcon(SpellType spellType)
@@ -281,5 +315,105 @@ public class SpellSlot
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontSize = 24;
         tmp.color = Color.black;
+        tmp.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 75);
+    }
+
+    bool HasManaResistanceInput(SpellType spellType)
+    {
+        if (spellType == SpellType.EggA)
+        { return true; }
+
+        return false;
+    }
+
+    void CreateManaResistanceInput()
+    {
+        manaResistanceInput = CreateFloatInput(
+            "ManaResistanceInput",
+            "MR",
+            manaResistance,
+            new Vector2(0, -55),
+            delegate (float newValue) { manaResistance = newValue; }
+        );
+    }
+
+    TMP_InputField CreateFloatInput(string inputName, string labelText, float startingValue, Vector2 anchoredPosition, System.Action<float> onValueChanged)
+    {
+        GameObject inputObject = new GameObject();
+        inputObject.name = inputName;
+        inputObject.SetActive(false);
+        inputObject.transform.SetParent(uiObject.transform, false);
+        spellInputObjects.Add(inputObject);
+
+        RectTransform rect = inputObject.AddComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(70, 25);
+        rect.anchoredPosition = anchoredPosition;
+
+        Image image = inputObject.AddComponent<Image>();
+        image.color = Color.white;
+
+        TMP_InputField input = inputObject.AddComponent<TMP_InputField>();
+        input.contentType = TMP_InputField.ContentType.DecimalNumber;
+        input.targetGraphic = image;
+        input.textViewport = rect;
+        input.customCaretColor = true;
+        input.caretColor = Color.black;
+        input.caretWidth = 2;
+        input.selectionColor = new Color(0.65f, 0.8f, 1f, 0.75f);
+
+        GameObject textObject = new GameObject();
+        textObject.name = "Text";
+        textObject.transform.SetParent(inputObject.transform, false);
+        TextMeshProUGUI text = textObject.AddComponent<TextMeshProUGUI>();
+        text.color = Color.black;
+        text.fontSize = 16;
+        text.alignment = TextAlignmentOptions.Center;
+        RectTransform textRect = textObject.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+        input.textComponent = text;
+
+        GameObject placeholderObject = new GameObject();
+        placeholderObject.name = "Placeholder";
+        placeholderObject.transform.SetParent(inputObject.transform, false);
+        TextMeshProUGUI placeholder = placeholderObject.AddComponent<TextMeshProUGUI>();
+        placeholder.text = labelText;
+        placeholder.color = Color.gray;
+        placeholder.fontSize = 16;
+        placeholder.alignment = TextAlignmentOptions.Center;
+        RectTransform placeholderRect = placeholderObject.GetComponent<RectTransform>();
+        placeholderRect.anchorMin = Vector2.zero;
+        placeholderRect.anchorMax = Vector2.one;
+        placeholderRect.offsetMin = Vector2.zero;
+        placeholderRect.offsetMax = Vector2.zero;
+        input.placeholder = placeholder;
+        input.text = startingValue.ToString();
+
+        input.onValueChanged.AddListener(delegate (string textValue)
+        {
+            float floatValue;
+            if (float.TryParse(textValue, out floatValue))
+            {
+                onValueChanged(floatValue);
+            }
+        });
+
+        // Apparently you need to set it as inactive while setting all the properties then make it active afterwards to prevent bugs...
+        inputObject.SetActive(true); 
+
+        return input;
+    }
+
+    void DestroySpellInputs()
+    {
+        foreach (GameObject inputObject in spellInputObjects)
+        {
+            GameObject.Destroy(inputObject);
+        }
+
+        spellInputObjects.Clear();
+        manaResistanceInput = null;
     }
 }

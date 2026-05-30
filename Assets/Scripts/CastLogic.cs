@@ -108,6 +108,11 @@ public class CastLogic : MonoBehaviour
 
                     GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
                     spawnedEgg.transform.name = "EggA";
+                    PhysicalProperties physicalProperties = spawnedEgg.GetComponent<PhysicalProperties>();
+                    if (physicalProperties != null)
+                    {
+                        physicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistance;
+                    }
                     ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
