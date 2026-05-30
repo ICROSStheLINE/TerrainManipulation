@@ -340,6 +340,7 @@ public class SpellSlot
     {
         GameObject inputObject = new GameObject();
         inputObject.name = inputName;
+        inputObject.SetActive(false);
         inputObject.transform.SetParent(uiObject.transform, false);
         spellInputObjects.Add(inputObject);
 
@@ -354,6 +355,10 @@ public class SpellSlot
         input.contentType = TMP_InputField.ContentType.DecimalNumber;
         input.targetGraphic = image;
         input.textViewport = rect;
+        input.customCaretColor = true;
+        input.caretColor = Color.black;
+        input.caretWidth = 2;
+        input.selectionColor = new Color(0.65f, 0.8f, 1f, 0.75f);
 
         GameObject textObject = new GameObject();
         textObject.name = "Text";
@@ -393,6 +398,9 @@ public class SpellSlot
                 onValueChanged(floatValue);
             }
         });
+
+        // Apparently you need to set it as inactive while setting all the properties then make it active afterwards to prevent bugs...
+        inputObject.SetActive(true); 
 
         return input;
     }
