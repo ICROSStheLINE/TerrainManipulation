@@ -315,6 +315,7 @@ public class SpellSlot
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontSize = 24;
         tmp.color = Color.black;
+        tmp.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 75);
     }
 
     bool HasManaResistanceInput(SpellType spellType)
