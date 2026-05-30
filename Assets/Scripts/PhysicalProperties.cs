@@ -78,11 +78,11 @@ public class PhysicalProperties : MonoBehaviour
 
     public void AddMana(float manaAmount)
     {
-        if (manaResistance == 0)
-        { return; }
-
-        manaCharge += manaAmount / manaResistance;
-        temperature += manaAmount * manaResistance;
+        manaResistance = Mathf.Clamp(manaResistance, -1f, 1f);
+        float manaConvertedToHeat = manaAmount * manaResistance;
+        
+        manaCharge += manaAmount - manaConvertedToHeat;
+        temperature += manaConvertedToHeat;
     }
 
     void OnTriggerEnter(Collider collision)
