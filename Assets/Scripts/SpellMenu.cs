@@ -353,6 +353,7 @@ public class SpellSlot
         TMP_InputField input = inputObject.AddComponent<TMP_InputField>();
         input.contentType = TMP_InputField.ContentType.DecimalNumber;
         input.targetGraphic = image;
+        input.textViewport = rect;
 
         GameObject textObject = new GameObject();
         textObject.name = "Text";
