@@ -67,8 +67,8 @@ MonoBehaviour:
   isIgnited: 0
   pressureGenerationRate: 2
   heatResistance: 1
-  manaResistance: 1
-  manaCharge: 0
+  manaResistance: 0.1
+  manaCharge: 1
 --- !u!33 &4635184798854759923
 MeshFilter:
   m_ObjectHideFlags: 0

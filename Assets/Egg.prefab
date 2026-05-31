@@ -61,8 +61,8 @@ MonoBehaviour:
   isIgnited: 0
   pressureGenerationRate: 2
   heatResistance: 1000
-  manaResistance: 1
-  manaCharge: 0
+  manaResistance: 0.5
+  manaCharge: 1
 --- !u!114 &223195709595459129
 MonoBehaviour:
   m_ObjectHideFlags: 0

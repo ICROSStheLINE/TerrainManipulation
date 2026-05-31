@@ -44,9 +44,9 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
         spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.Spark);
-        spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
-        spellInventoryMap[1,1].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
-        spellInventoryMap[2,1].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.EggB);
+        spellInventoryMap[1,1].AssignSpell(SpellSlot.SpellType.OpenParenthesisB);
+        spellInventoryMap[2,1].AssignSpell(SpellSlot.SpellType.CloseParenthesisB);
         spellInventoryMap[3,1].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[4,1].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[5,1].AssignSpell(SpellSlot.SpellType.Ball);
@@ -243,12 +243,15 @@ public class SpellMenu : MonoBehaviour
 public class SpellSlot
 {
     public GameObject uiObject;
-    public enum SpellType { Empty, Ball, Cube, EggA, OpenParenthesisA, CloseParenthesisA, Spark }
+    public enum SpellType { Empty, Ball, Cube, EggA, EggB, OpenParenthesisA, CloseParenthesisA, OpenParenthesisB, CloseParenthesisB, Spark }
+    public enum ManaFlowType { NoManaFlow, ContinuousManaFlow, ManaFlowOnE }
     public SpellType spellType;
-    public float manaResistance = 1;
+    public float manaResistance = 0.5f;
+    public ManaFlowType manaFlowType = ManaFlowType.NoManaFlow;
     GameObject spellIcon;
     List<GameObject> spellInputObjects = new List<GameObject>();
     TMP_InputField manaResistanceInput;
+    TextMeshProUGUI manaFlowInputText;
     bool showsSpellInputs;
 
     public SpellSlot(bool showsSpellInputs = false)
@@ -259,17 +262,21 @@ public class SpellSlot
     public void ClearSpell()
     {
         spellType = SpellType.Empty;
-        manaResistance = 1;
+        manaResistance = 0.5f;
+        manaFlowType = ManaFlowType.NoManaFlow;
     }
 
     public void CopySpellInputs(SpellSlot spellSlot)
     {
         manaResistance = spellSlot.manaResistance;
+        manaFlowType = spellSlot.manaFlowType;
 
         if (manaResistanceInput != null)
         {
             manaResistanceInput.text = manaResistance.ToString();
         }
+
+        UpdateManaFlowInputText();
     }
 
     public void PickUpSpell()
@@ -295,9 +302,9 @@ public class SpellSlot
 
         this.spellType = spellType;
 
-        if (HasManaResistanceInput(spellType) && showsSpellInputs)
+        if (showsSpellInputs)
         {
-            CreateManaResistanceInput();
+            CreateSpellInputs(spellType);
         }
     }
 
@@ -312,6 +319,10 @@ public class SpellSlot
             { tmp.text = "(A"; }
         if (spellType == SpellType.CloseParenthesisA)
             { tmp.text = ")A"; }
+        if (spellType == SpellType.OpenParenthesisB)
+            { tmp.text = "(B"; }
+        if (spellType == SpellType.CloseParenthesisB)
+            { tmp.text = ")B"; }
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontSize = 24;
         tmp.color = Color.black;
@@ -322,8 +333,40 @@ public class SpellSlot
     {
         if (spellType == SpellType.EggA)
         { return true; }
+        if (spellType == SpellType.EggB)
+        { return true; }
 
         return false;
+    }
+
+    bool HasManaFlowInput(SpellType spellType)
+    {
+        if (spellType == SpellType.OpenParenthesisA)
+        { return false; }
+        if (spellType == SpellType.CloseParenthesisA)
+        { return false; }
+        if (spellType == SpellType.OpenParenthesisB)
+        { return false; }
+        if (spellType == SpellType.CloseParenthesisB)
+        { return false; }
+
+        return true;
+    }
+
+    void CreateSpellInputs(SpellType spellType)
+    {
+        float manaFlowInputY = -55;
+
+        if (HasManaResistanceInput(spellType))
+        {
+            CreateManaResistanceInput();
+            manaFlowInputY = -85;
+        }
+
+        if (HasManaFlowInput(spellType))
+        {
+            CreateManaFlowInput(new Vector2(0, manaFlowInputY));
+        }
     }
 
     void CreateManaResistanceInput()
@@ -335,6 +378,91 @@ public class SpellSlot
             new Vector2(0, -55),
             delegate (float newValue) { manaResistance = newValue; }
         );
+    }
+
+    void CreateManaFlowInput(Vector2 anchoredPosition)
+    {
+        manaFlowInputText = CreateButtonInput(
+            "ManaFlowInput",
+            GetManaFlowText(),
+            anchoredPosition,
+            delegate
+            {
+                CycleManaFlowType();
+            }
+        );
+    }
+
+    void CycleManaFlowType()
+    {
+        if (manaFlowType == ManaFlowType.NoManaFlow)
+        {
+            manaFlowType = ManaFlowType.ContinuousManaFlow;
+        }
+        else if (manaFlowType == ManaFlowType.ContinuousManaFlow)
+        {
+            manaFlowType = ManaFlowType.ManaFlowOnE;
+        }
+        else if (manaFlowType == ManaFlowType.ManaFlowOnE)
+        {
+            manaFlowType = ManaFlowType.NoManaFlow;
+        }
+
+        UpdateManaFlowInputText();
+    }
+
+    string GetManaFlowText()
+    {
+        if (manaFlowType == ManaFlowType.NoManaFlow)
+        { return "No Flow"; }
+        if (manaFlowType == ManaFlowType.ContinuousManaFlow)
+        { return "Flow"; }
+        if (manaFlowType == ManaFlowType.ManaFlowOnE)
+        { return "E Flow"; }
+
+        return "";
+    }
+
+    void UpdateManaFlowInputText()
+    {
+        if (manaFlowInputText != null)
+        {
+            manaFlowInputText.text = GetManaFlowText();
+        }
+    }
+
+    TextMeshProUGUI CreateButtonInput(string inputName, string startingText, Vector2 anchoredPosition, UnityEngine.Events.UnityAction onClick)
+    {
+        GameObject inputObject = new GameObject();
+        inputObject.name = inputName;
+        inputObject.transform.SetParent(uiObject.transform, false);
+        spellInputObjects.Add(inputObject);
+
+        RectTransform rect = inputObject.AddComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(70, 25);
+        rect.anchoredPosition = anchoredPosition;
+
+        Image image = inputObject.AddComponent<Image>();
+        image.color = Color.white;
+
+        Button button = inputObject.AddComponent<Button>();
+        button.onClick.AddListener(onClick);
+
+        GameObject textObject = new GameObject();
+        textObject.name = "Text";
+        textObject.transform.SetParent(inputObject.transform, false);
+        TextMeshProUGUI text = textObject.AddComponent<TextMeshProUGUI>();
+        text.text = startingText;
+        text.color = Color.black;
+        text.fontSize = 14;
+        text.alignment = TextAlignmentOptions.Center;
+        RectTransform textRect = textObject.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+
+        return text;
     }
 
     TMP_InputField CreateFloatInput(string inputName, string labelText, float startingValue, Vector2 anchoredPosition, System.Action<float> onValueChanged)
@@ -415,5 +543,6 @@ public class SpellSlot
 
         spellInputObjects.Clear();
         manaResistanceInput = null;
+        manaFlowInputText = null;
     }
 }
