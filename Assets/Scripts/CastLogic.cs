@@ -214,7 +214,7 @@ public class CastLogic : MonoBehaviour
                     GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
                     spawnedEgg.transform.name = GetEggName(eggSpellType);
                     PhysicalProperties physicalProperties = spawnedEgg.GetComponent<PhysicalProperties>();
-                    physicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistance;
+                    physicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
                     ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
@@ -281,7 +281,7 @@ public class CastLogic : MonoBehaviour
                             { continue; }
                             GameObject innerEggObject = Instantiate(innerEggPrefab, spawnedEgg.transform.position, transform.rotation);
                             PhysicalProperties innerEggPhysicalProps = innerEggObject.GetComponent<PhysicalProperties>();
-                            innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistance;
+                            innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
                             AddCastStartManaFlowObject(innerEggObject, spellMenu.castStartMap[i,eggIndex]);

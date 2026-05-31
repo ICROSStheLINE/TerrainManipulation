@@ -246,7 +246,7 @@ public class SpellSlot
     public enum SpellType { Empty, Ball, Cube, EggA, EggB, OpenParenthesisA, CloseParenthesisA, OpenParenthesisB, CloseParenthesisB, Spark }
     public enum ManaFlowType { NoManaFlow, ContinuousManaFlow, ManaFlowOnE }
     public SpellType spellType;
-    public float manaResistance = 0.5f;
+    public float manaResistancePercent = 50;
     public float manaFlowAmount = 1;
     public ManaFlowType manaFlowType = ManaFlowType.NoManaFlow;
     GameObject spellIcon;
@@ -264,20 +264,20 @@ public class SpellSlot
     public void ClearSpell()
     {
         spellType = SpellType.Empty;
-        manaResistance = 0.5f;
+        manaResistancePercent = 50;
         manaFlowAmount = 1;
         manaFlowType = ManaFlowType.NoManaFlow;
     }
 
     public void CopySpellInputs(SpellSlot spellSlot)
     {
-        manaResistance = spellSlot.manaResistance;
+        manaResistancePercent = spellSlot.manaResistancePercent;
         manaFlowAmount = spellSlot.manaFlowAmount;
         manaFlowType = spellSlot.manaFlowType;
 
         if (manaResistanceInput != null)
         {
-            manaResistanceInput.text = manaResistance.ToString();
+            manaResistanceInput.text = manaResistancePercent.ToString();
         }
         if (manaFlowAmountInput != null)
         {
@@ -382,12 +382,16 @@ public class SpellSlot
     {
         manaResistanceInput = CreateFloatInput(
             "ManaResistanceInput",
-            "MR",
-            manaResistance,
+            "% MR",
+            manaResistancePercent,
             new Vector2(0, -55),
-            delegate (float newValue) { manaResistance = newValue; }
+            delegate (float newValue)
+            {
+                manaResistancePercent = Mathf.Clamp(newValue, -100, 100);
+                manaResistanceInput.SetTextWithoutNotify(manaResistancePercent.ToString());
+            }
         );
-        CreateInputLabel("Mana Resistance", new Vector2(-75, -55));
+        CreateInputLabel("% Mana Resistance", new Vector2(-75, -55));
     }
 
     void CreateManaFlowInput(Vector2 anchoredPosition)
