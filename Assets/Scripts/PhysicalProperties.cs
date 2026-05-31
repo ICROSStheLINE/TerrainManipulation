@@ -9,6 +9,7 @@ public class PhysicalProperties : MonoBehaviour
     public bool isIgnited;
     public float pressureGenerationRate = 2f;
     Material material;
+    Color defaultColor;
     SphereCollider sphereCollider;
     [SerializeField] float heatResistance; // Resistance to EXTERNAL HEAT sources
     public float manaResistance; // Resistance to mana flow
@@ -18,11 +19,16 @@ public class PhysicalProperties : MonoBehaviour
     void Start()
     {
         material = GetComponent<Renderer>().material;
+        defaultColor = material.GetColor("_Color");
         sphereCollider = GetComponent<SphereCollider>();
     }
 
     void Update()
     {
+        if (temperature < 6)
+        {
+            StopGlowing();
+        }
         if (temperature > 6 * flashPoint / 7 && temperature < flashPoint)
         {
             Glow();
@@ -31,6 +37,11 @@ public class PhysicalProperties : MonoBehaviour
         {
             Ignite();
         }
+    }
+
+    void StopGlowing()
+    {
+        material.SetColor("_Color", defaultColor);
     }
 
     void Glow()

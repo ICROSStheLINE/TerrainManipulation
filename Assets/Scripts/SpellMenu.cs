@@ -42,8 +42,8 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.EggA);
         spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
         spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
-        spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.Spark);
+        spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
+        spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
         spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.EggB);
         spellInventoryMap[1,1].AssignSpell(SpellSlot.SpellType.OpenParenthesisB);
         spellInventoryMap[2,1].AssignSpell(SpellSlot.SpellType.CloseParenthesisB);

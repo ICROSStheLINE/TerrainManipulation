@@ -211,10 +211,7 @@ public class CastLogic : MonoBehaviour
                     GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
                     spawnedEgg.transform.name = GetEggName(eggSpellType);
                     PhysicalProperties physicalProperties = spawnedEgg.GetComponent<PhysicalProperties>();
-                    if (physicalProperties != null)
-                    {
-                        physicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistance;
-                    }
+                    physicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistance;
                     ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
@@ -273,6 +270,19 @@ public class CastLogic : MonoBehaviour
                             GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position, transform.rotation);
                             sparkObject.transform.SetParent(spawnedEgg.transform);
                             AddCastStartManaFlowObject(sparkObject, spellMenu.castStartMap[i,eggIndex]);
+                            manaManager.LoseMana(5);
+                        }
+                        if (IsEggSpell(spellMenu.castStartMap[i,eggIndex].spellType))
+                        {
+                            if (manaManager.manaAmount <= 0)
+                            { continue; }
+                            GameObject innerEggObject = Instantiate(eggPrefab, spawnedEgg.transform.position, transform.rotation);
+                            innerEggObject.transform.localScale = new Vector3(0.25f,0.25f,0.25f);
+                            PhysicalProperties innerEggPhysicalProps = innerEggObject.GetComponent<PhysicalProperties>();
+                            innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistance;
+                            ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
+                            innerManaObject.AttachToEgg(spawnedEgg.transform);
+                            AddCastStartManaFlowObject(innerEggObject, spellMenu.castStartMap[i,eggIndex]);
                             manaManager.LoseMana(5);
                         }
                     }
