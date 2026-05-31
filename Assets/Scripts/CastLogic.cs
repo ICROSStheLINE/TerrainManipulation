@@ -115,8 +115,8 @@ public class CastLogic : MonoBehaviour
             if (manaManager.manaAmount <= 0)
             { continue; }
 
-            manaManager.LoseMana(1);
-            castStartManaFlowObject.physicalProperties.AddMana(1);
+            manaManager.LoseMana(10);
+            castStartManaFlowObject.physicalProperties.AddMana(10);
         }
     }
 

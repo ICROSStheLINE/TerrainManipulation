@@ -66,7 +66,7 @@ MonoBehaviour:
   temperature: 0
   isIgnited: 0
   pressureGenerationRate: 2
-  heatResistance: 1
+  heatResistance: 0.7
   manaResistance: 0.1
   manaCharge: 1
 --- !u!33 &4635184798854759923
@@ -189,5 +189,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 1.5, z: 2}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}

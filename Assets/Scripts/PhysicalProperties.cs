@@ -25,6 +25,10 @@ public class PhysicalProperties : MonoBehaviour
 
     void Update()
     {
+        if (isIgnited && temperature < flashPoint)
+        {
+            temperature = flashPoint;
+        }
         if (temperature < 6)
         {
             StopGlowing();
