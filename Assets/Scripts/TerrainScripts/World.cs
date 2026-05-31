@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    static int worldLength = 3;
-    static int worldWidth = 3;
+    static int worldLength = 6;
+    static int worldWidth = 6;
 
     Chunk[,] chunkMap = new Chunk[worldLength, worldWidth];
     public Material blockMaterial;
@@ -13,6 +13,36 @@ public class World : MonoBehaviour
     void Start()
     {
         FillChunkMap();
+
+        int surfaceY = Chunk.groundHeight;
+        int wallBottomY = surfaceY + 1;
+        int wallTopY = wallBottomY + 2;
+        int fourthChunkX = 3;
+        int fourthChunkY = 3;
+
+        for (int chunkX = 0; chunkX < worldLength; chunkX++)
+        {
+            DrawBlocks(0, wallBottomY, 0,
+                       Chunk.chunkLength - 1, wallTopY, 0,
+                       chunkX, 0, Block.BlockType.Stone, false);
+            DrawBlocks(0, wallBottomY, Chunk.chunkWidth - 1,
+                       Chunk.chunkLength - 1, wallTopY, Chunk.chunkWidth - 1,
+                       chunkX, worldWidth - 1, Block.BlockType.Stone, false);
+        }
+
+        for (int chunkY = 0; chunkY < worldWidth; chunkY++)
+        {
+            DrawBlocks(0, wallBottomY, 0,
+                       0, wallTopY, Chunk.chunkWidth - 1,
+                       0, chunkY, Block.BlockType.Stone, false);
+            DrawBlocks(Chunk.chunkLength - 1, wallBottomY, 0,
+                       Chunk.chunkLength - 1, wallTopY, Chunk.chunkWidth - 1,
+                       worldLength - 1, chunkY, Block.BlockType.Stone, false);
+        }
+
+        DrawBlocks(0, 0, 0,
+                   Chunk.chunkLength - 1, Chunk.groundHeight+1, Chunk.chunkWidth - 1,
+                   fourthChunkX, fourthChunkY, Block.BlockType.Dirt, false);
 
         // int houseChunkX = Mathf.FloorToInt(worldLength/2);
         // int houseChunkY = Mathf.FloorToInt(worldWidth/2);
