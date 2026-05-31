@@ -247,10 +247,12 @@ public class SpellSlot
     public enum ManaFlowType { NoManaFlow, ContinuousManaFlow, ManaFlowOnE }
     public SpellType spellType;
     public float manaResistance = 0.5f;
+    public float manaFlowAmount = 1;
     public ManaFlowType manaFlowType = ManaFlowType.NoManaFlow;
     GameObject spellIcon;
     List<GameObject> spellInputObjects = new List<GameObject>();
     TMP_InputField manaResistanceInput;
+    TMP_InputField manaFlowAmountInput;
     TextMeshProUGUI manaFlowInputText;
     bool showsSpellInputs;
 
@@ -263,17 +265,23 @@ public class SpellSlot
     {
         spellType = SpellType.Empty;
         manaResistance = 0.5f;
+        manaFlowAmount = 1;
         manaFlowType = ManaFlowType.NoManaFlow;
     }
 
     public void CopySpellInputs(SpellSlot spellSlot)
     {
         manaResistance = spellSlot.manaResistance;
+        manaFlowAmount = spellSlot.manaFlowAmount;
         manaFlowType = spellSlot.manaFlowType;
 
         if (manaResistanceInput != null)
         {
             manaResistanceInput.text = manaResistance.ToString();
+        }
+        if (manaFlowAmountInput != null)
+        {
+            manaFlowAmountInput.text = manaFlowAmount.ToString();
         }
 
         UpdateManaFlowInputText();
@@ -366,6 +374,7 @@ public class SpellSlot
         if (HasManaFlowInput(spellType))
         {
             CreateManaFlowInput(new Vector2(0, manaFlowInputY));
+            CreateManaFlowAmountInput(new Vector2(0, manaFlowInputY - 30));
         }
     }
 
@@ -378,6 +387,7 @@ public class SpellSlot
             new Vector2(0, -55),
             delegate (float newValue) { manaResistance = newValue; }
         );
+        CreateInputLabel("Mana Resistance", new Vector2(-75, -55));
     }
 
     void CreateManaFlowInput(Vector2 anchoredPosition)
@@ -391,6 +401,23 @@ public class SpellSlot
                 CycleManaFlowType();
             }
         );
+        CreateInputLabel("Mana Flow Type", new Vector2(-75, anchoredPosition.y));
+    }
+
+    void CreateManaFlowAmountInput(Vector2 anchoredPosition)
+    {
+        manaFlowAmountInput = CreateFloatInput(
+            "ManaFlowAmountInput",
+            "Mana",
+            manaFlowAmount,
+            anchoredPosition,
+            delegate (float newValue)
+            {
+                manaFlowAmount = Mathf.Max(0, newValue);
+                manaFlowAmountInput.SetTextWithoutNotify(manaFlowAmount.ToString());
+            }
+        );
+        CreateInputLabel("Mana Flow Amount", new Vector2(-75, anchoredPosition.y));
     }
 
     void CycleManaFlowType()
@@ -463,6 +490,23 @@ public class SpellSlot
         textRect.offsetMax = Vector2.zero;
 
         return text;
+    }
+
+    void CreateInputLabel(string labelText, Vector2 anchoredPosition)
+    {
+        GameObject labelObject = new GameObject();
+        labelObject.name = labelText + "Label";
+        labelObject.transform.SetParent(uiObject.transform, false);
+        spellInputObjects.Add(labelObject);
+
+        TextMeshProUGUI tmp = labelObject.AddComponent<TextMeshProUGUI>();
+        tmp.text = labelText;
+        tmp.color = Color.black;
+        tmp.fontSize = 12;
+        tmp.alignment = TextAlignmentOptions.Right;
+        RectTransform rect = labelObject.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(70, 25);
+        rect.anchoredPosition = anchoredPosition;
     }
 
     TMP_InputField CreateFloatInput(string inputName, string labelText, float startingValue, Vector2 anchoredPosition, System.Action<float> onValueChanged)
@@ -543,6 +587,7 @@ public class SpellSlot
 
         spellInputObjects.Clear();
         manaResistanceInput = null;
+        manaFlowAmountInput = null;
         manaFlowInputText = null;
     }
 }

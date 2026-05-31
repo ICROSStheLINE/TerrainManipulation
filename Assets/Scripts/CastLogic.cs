@@ -8,6 +8,7 @@ public class CastLogic : MonoBehaviour
     [SerializeField] GameObject ballPrefab;
     ManaManager manaManager;
     [SerializeField] GameObject eggPrefab;
+    [SerializeField] GameObject innerEggPrefab;
     [SerializeField] GameObject sparkPrefab;
     Coroutine castCoroutine;
     bool casting = false;
@@ -112,11 +113,13 @@ public class CastLogic : MonoBehaviour
             if (castStartManaFlowObject.spellSlot.manaFlowType == SpellSlot.ManaFlowType.ManaFlowOnE &&
                 !Input.GetKey(KeyCode.E))
             { continue; }
+            if (castStartManaFlowObject.spellSlot.manaFlowAmount <= 0)
+            { continue; }
             if (manaManager.manaAmount <= 0)
             { continue; }
 
-            manaManager.LoseMana(10);
-            castStartManaFlowObject.physicalProperties.AddMana(10);
+            manaManager.LoseMana(castStartManaFlowObject.spellSlot.manaFlowAmount);
+            castStartManaFlowObject.physicalProperties.AddMana(castStartManaFlowObject.spellSlot.manaFlowAmount);
         }
     }
 
@@ -276,8 +279,7 @@ public class CastLogic : MonoBehaviour
                         {
                             if (manaManager.manaAmount <= 0)
                             { continue; }
-                            GameObject innerEggObject = Instantiate(eggPrefab, spawnedEgg.transform.position, transform.rotation);
-                            innerEggObject.transform.localScale = new Vector3(0.25f,0.25f,0.25f);
+                            GameObject innerEggObject = Instantiate(innerEggPrefab, spawnedEgg.transform.position, transform.rotation);
                             PhysicalProperties innerEggPhysicalProps = innerEggObject.GetComponent<PhysicalProperties>();
                             innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistance;
                             ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();

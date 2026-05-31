@@ -149,8 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manaBar: {fileID: 947558655}
-  manaMax: 300
-  manaAmount: 300
+  manaMax: 2000
+  manaAmount: 2000
 --- !u!4 &327266522
 Transform:
   m_ObjectHideFlags: 0
@@ -668,6 +668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballPrefab: {fileID: 1541034544196987380, guid: cdb83a978bd52b14f8882825b770486f, type: 3}
   eggPrefab: {fileID: 30962906337970838, guid: 8ba9b908f3b28b8419882eefb6801c3d, type: 3}
+  innerEggPrefab: {fileID: 30962906337970838, guid: 38b95a923d359104ca132d5bd26f079d, type: 3}
   sparkPrefab: {fileID: 1274411161981808580, guid: 6b9398f4616e0ea4aa1ccb8b018023f9, type: 3}
   handTransform: {fileID: 892467436}
 --- !u!1 &892467435
