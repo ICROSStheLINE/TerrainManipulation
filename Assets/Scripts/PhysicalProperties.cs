@@ -105,7 +105,6 @@ public class PhysicalProperties : MonoBehaviour
         if (collision.gameObject.tag == "Spark")
         {
             temperature += 10;
-            Destroy(collision.gameObject);
         }
     }
 
