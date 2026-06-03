@@ -384,29 +384,26 @@ public class SpellSlot
 
     void CreateSpellInputs(SpellType spellType)
     {
-        float manaFlowInputY = -55;
+        if (HasManaFlowInput(spellType))
+        {
+            CreateManaFlowInput(new Vector2(0, -55));
+            CreateManaFlowAmountInput(new Vector2(0, -85));
+            UpdateManaFlowAmountInputState();
+        }
 
         if (HasManaResistanceInput(spellType))
         {
-            CreateManaResistanceInput(CanEditManaResistanceInput(spellType));
-            manaFlowInputY = -85;
-        }
-
-        if (HasManaFlowInput(spellType))
-        {
-            CreateManaFlowInput(new Vector2(0, manaFlowInputY));
-            CreateManaFlowAmountInput(new Vector2(0, manaFlowInputY - 30));
-            UpdateManaFlowAmountInputState();
+            CreateManaResistanceInput(CanEditManaResistanceInput(spellType), new Vector2(0, -115));
         }
     }
 
-    void CreateManaResistanceInput(bool canEdit)
+    void CreateManaResistanceInput(bool canEdit, Vector2 anchoredPosition)
     {
         manaResistanceInput = CreateFloatInput(
             "ManaResistanceInput",
             "% MR",
             manaResistancePercent,
-            new Vector2(0, -55),
+            anchoredPosition,
             delegate (float newValue)
             {
                 manaResistancePercent = Mathf.Clamp(newValue, -100, 100);
@@ -414,7 +411,7 @@ public class SpellSlot
             },
             canEdit
         );
-        CreateInputLabel("% Mana Resistance", new Vector2(-75, -55));
+        CreateInputLabel("% Mana Resistance", new Vector2(-75, anchoredPosition.y));
     }
 
     void CreateManaFlowInput(Vector2 anchoredPosition)
