@@ -253,6 +253,7 @@ public class SpellSlot
     List<GameObject> spellInputObjects = new List<GameObject>();
     TMP_InputField manaResistanceInput;
     TMP_InputField manaFlowAmountInput;
+    Image manaFlowAmountInputImage;
     TextMeshProUGUI manaFlowInputText;
     bool showsSpellInputs;
 
@@ -285,6 +286,7 @@ public class SpellSlot
         }
 
         UpdateManaFlowInputText();
+        UpdateManaFlowAmountInputState();
     }
 
     public void PickUpSpell()
@@ -394,6 +396,7 @@ public class SpellSlot
         {
             CreateManaFlowInput(new Vector2(0, manaFlowInputY));
             CreateManaFlowAmountInput(new Vector2(0, manaFlowInputY - 30));
+            UpdateManaFlowAmountInputState();
         }
     }
 
@@ -441,6 +444,7 @@ public class SpellSlot
                 manaFlowAmountInput.SetTextWithoutNotify(manaFlowAmount.ToString());
             }
         );
+        manaFlowAmountInputImage = manaFlowAmountInput.GetComponent<Image>();
         CreateInputLabel("Mana Flow Amount", new Vector2(-75, anchoredPosition.y));
     }
 
@@ -460,6 +464,7 @@ public class SpellSlot
         }
 
         UpdateManaFlowInputText();
+        UpdateManaFlowAmountInputState();
     }
 
     string GetManaFlowText()
@@ -479,6 +484,30 @@ public class SpellSlot
         if (manaFlowInputText != null)
         {
             manaFlowInputText.text = GetManaFlowText();
+        }
+    }
+
+    void UpdateManaFlowAmountInputState()
+    {
+        if (manaFlowAmountInput == null)
+        { return; }
+
+        if (manaFlowType == ManaFlowType.NoManaFlow)
+        {
+            manaFlowAmount = 0;
+            manaFlowAmountInput.SetTextWithoutNotify("0");
+            manaFlowAmountInput.interactable = false;
+            if (manaFlowAmountInputImage != null)
+            {
+                manaFlowAmountInputImage.color = Color.gray;
+            }
+            return;
+        }
+
+        manaFlowAmountInput.interactable = true;
+        if (manaFlowAmountInputImage != null)
+        {
+            manaFlowAmountInputImage.color = Color.white;
         }
     }
 
@@ -620,6 +649,7 @@ public class SpellSlot
         spellInputObjects.Clear();
         manaResistanceInput = null;
         manaFlowAmountInput = null;
+        manaFlowAmountInputImage = null;
         manaFlowInputText = null;
     }
 }
