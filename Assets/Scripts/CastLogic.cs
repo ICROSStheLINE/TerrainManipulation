@@ -197,6 +197,8 @@ public class CastLogic : MonoBehaviour
                     { continue; }
                     
                     GameObject ballObject = Instantiate(ballPrefab, handTransform.position + handTransform.up, transform.rotation);
+                    PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
+                    ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
                     ManaObject manaObject = ballObject.transform.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
@@ -261,6 +263,8 @@ public class CastLogic : MonoBehaviour
                             if (manaManager.manaAmount <= 0) 
                             { continue; }
                             GameObject ballObject = Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                            PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
+                            ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
                             AddCastStartManaFlowObject(ballObject, spellMenu.castStartMap[i,eggIndex]);

@@ -306,13 +306,22 @@ public class SpellSlot
             return; // If it has something in the slot then you can't assign it something else! (TODO: Allow spell swapping)
         }
 
-        CreateSpellIcon(spellType);
-
         this.spellType = spellType;
+        SetDefaultSpellInputs(spellType);
+
+        CreateSpellIcon(spellType);
 
         if (showsSpellInputs)
         {
             CreateSpellInputs(spellType);
+        }
+    }
+
+    void SetDefaultSpellInputs(SpellType spellType) // Since the ball has an unchangable mana resistance it needs this
+    {
+        if (spellType == SpellType.Ball)
+        {
+            manaResistancePercent = 10;
         }
     }
 
@@ -339,12 +348,22 @@ public class SpellSlot
 
     bool HasManaResistanceInput(SpellType spellType)
     {
+        if (spellType == SpellType.Ball)
+        { return true; }
         if (spellType == SpellType.EggA)
         { return true; }
         if (spellType == SpellType.EggB)
         { return true; }
 
         return false;
+    }
+
+    bool CanEditManaResistanceInput(SpellType spellType)
+    {
+        if (spellType == SpellType.Ball)
+        { return false; }
+
+        return true;
     }
 
     bool HasManaFlowInput(SpellType spellType)
@@ -367,7 +386,7 @@ public class SpellSlot
 
         if (HasManaResistanceInput(spellType))
         {
-            CreateManaResistanceInput();
+            CreateManaResistanceInput(CanEditManaResistanceInput(spellType));
             manaFlowInputY = -85;
         }
 
@@ -378,7 +397,7 @@ public class SpellSlot
         }
     }
 
-    void CreateManaResistanceInput()
+    void CreateManaResistanceInput(bool canEdit)
     {
         manaResistanceInput = CreateFloatInput(
             "ManaResistanceInput",
@@ -389,7 +408,8 @@ public class SpellSlot
             {
                 manaResistancePercent = Mathf.Clamp(newValue, -100, 100);
                 manaResistanceInput.SetTextWithoutNotify(manaResistancePercent.ToString());
-            }
+            },
+            canEdit
         );
         CreateInputLabel("% Mana Resistance", new Vector2(-75, -55));
     }
@@ -513,7 +533,7 @@ public class SpellSlot
         rect.anchoredPosition = anchoredPosition;
     }
 
-    TMP_InputField CreateFloatInput(string inputName, string labelText, float startingValue, Vector2 anchoredPosition, System.Action<float> onValueChanged)
+    TMP_InputField CreateFloatInput(string inputName, string labelText, float startingValue, Vector2 anchoredPosition, System.Action<float> onValueChanged, bool canEdit = true)
     {
         GameObject inputObject = new GameObject();
         inputObject.name = inputName;
@@ -526,9 +546,17 @@ public class SpellSlot
         rect.anchoredPosition = anchoredPosition;
 
         Image image = inputObject.AddComponent<Image>();
-        image.color = Color.white;
+        if (canEdit)
+        {
+            image.color = Color.white;
+        }
+        else
+        {
+            image.color = Color.gray;
+        }
 
         TMP_InputField input = inputObject.AddComponent<TMP_InputField>();
+        input.interactable = canEdit;
         input.contentType = TMP_InputField.ContentType.DecimalNumber;
         input.targetGraphic = image;
         input.textViewport = rect;
