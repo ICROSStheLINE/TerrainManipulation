@@ -252,6 +252,7 @@ public class SpellSlot
     GameObject spellIcon;
     List<GameObject> spellInputObjects = new List<GameObject>();
     TMP_InputField manaResistanceInput;
+    Image manaResistanceInputImage;
     TMP_InputField manaFlowAmountInput;
     Image manaFlowAmountInputImage;
     TextMeshProUGUI manaFlowInputText;
@@ -287,6 +288,7 @@ public class SpellSlot
 
         UpdateManaFlowInputText();
         UpdateManaFlowAmountInputState();
+        UpdateManaResistanceInputState();
     }
 
     public void PickUpSpell()
@@ -388,13 +390,15 @@ public class SpellSlot
         {
             CreateManaFlowInput(new Vector2(0, -55));
             CreateManaFlowAmountInput(new Vector2(0, -85));
-            UpdateManaFlowAmountInputState();
         }
 
         if (HasManaResistanceInput(spellType))
         {
             CreateManaResistanceInput(CanEditManaResistanceInput(spellType), new Vector2(0, -115));
         }
+
+        UpdateManaFlowAmountInputState();
+        UpdateManaResistanceInputState();
     }
 
     void CreateManaResistanceInput(bool canEdit, Vector2 anchoredPosition)
@@ -411,6 +415,7 @@ public class SpellSlot
             },
             canEdit
         );
+        manaResistanceInputImage = manaResistanceInput.GetComponent<Image>();
         CreateInputLabel("% Mana Resistance", new Vector2(-75, anchoredPosition.y));
     }
 
@@ -462,6 +467,7 @@ public class SpellSlot
 
         UpdateManaFlowInputText();
         UpdateManaFlowAmountInputState();
+        UpdateManaResistanceInputState();
     }
 
     string GetManaFlowText()
@@ -505,6 +511,37 @@ public class SpellSlot
         if (manaFlowAmountInputImage != null)
         {
             manaFlowAmountInputImage.color = Color.white;
+        }
+    }
+
+    void UpdateManaResistanceInputState()
+    {
+        if (manaResistanceInput == null)
+        { return; }
+
+        if (manaFlowType == ManaFlowType.NoManaFlow)
+        {
+            manaResistancePercent = 50;
+            manaResistanceInput.SetTextWithoutNotify("50");
+            manaResistanceInput.interactable = false;
+            if (manaResistanceInputImage != null)
+            {
+                manaResistanceInputImage.color = Color.gray;
+            }
+            return;
+        }
+
+        manaResistanceInput.interactable = CanEditManaResistanceInput(spellType);
+        if (manaResistanceInputImage != null)
+        {
+            if (CanEditManaResistanceInput(spellType))
+            {
+                manaResistanceInputImage.color = Color.white;
+            }
+            else
+            {
+                manaResistanceInputImage.color = Color.gray;
+            }
         }
     }
 
@@ -645,6 +682,7 @@ public class SpellSlot
 
         spellInputObjects.Clear();
         manaResistanceInput = null;
+        manaResistanceInputImage = null;
         manaFlowAmountInput = null;
         manaFlowAmountInputImage = null;
         manaFlowInputText = null;
