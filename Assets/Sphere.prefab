@@ -69,6 +69,7 @@ MonoBehaviour:
   heatResistance: 0.7
   manaResistance: 0.1
   manaCharge: 1
+  emberSmokePrefab: {fileID: 7290046929545945003, guid: 677c28a46b4a2d345bf4aa58866af239, type: 3}
 --- !u!33 &4635184798854759923
 MeshFilter:
   m_ObjectHideFlags: 0

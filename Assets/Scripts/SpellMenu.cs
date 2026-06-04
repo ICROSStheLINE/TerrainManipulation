@@ -321,12 +321,15 @@ public class SpellSlot
         }
     }
 
-    void SetDefaultSpellInputs(SpellType spellType) // Since the ball has an unchangable mana resistance it needs this
+    void SetDefaultSpellInputs(SpellType spellType)
     {
         if (spellType == SpellType.Ball)
         {
             manaResistancePercent = 10;
+            return;
         }
+
+        manaResistancePercent = 50;
     }
 
     void CreateSpellIcon(SpellType spellType)
@@ -521,8 +524,8 @@ public class SpellSlot
 
         if (manaFlowType == ManaFlowType.NoManaFlow)
         {
-            manaResistancePercent = 50;
-            manaResistanceInput.SetTextWithoutNotify("50");
+            SetDefaultSpellInputs(spellType);
+            manaResistanceInput.SetTextWithoutNotify(manaResistancePercent.ToString());
             manaResistanceInput.interactable = false;
             if (manaResistanceInputImage != null)
             {
