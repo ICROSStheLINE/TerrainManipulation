@@ -87,8 +87,6 @@ public class PhysicalProperties : MonoBehaviour
             yield return null;
         }
 
-        emberSmokeObject.transform.SetParent(null);
-        emberSmokeObject.transform.localScale = new Vector3(1,1,1);
         Destroy(gameObject);
     }
 
