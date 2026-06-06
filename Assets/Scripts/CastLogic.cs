@@ -14,7 +14,6 @@ public class CastLogic : MonoBehaviour
     bool casting = false;
     [SerializeField] Transform handTransform;
     List<ManaObject> activeManaObjects = new List<ManaObject>();
-    List<CastStartManaFlowObject> activeCastStartManaFlowObjects = new List<CastStartManaFlowObject>();
     float prepulsionStrength = 20f;
 
     void Start()
@@ -57,7 +56,6 @@ public class CastLogic : MonoBehaviour
         }
 
         activeManaObjects.Clear();
-        activeCastStartManaFlowObjects.Clear();
     }
 
     void ReleaseCurrentSpell()
@@ -71,7 +69,6 @@ public class CastLogic : MonoBehaviour
         }
 
         activeManaObjects.Clear();
-        activeCastStartManaFlowObjects.Clear();
     }
 
     IEnumerator Cast()
@@ -82,44 +79,34 @@ public class CastLogic : MonoBehaviour
         while (casting)
         {
             CastContinuous();
-            ApplyCastStartManaFlow();
+            FlowManaIntoActiveSpells();
             yield return new WaitForSeconds(0.25f);
         }
     }
 
-    void AddCastStartManaFlowObject(GameObject manaFlowObject, SpellSlot spellSlot)
+    void FlowManaIntoActiveSpells()
     {
-        PhysicalProperties physicalProperties = manaFlowObject.GetComponent<PhysicalProperties>();
-        if (physicalProperties == null)
-        { return; }
-
-        CastStartManaFlowObject castStartManaFlowObject = new CastStartManaFlowObject();
-        castStartManaFlowObject.physicalProperties = physicalProperties;
-        castStartManaFlowObject.spellSlot = spellSlot;
-        activeCastStartManaFlowObjects.Add(castStartManaFlowObject);
-    }
-
-    void ApplyCastStartManaFlow()
-    {
-        foreach (CastStartManaFlowObject castStartManaFlowObject in activeCastStartManaFlowObjects)
+        foreach (ManaObject manaObject in activeManaObjects)
         {
-            if (castStartManaFlowObject.physicalProperties == null)
+            PhysicalProperties physicalProperties = manaObject.GetComponent<PhysicalProperties>();
+            SpellSlot spellSlotInfo = manaObject.spellSlotInfo;
+            if (physicalProperties == null)
             { continue; }
-            if (castStartManaFlowObject.spellSlot == null)
+            if (spellSlotInfo == null)
             { continue; }
 
-            if (castStartManaFlowObject.spellSlot.manaFlowType == SpellSlot.ManaFlowType.NoManaFlow)
+            if (spellSlotInfo.manaFlowType == SpellSlot.ManaFlowType.NoManaFlow)
             { continue; }
-            if (castStartManaFlowObject.spellSlot.manaFlowType == SpellSlot.ManaFlowType.ManaFlowOnE &&
+            if (spellSlotInfo.manaFlowType == SpellSlot.ManaFlowType.ManaFlowOnE &&
                 !Input.GetKey(KeyCode.E))
             { continue; }
-            if (castStartManaFlowObject.spellSlot.manaFlowAmount <= 0)
+            if (spellSlotInfo.manaFlowAmount <= 0)
             { continue; }
             if (manaManager.manaAmount <= 0)
             { continue; }
 
-            manaManager.LoseMana(castStartManaFlowObject.spellSlot.manaFlowAmount);
-            castStartManaFlowObject.physicalProperties.AddMana(castStartManaFlowObject.spellSlot.manaFlowAmount);
+            manaManager.LoseMana(spellSlotInfo.manaFlowAmount);
+            physicalProperties.AddMana(spellSlotInfo.manaFlowAmount);
         }
     }
 
@@ -202,7 +189,7 @@ public class CastLogic : MonoBehaviour
                     ManaObject manaObject = ballObject.transform.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
-                    AddCastStartManaFlowObject(ballObject, spellMenu.castStartMap[i,j]);
+                    manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
                     manaManager.LoseMana(5);
                 }
                 if (IsEggSpell(spellMenu.castStartMap[i,j].spellType)) // if spell is an egg, then 
@@ -220,7 +207,7 @@ public class CastLogic : MonoBehaviour
                     ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
-                    AddCastStartManaFlowObject(spawnedEgg, spellMenu.castStartMap[i,j]);
+                    manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
                     manaManager.LoseMana(5);
 
                     int remainingIndices = spellMenu.castStartMap.GetLength(1) - 1 - j;
@@ -267,7 +254,7 @@ public class CastLogic : MonoBehaviour
                             ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            AddCastStartManaFlowObject(ballObject, spellMenu.castStartMap[i,eggIndex]);
+                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
                             manaManager.LoseMana(5);
                         }
                         if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
@@ -276,7 +263,7 @@ public class CastLogic : MonoBehaviour
                             { continue; }
                             GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position, transform.rotation);
                             sparkObject.transform.SetParent(spawnedEgg.transform);
-                            AddCastStartManaFlowObject(sparkObject, spellMenu.castStartMap[i,eggIndex]);
+                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
                             manaManager.LoseMana(5);
                         }
                         if (IsEggSpell(spellMenu.castStartMap[i,eggIndex].spellType))
@@ -288,7 +275,7 @@ public class CastLogic : MonoBehaviour
                             innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            AddCastStartManaFlowObject(innerEggObject, spellMenu.castStartMap[i,eggIndex]);
+                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
                             manaManager.LoseMana(5);
                         }
                     }
@@ -299,8 +286,7 @@ public class CastLogic : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    GameObject sparkObject = Instantiate(sparkPrefab, transform.position + transform.forward, transform.rotation);
-                    AddCastStartManaFlowObject(sparkObject, spellMenu.castStartMap[i,j]);
+                    Instantiate(sparkPrefab, transform.position + transform.forward, transform.rotation);
                     manaManager.LoseMana(5);
                 }
             }
@@ -471,10 +457,4 @@ public class CastLogic : MonoBehaviour
             }
         }
     }
-}
-
-public class CastStartManaFlowObject
-{
-    public PhysicalProperties physicalProperties;
-    public SpellSlot spellSlot;
 }

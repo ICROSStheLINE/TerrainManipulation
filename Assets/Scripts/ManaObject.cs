@@ -10,6 +10,8 @@ public class ManaObject : MonoBehaviour
     // bool attachedToEgg = false;
     Transform eggTransform;
     Egg eggProps;
+    public SpellSlot spellSlotInfo;
+    // ^ It might lowkey be bloat to add the manaObject's spellslot info here lol
 
     void Awake()
     {
