@@ -132,42 +132,57 @@ public class CastLogic : MonoBehaviour
 
     SpellSlot.SpellType GetOpenParenthesisForEgg(SpellSlot.SpellType spellType)
     {
+        if (spellType == SpellSlot.SpellType.EggA)
+        { return SpellSlot.SpellType.OpenParenthesisA; }
+
         if (spellType == SpellSlot.SpellType.EggB)
         { return SpellSlot.SpellType.OpenParenthesisB; }
 
-        return SpellSlot.SpellType.OpenParenthesisA;
+        return SpellSlot.SpellType.Empty;
     }
 
     SpellSlot.SpellType GetCloseParenthesisForEgg(SpellSlot.SpellType spellType)
     {
+        if (spellType == SpellSlot.SpellType.EggA)
+        { return SpellSlot.SpellType.CloseParenthesisA; }
+
         if (spellType == SpellSlot.SpellType.EggB)
         { return SpellSlot.SpellType.CloseParenthesisB; }
 
-        return SpellSlot.SpellType.CloseParenthesisA;
+        return SpellSlot.SpellType.Empty;
     }
 
     SpellSlot.SpellType GetCloseParenthesisForOpenParenthesis(SpellSlot.SpellType spellType)
     {
+        if (spellType == SpellSlot.SpellType.OpenParenthesisA)
+        { return SpellSlot.SpellType.CloseParenthesisA; }
+
         if (spellType == SpellSlot.SpellType.OpenParenthesisB)
         { return SpellSlot.SpellType.CloseParenthesisB; }
 
-        return SpellSlot.SpellType.CloseParenthesisA;
+        return SpellSlot.SpellType.Empty;
     }
 
     string GetEggName(SpellSlot.SpellType spellType)
     {
+        if (spellType == SpellSlot.SpellType.EggA)
+        { return "EggA"; }
+
         if (spellType == SpellSlot.SpellType.EggB)
         { return "EggB"; }
 
-        return "EggA";
+        return null;
     }
 
     string GetEggNameForOpenParenthesis(SpellSlot.SpellType spellType)
     {
+        if (spellType == SpellSlot.SpellType.OpenParenthesisA)
+        { return "EggA"; }
+
         if (spellType == SpellSlot.SpellType.OpenParenthesisB)
         { return "EggB"; }
 
-        return "EggA";
+        return null;
     }
 
     void CastStart()
