@@ -12,26 +12,29 @@ public class SpellMenu : MonoBehaviour
     float buttonHeight = 75;
     public static int castStartWidth = 15;
     public static int castStartHeight = 1;
-    float castStartStartingPointX = -275;
+    float castStartStartingPointX = -270;
     // float castStartStartingPointY = 225;
     float castStartStartingPointY = 375;
     GameObject castStartLabel;
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
+    public static int castCloseWidth = 1;
+    float castCloseStartingPointX = -270;
+    float castCloseStartingPointY = 200;
+    public List<SpellSlot> castCloseMap = new List<SpellSlot>();
     public static int castMiddleWidth = 1;
-    float castMiddleStartingPointX = -300;
+    float castMiddleStartingPointX = 300;
     float castMiddleStartingPointY = 200;
-    // public List<SpellSlot> castCloseMap = new List<SpellSlot>();
     public List<SpellSlot> castMiddleMap = new List<SpellSlot>();
     // public List<SpellSlot> castFarMap = new List<SpellSlot>();
     public static int castLeftWidth = 1;
-    float castLeftStartingPointX = -200;
-    float castLeftStartingPointY = 200;
+    float castLeftStartingPointX = 300;
+    float castLeftStartingPointY = 25;
     public List<SpellSlot> castLeftMap = new List<SpellSlot>();
     // public List<SpellSlot> castRightMap = new List<SpellSlot>();
     public static int castContinuousWidth = 5;
     public static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
-    float castContinuousStartingPointY = 0;
+    float castContinuousStartingPointY = -300;
     GameObject castContinuousLabel;
     public SpellSlot[,] castContinuousMap = new SpellSlot[castContinuousHeight,castContinuousWidth];
     [SerializeField] Transform canvasTransform;
@@ -133,6 +136,23 @@ public class SpellMenu : MonoBehaviour
 
     void PopulateSpellMenuMaps()
     {
+        for (int i = 0; i < castCloseWidth; i++)
+        {
+            castCloseMap.Add(new SpellSlot(true));
+            castCloseMap[i].uiObject = Instantiate(buttonGameObjectPrefab);
+            castCloseMap[i].uiObject.transform.SetParent(canvasTransform, false);
+            RectTransform rect = castCloseMap[i].uiObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(
+                castCloseStartingPointX + buttonWidth,
+                castCloseStartingPointY + buttonHeight
+            );
+            castCloseMap[i].uiObject.SetActive(false);
+            Button button = castCloseMap[i].uiObject.GetComponent<Button>();
+            SpellSlot spellSlot = castCloseMap[i];
+            button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+            castCloseMap[i].uiObject.name = "castCloseButton[" + i + "]";
+        }
+
         for (int i = 0; i < castMiddleWidth; i++)
         {
             castMiddleMap.Add(new SpellSlot(true));
@@ -220,6 +240,11 @@ public class SpellMenu : MonoBehaviour
 
     void OpenSpellMenu(bool openState)
     {
+        for (int i = 0; i < castCloseWidth; i++)
+        {
+            castCloseMap[i].uiObject.SetActive(openState);
+        }
+
         for (int i = 0; i < castMiddleWidth; i++)
         {
             castMiddleMap[i].uiObject.SetActive(openState);
