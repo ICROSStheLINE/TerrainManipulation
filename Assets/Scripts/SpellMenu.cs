@@ -12,10 +12,19 @@ public class SpellMenu : MonoBehaviour
     float buttonHeight = 75;
     public static int castStartWidth = 15;
     public static int castStartHeight = 1;
-    float castStartStartingPointX = -300;
-    float castStartStartingPointY = 200;
+    float castStartStartingPointX = -275;
+    float castStartStartingPointY = 225;
+    // float castStartStartingPointY = 375;
     GameObject castStartLabel;
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
+    public static int castMiddleWidth = 1;
+    float castMiddleStartingPointX = -300;
+    float castMiddleStartingPointY = 200;
+    public List<SpellSlot> castCloseMap = new List<SpellSlot>();
+    public List<SpellSlot> castMiddleMap = new List<SpellSlot>();
+    public List<SpellSlot> castFarMap = new List<SpellSlot>();
+    public List<SpellSlot> castLeftMap = new List<SpellSlot>();
+    public List<SpellSlot> castRightMap = new List<SpellSlot>();
     public static int castContinuousWidth = 5;
     public static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
@@ -121,6 +130,23 @@ public class SpellMenu : MonoBehaviour
 
     void PopulateSpellMenuMaps()
     {
+        for (int i = 0; i < castMiddleWidth; i++)
+        {
+            castMiddleMap.Add(new SpellSlot(true));
+            castMiddleMap[i].uiObject = Instantiate(buttonGameObjectPrefab);
+            castMiddleMap[i].uiObject.transform.SetParent(canvasTransform, false);
+            RectTransform rect = castMiddleMap[i].uiObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(
+                castMiddleStartingPointX + buttonWidth,
+                castMiddleStartingPointY + buttonHeight
+            );
+            castMiddleMap[i].uiObject.SetActive(false);
+            Button button = castMiddleMap[i].uiObject.GetComponent<Button>();
+            SpellSlot spellSlot = castMiddleMap[i];
+            button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+            castMiddleMap[i].uiObject.name = "spellStartButton[1]";
+        }
+
         for (int i = 0; i < castStartHeight; i++)
         {
             for (int j = 0; j < castStartWidth; j++)
@@ -174,6 +200,11 @@ public class SpellMenu : MonoBehaviour
 
     void OpenSpellMenu(bool openState)
     {
+        for (int i = 0; i < castMiddleWidth; i++)
+        {
+            castMiddleMap[i].uiObject.SetActive(openState);
+        }
+
         castStartLabel.SetActive(openState);
         for (int i = 0; i < castStartHeight; i++) {
             for (int j = 0; j < castStartWidth; j++) {
