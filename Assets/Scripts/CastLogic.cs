@@ -73,6 +73,7 @@ public class CastLogic : MonoBehaviour
 
     IEnumerator Cast()
     {
+        CastStartLeft();
         CastStart();
         yield return new WaitForSeconds(0.25f);
 
@@ -185,8 +186,124 @@ public class CastLogic : MonoBehaviour
         return null;
     }
 
+    void CastStartLeft()
+    {
+        Vector3 leftCastOffset = handTransform.right;
+        Vector3 spawnPosition = handTransform.position + handTransform.up;
+        for (int i = 0; i < SpellMenu.castLeftWidth; i++)
+        {
+            if (spellMenu.castLeftMap[i].spellType == SpellSlot.SpellType.Empty)
+            { continue; }
+            if (spellMenu.castLeftMap[i].spellType == SpellSlot.SpellType.Ball)
+            {
+                if (manaManager.manaAmount <= 0)
+                { continue; }
+                
+                GameObject ballObject = Instantiate(ballPrefab, spawnPosition + leftCastOffset, transform.rotation);
+                PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
+                ballPhysicalProperties.manaResistance = spellMenu.castLeftMap[i].manaResistancePercent / 100f;
+                ManaObject manaObject = ballObject.transform.GetComponent<ManaObject>();
+                manaObject.AttachToHand(handTransform);
+                activeManaObjects.Add(manaObject);
+                manaObject.spellSlotInfo = spellMenu.castLeftMap[i];
+                manaManager.LoseMana(5);
+            }
+            if (IsEggSpell(spellMenu.castLeftMap[i].spellType)) // if spell is an egg, then 
+            {
+                if (manaManager.manaAmount <= 0)
+                { continue; }
+                SpellSlot.SpellType eggSpellType = spellMenu.castLeftMap[i].spellType;
+                SpellSlot.SpellType openParenthesis = GetOpenParenthesisForEgg(eggSpellType);
+                SpellSlot.SpellType closeParenthesis = GetCloseParenthesisForEgg(eggSpellType);
+                GameObject spawnedEgg = Instantiate(eggPrefab, spawnPosition + leftCastOffset, transform.rotation);
+                spawnedEgg.transform.name = GetEggName(eggSpellType);
+                PhysicalProperties physicalProperties = spawnedEgg.GetComponent<PhysicalProperties>();
+                physicalProperties.manaResistance = spellMenu.castLeftMap[i].manaResistancePercent / 100f;
+                ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
+                manaObject.AttachToHand(handTransform);
+                activeManaObjects.Add(manaObject);
+                manaObject.spellSlotInfo = spellMenu.castLeftMap[i];
+                manaManager.LoseMana(5);
+                int remainingIndices = spellMenu.castLeftMap.Count - 1 - i;
+                if (remainingIndices <= 2)
+                { continue; }
+                int openParenthesesPassed = 0;
+                int closeParenthesesPassed = 0;
+                int closeParenthesisIndex = 0;
+                for (int eggIndex = i + 1; eggIndex < spellMenu.castLeftMap.Count; eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
+                {
+                    if (spellMenu.castLeftMap[eggIndex].spellType == openParenthesis)
+                    {
+                        openParenthesesPassed++;
+                    }
+                    if (spellMenu.castLeftMap[eggIndex].spellType == closeParenthesis)
+                    {
+                        closeParenthesesPassed++;
+                        closeParenthesisIndex = eggIndex;
+                    }
+                    if (closeParenthesesPassed > openParenthesesPassed)
+                    { break; }
+                    if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
+                    { break; }
+                }
+                if (openParenthesesPassed != closeParenthesesPassed)
+                { continue; }
+                if (openParenthesesPassed == 0)
+                { continue; }
+                for (int eggIndex = i + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
+                {
+                    if (spellMenu.castLeftMap[eggIndex].spellType == SpellSlot.SpellType.Empty)
+                    { continue; }
+                    if (spellMenu.castLeftMap[eggIndex].spellType == SpellSlot.SpellType.Ball)
+                    {
+                        if (manaManager.manaAmount <= 0) 
+                        { continue; }
+                        GameObject ballObject = Instantiate(ballPrefab, spawnedEgg.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                        PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
+                        ballPhysicalProperties.manaResistance = spellMenu.castLeftMap[eggIndex].manaResistancePercent / 100f;
+                        ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
+                        innerManaObject.AttachToEgg(spawnedEgg.transform);
+                        manaObject.spellSlotInfo = spellMenu.castLeftMap[eggIndex];
+                        manaManager.LoseMana(5);
+                    }
+                    if (spellMenu.castLeftMap[eggIndex].spellType == SpellSlot.SpellType.Spark)
+                    {
+                        if (manaManager.manaAmount <= 0)
+                        { continue; }
+                        GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position, transform.rotation);
+                        sparkObject.transform.SetParent(spawnedEgg.transform);
+                        manaObject.spellSlotInfo = spellMenu.castLeftMap[eggIndex];
+                        manaManager.LoseMana(5);
+                    }
+                    if (IsEggSpell(spellMenu.castLeftMap[eggIndex].spellType))
+                    {
+                        if (manaManager.manaAmount <= 0)
+                        { continue; }
+                        GameObject innerEggObject = Instantiate(innerEggPrefab, spawnedEgg.transform.position, transform.rotation);
+                        PhysicalProperties innerEggPhysicalProps = innerEggObject.GetComponent<PhysicalProperties>();
+                        innerEggPhysicalProps.manaResistance = spellMenu.castLeftMap[eggIndex].manaResistancePercent / 100f;
+                        ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
+                        innerManaObject.AttachToEgg(spawnedEgg.transform);
+                        manaObject.spellSlotInfo = spellMenu.castLeftMap[eggIndex];
+                        manaManager.LoseMana(5);
+                    }
+                }
+                i = closeParenthesisIndex;
+            }
+            if (spellMenu.castLeftMap[i].spellType == SpellSlot.SpellType.Spark)
+            {
+                if (manaManager.manaAmount <= 0)
+                { continue; }
+                
+                Instantiate(sparkPrefab, spawnPosition + leftCastOffset, transform.rotation);
+                manaManager.LoseMana(5);
+            }
+        }
+    }
+
     void CastStart()
     {
+        Vector3 spawnPosition = handTransform.position + handTransform.up;
         for (int i = 0; i < SpellMenu.castStartHeight; i++)
         {
             for (int j = 0; j < SpellMenu.castStartWidth; j++)
@@ -198,7 +315,7 @@ public class CastLogic : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    GameObject ballObject = Instantiate(ballPrefab, handTransform.position + handTransform.up, transform.rotation);
+                    GameObject ballObject = Instantiate(ballPrefab, spawnPosition, transform.rotation);
                     PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
                     ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
                     ManaObject manaObject = ballObject.transform.GetComponent<ManaObject>();
@@ -215,7 +332,7 @@ public class CastLogic : MonoBehaviour
                     SpellSlot.SpellType eggSpellType = spellMenu.castStartMap[i,j].spellType;
                     SpellSlot.SpellType openParenthesis = GetOpenParenthesisForEgg(eggSpellType);
                     SpellSlot.SpellType closeParenthesis = GetCloseParenthesisForEgg(eggSpellType);
-                    GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
+                    GameObject spawnedEgg = Instantiate(eggPrefab, spawnPosition, transform.rotation);
                     spawnedEgg.transform.name = GetEggName(eggSpellType);
                     PhysicalProperties physicalProperties = spawnedEgg.GetComponent<PhysicalProperties>();
                     physicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
@@ -269,7 +386,7 @@ public class CastLogic : MonoBehaviour
                             ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
                             manaManager.LoseMana(5);
                         }
                         if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
@@ -278,7 +395,7 @@ public class CastLogic : MonoBehaviour
                             { continue; }
                             GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position, transform.rotation);
                             sparkObject.transform.SetParent(spawnedEgg.transform);
-                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
                             manaManager.LoseMana(5);
                         }
                         if (IsEggSpell(spellMenu.castStartMap[i,eggIndex].spellType))
@@ -290,7 +407,7 @@ public class CastLogic : MonoBehaviour
                             innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
                             manaManager.LoseMana(5);
                         }
                     }
@@ -301,7 +418,7 @@ public class CastLogic : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    Instantiate(sparkPrefab, transform.position + transform.forward, transform.rotation);
+                    Instantiate(sparkPrefab, spawnPosition, transform.rotation);
                     manaManager.LoseMana(5);
                 }
             }
@@ -310,6 +427,7 @@ public class CastLogic : MonoBehaviour
 
     void CastContinuous()
     {
+        Vector3 spawnPosition = handTransform.position + handTransform.up;
         for (int i = 0; i < SpellMenu.castContinuousHeight; i++)
         {
             for (int j = 0; j < SpellMenu.castContinuousWidth; j++)
@@ -321,7 +439,7 @@ public class CastLogic : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    GameObject ballObject = Instantiate(ballPrefab, handTransform.position + handTransform.up, transform.rotation);
+                    GameObject ballObject = Instantiate(ballPrefab, spawnPosition, transform.rotation);
                     // ManaObject manaObject = ballObject.GetComponent<ManaObject>();
                     // manaObject.AttachToHand(handTransform);
                     // activeManaObjects.Add(manaObject);
@@ -335,7 +453,7 @@ public class CastLogic : MonoBehaviour
                     SpellSlot.SpellType eggSpellType = spellMenu.castContinuousMap[i,j].spellType;
                     SpellSlot.SpellType openParenthesis = GetOpenParenthesisForEgg(eggSpellType);
                     SpellSlot.SpellType closeParenthesis = GetCloseParenthesisForEgg(eggSpellType);
-                    GameObject spawnedEgg = Instantiate(eggPrefab, handTransform.position + handTransform.up, transform.rotation);
+                    GameObject spawnedEgg = Instantiate(eggPrefab, spawnPosition, transform.rotation);
                     spawnedEgg.transform.name = GetEggName(eggSpellType);
                     // ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     // manaObject.AttachToHand(handTransform);
@@ -399,7 +517,7 @@ public class CastLogic : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    Instantiate(sparkPrefab, transform.position + transform.forward, transform.rotation);
+                    Instantiate(sparkPrefab, spawnPosition, transform.rotation);
                     manaManager.LoseMana(5);
                 }
                 if (IsOpenParenthesisSpell(spellMenu.castContinuousMap[i,j].spellType))

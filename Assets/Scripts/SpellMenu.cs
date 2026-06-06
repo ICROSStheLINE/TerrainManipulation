@@ -13,18 +13,21 @@ public class SpellMenu : MonoBehaviour
     public static int castStartWidth = 15;
     public static int castStartHeight = 1;
     float castStartStartingPointX = -275;
-    float castStartStartingPointY = 225;
-    // float castStartStartingPointY = 375;
+    // float castStartStartingPointY = 225;
+    float castStartStartingPointY = 375;
     GameObject castStartLabel;
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
     public static int castMiddleWidth = 1;
     float castMiddleStartingPointX = -300;
     float castMiddleStartingPointY = 200;
-    public List<SpellSlot> castCloseMap = new List<SpellSlot>();
+    // public List<SpellSlot> castCloseMap = new List<SpellSlot>();
     public List<SpellSlot> castMiddleMap = new List<SpellSlot>();
-    public List<SpellSlot> castFarMap = new List<SpellSlot>();
+    // public List<SpellSlot> castFarMap = new List<SpellSlot>();
+    public static int castLeftWidth = 1;
+    float castLeftStartingPointX = -200;
+    float castLeftStartingPointY = 200;
     public List<SpellSlot> castLeftMap = new List<SpellSlot>();
-    public List<SpellSlot> castRightMap = new List<SpellSlot>();
+    // public List<SpellSlot> castRightMap = new List<SpellSlot>();
     public static int castContinuousWidth = 5;
     public static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
@@ -144,7 +147,24 @@ public class SpellMenu : MonoBehaviour
             Button button = castMiddleMap[i].uiObject.GetComponent<Button>();
             SpellSlot spellSlot = castMiddleMap[i];
             button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
-            castMiddleMap[i].uiObject.name = "spellStartButton[1]";
+            castMiddleMap[i].uiObject.name = "castMiddleButton[" + i + "]";
+        }
+
+        for (int i = 0; i < castLeftWidth; i++)
+        {
+            castLeftMap.Add(new SpellSlot(true));
+            castLeftMap[i].uiObject = Instantiate(buttonGameObjectPrefab);
+            castLeftMap[i].uiObject.transform.SetParent(canvasTransform, false);
+            RectTransform rect = castLeftMap[i].uiObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(
+                castLeftStartingPointX + buttonWidth,
+                castLeftStartingPointY + buttonHeight
+            );
+            castLeftMap[i].uiObject.SetActive(false);
+            Button button = castLeftMap[i].uiObject.GetComponent<Button>();
+            SpellSlot spellSlot = castLeftMap[i];
+            button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+            castLeftMap[i].uiObject.name = "castLeftButton[" + i + "]";
         }
 
         for (int i = 0; i < castStartHeight; i++)
@@ -203,6 +223,11 @@ public class SpellMenu : MonoBehaviour
         for (int i = 0; i < castMiddleWidth; i++)
         {
             castMiddleMap[i].uiObject.SetActive(openState);
+        }
+
+        for (int i = 0; i < castLeftWidth; i++)
+        {
+            castLeftMap[i].uiObject.SetActive(openState);
         }
 
         castStartLabel.SetActive(openState);
