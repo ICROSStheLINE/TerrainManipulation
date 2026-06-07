@@ -10,8 +10,8 @@ public class SpellMenu : MonoBehaviour
     [SerializeField] GameObject buttonGameObjectPrefab;
     float buttonWidth = 75;
     float buttonHeight = 75;
-    public static int castStartWidth = 15;
-    public static int castStartHeight = 1;
+    public static int castStartWidth = 0;
+    public static int castStartHeight = 0;
     float castStartStartingPointX = -270;
     // float castStartStartingPointY = 225;
     float castStartStartingPointY = 375;
@@ -151,7 +151,7 @@ public class SpellMenu : MonoBehaviour
             castCloseMap[i].uiObject.transform.SetParent(canvasTransform, false);
             RectTransform rect = castCloseMap[i].uiObject.GetComponent<RectTransform>();
             rect.anchoredPosition = new Vector2(
-                castCloseStartingPointX + buttonWidth,
+                castCloseStartingPointX + (buttonWidth * i),
                 castCloseStartingPointY + buttonHeight
             );
             castCloseMap[i].uiObject.SetActive(false);
@@ -168,7 +168,7 @@ public class SpellMenu : MonoBehaviour
             castMiddleMap[i].uiObject.transform.SetParent(canvasTransform, false);
             RectTransform rect = castMiddleMap[i].uiObject.GetComponent<RectTransform>();
             rect.anchoredPosition = new Vector2(
-                castMiddleStartingPointX + buttonWidth,
+                castMiddleStartingPointX + (buttonWidth * i),
                 castMiddleStartingPointY + buttonHeight
             );
             castMiddleMap[i].uiObject.SetActive(false);
@@ -185,7 +185,7 @@ public class SpellMenu : MonoBehaviour
             castFarMap[i].uiObject.transform.SetParent(canvasTransform, false);
             RectTransform rect = castFarMap[i].uiObject.GetComponent<RectTransform>();
             rect.anchoredPosition = new Vector2(
-                castFarStartingPointX + buttonWidth,
+                castFarStartingPointX + (buttonWidth * i),
                 castFarStartingPointY + buttonHeight
             );
             castFarMap[i].uiObject.SetActive(false);
@@ -202,7 +202,7 @@ public class SpellMenu : MonoBehaviour
             castLeftMap[i].uiObject.transform.SetParent(canvasTransform, false);
             RectTransform rect = castLeftMap[i].uiObject.GetComponent<RectTransform>();
             rect.anchoredPosition = new Vector2(
-                castLeftStartingPointX + buttonWidth,
+                castLeftStartingPointX + (buttonWidth * i),
                 castLeftStartingPointY + buttonHeight
             );
             castLeftMap[i].uiObject.SetActive(false);
@@ -219,7 +219,7 @@ public class SpellMenu : MonoBehaviour
             castRightMap[i].uiObject.transform.SetParent(canvasTransform, false);
             RectTransform rect = castRightMap[i].uiObject.GetComponent<RectTransform>();
             rect.anchoredPosition = new Vector2(
-                castRightStartingPointX + buttonWidth,
+                castRightStartingPointX + (buttonWidth * i),
                 castRightStartingPointY + buttonHeight
             );
             castRightMap[i].uiObject.SetActive(false);
