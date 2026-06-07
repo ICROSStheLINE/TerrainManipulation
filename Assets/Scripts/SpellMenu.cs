@@ -17,20 +17,28 @@ public class SpellMenu : MonoBehaviour
     float castStartStartingPointY = 375;
     GameObject castStartLabel;
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
+    // Cast Close
     public static int castCloseWidth = 1;
     float castCloseStartingPointX = -270;
     float castCloseStartingPointY = 200;
     public List<SpellSlot> castCloseMap = new List<SpellSlot>();
+    // Cast Middle
     public static int castMiddleWidth = 1;
     float castMiddleStartingPointX = 300;
     float castMiddleStartingPointY = 200;
     public List<SpellSlot> castMiddleMap = new List<SpellSlot>();
-    // public List<SpellSlot> castFarMap = new List<SpellSlot>();
+    public static int castFarWidth = 1;
+    float castFarStartingPointX = -270;
+    float castFarStartingPointY = 25;
+    public List<SpellSlot> castFarMap = new List<SpellSlot>();
     public static int castLeftWidth = 1;
     float castLeftStartingPointX = 300;
     float castLeftStartingPointY = 25;
     public List<SpellSlot> castLeftMap = new List<SpellSlot>();
-    // public List<SpellSlot> castRightMap = new List<SpellSlot>();
+    public static int castRightWidth = 1;
+    float castRightStartingPointX = -270;
+    float castRightStartingPointY = -150;
+    public List<SpellSlot> castRightMap = new List<SpellSlot>();
     public static int castContinuousWidth = 5;
     public static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
@@ -170,6 +178,23 @@ public class SpellMenu : MonoBehaviour
             castMiddleMap[i].uiObject.name = "castMiddleButton[" + i + "]";
         }
 
+        for (int i = 0; i < castFarWidth; i++)
+        {
+            castFarMap.Add(new SpellSlot(true));
+            castFarMap[i].uiObject = Instantiate(buttonGameObjectPrefab);
+            castFarMap[i].uiObject.transform.SetParent(canvasTransform, false);
+            RectTransform rect = castFarMap[i].uiObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(
+                castFarStartingPointX + buttonWidth,
+                castFarStartingPointY + buttonHeight
+            );
+            castFarMap[i].uiObject.SetActive(false);
+            Button button = castFarMap[i].uiObject.GetComponent<Button>();
+            SpellSlot spellSlot = castFarMap[i];
+            button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+            castFarMap[i].uiObject.name = "castFarButton[" + i + "]";
+        }
+
         for (int i = 0; i < castLeftWidth; i++)
         {
             castLeftMap.Add(new SpellSlot(true));
@@ -185,6 +210,23 @@ public class SpellMenu : MonoBehaviour
             SpellSlot spellSlot = castLeftMap[i];
             button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
             castLeftMap[i].uiObject.name = "castLeftButton[" + i + "]";
+        }
+
+        for (int i = 0; i < castRightWidth; i++)
+        {
+            castRightMap.Add(new SpellSlot(true));
+            castRightMap[i].uiObject = Instantiate(buttonGameObjectPrefab);
+            castRightMap[i].uiObject.transform.SetParent(canvasTransform, false);
+            RectTransform rect = castRightMap[i].uiObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(
+                castRightStartingPointX + buttonWidth,
+                castRightStartingPointY + buttonHeight
+            );
+            castRightMap[i].uiObject.SetActive(false);
+            Button button = castRightMap[i].uiObject.GetComponent<Button>();
+            SpellSlot spellSlot = castRightMap[i];
+            button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+            castRightMap[i].uiObject.name = "castRightButton[" + i + "]";
         }
 
         for (int i = 0; i < castStartHeight; i++)
@@ -250,9 +292,19 @@ public class SpellMenu : MonoBehaviour
             castMiddleMap[i].uiObject.SetActive(openState);
         }
 
+        for (int i = 0; i < castFarWidth; i++)
+        {
+            castFarMap[i].uiObject.SetActive(openState);
+        }
+
         for (int i = 0; i < castLeftWidth; i++)
         {
             castLeftMap[i].uiObject.SetActive(openState);
+        }
+
+        for (int i = 0; i < castRightWidth; i++)
+        {
+            castRightMap[i].uiObject.SetActive(openState);
         }
 
         castStartLabel.SetActive(openState);
