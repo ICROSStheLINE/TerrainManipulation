@@ -19,25 +19,25 @@ public class SpellMenu : MonoBehaviour
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
     // Cast Close
     public static int castCloseWidth = 1;
-    float castCloseStartingPointX = -270;
-    float castCloseStartingPointY = 200;
+    float castCloseStartingPointX = 200;
+    float castCloseStartingPointY = -200;
     public List<SpellSlot> castCloseMap = new List<SpellSlot>();
     // Cast Middle
     public static int castMiddleWidth = 1;
-    float castMiddleStartingPointX = 300;
-    float castMiddleStartingPointY = 200;
+    float castMiddleStartingPointX = 200;
+    float castMiddleStartingPointY = 50;
     public List<SpellSlot> castMiddleMap = new List<SpellSlot>();
     public static int castFarWidth = 1;
-    float castFarStartingPointX = -270;
-    float castFarStartingPointY = 25;
+    float castFarStartingPointX = 200;
+    float castFarStartingPointY = 300;
     public List<SpellSlot> castFarMap = new List<SpellSlot>();
     public static int castLeftWidth = 1;
-    float castLeftStartingPointX = 300;
-    float castLeftStartingPointY = 25;
+    float castLeftStartingPointX = -200;
+    float castLeftStartingPointY = 50;
     public List<SpellSlot> castLeftMap = new List<SpellSlot>();
     public static int castRightWidth = 1;
-    float castRightStartingPointX = -270;
-    float castRightStartingPointY = -150;
+    float castRightStartingPointX = 600;
+    float castRightStartingPointY = 50;
     public List<SpellSlot> castRightMap = new List<SpellSlot>();
     public static int castContinuousWidth = 5;
     public static int castContinuousHeight = 1;
