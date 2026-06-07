@@ -19,8 +19,8 @@ public class SpellMenu : MonoBehaviour
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
     // Cast Close
     public static int castCloseWidth = 1;
-    float castCloseStartingPointX = 200;
-    float castCloseStartingPointY = -200;
+    float castCloseStartingPointX = 900;
+    float castCloseStartingPointY = -75;
     public List<SpellSlot> castCloseMap = new List<SpellSlot>();
     // Cast Middle
     public static int castMiddleWidth = 1;
@@ -28,8 +28,8 @@ public class SpellMenu : MonoBehaviour
     float castMiddleStartingPointY = 50;
     public List<SpellSlot> castMiddleMap = new List<SpellSlot>();
     public static int castFarWidth = 1;
-    float castFarStartingPointX = 200;
-    float castFarStartingPointY = 300;
+    float castFarStartingPointX = 900;
+    float castFarStartingPointY = 175;
     public List<SpellSlot> castFarMap = new List<SpellSlot>();
     public static int castLeftWidth = 1;
     float castLeftStartingPointX = -200;
@@ -39,6 +39,14 @@ public class SpellMenu : MonoBehaviour
     float castRightStartingPointX = 600;
     float castRightStartingPointY = 50;
     public List<SpellSlot> castRightMap = new List<SpellSlot>();
+    public static int castUpWidth = 1;
+    float castUpStartingPointX = 200;
+    float castUpStartingPointY = 300;
+    public List<SpellSlot> castUpMap = new List<SpellSlot>();
+    public static int castDownWidth = 1;
+    float castDownStartingPointX = 200;
+    float castDownStartingPointY = -200;
+    public List<SpellSlot> castDownMap = new List<SpellSlot>();
     public static int castContinuousWidth = 5;
     public static int castContinuousHeight = 1;
     float castContinuousStartingPointX = 100;
@@ -229,6 +237,40 @@ public class SpellMenu : MonoBehaviour
             castRightMap[i].uiObject.name = "castRightButton[" + i + "]";
         }
 
+        for (int i = 0; i < castUpWidth; i++)
+        {
+            castUpMap.Add(new SpellSlot(true));
+            castUpMap[i].uiObject = Instantiate(buttonGameObjectPrefab);
+            castUpMap[i].uiObject.transform.SetParent(canvasTransform, false);
+            RectTransform rect = castUpMap[i].uiObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(
+                castUpStartingPointX + (buttonWidth * i),
+                castUpStartingPointY + buttonHeight
+            );
+            castUpMap[i].uiObject.SetActive(false);
+            Button button = castUpMap[i].uiObject.GetComponent<Button>();
+            SpellSlot spellSlot = castUpMap[i];
+            button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+            castUpMap[i].uiObject.name = "castUpButton[" + i + "]";
+        }
+
+        for (int i = 0; i < castDownWidth; i++)
+        {
+            castDownMap.Add(new SpellSlot(true));
+            castDownMap[i].uiObject = Instantiate(buttonGameObjectPrefab);
+            castDownMap[i].uiObject.transform.SetParent(canvasTransform, false);
+            RectTransform rect = castDownMap[i].uiObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(
+                castDownStartingPointX + (buttonWidth * i),
+                castDownStartingPointY + buttonHeight
+            );
+            castDownMap[i].uiObject.SetActive(false);
+            Button button = castDownMap[i].uiObject.GetComponent<Button>();
+            SpellSlot spellSlot = castDownMap[i];
+            button.onClick.AddListener(delegate {InteractWithSlot(spellSlot);} );
+            castDownMap[i].uiObject.name = "castDownButton[" + i + "]";
+        }
+
         for (int i = 0; i < castStartHeight; i++)
         {
             for (int j = 0; j < castStartWidth; j++)
@@ -305,6 +347,16 @@ public class SpellMenu : MonoBehaviour
         for (int i = 0; i < castRightWidth; i++)
         {
             castRightMap[i].uiObject.SetActive(openState);
+        }
+
+        for (int i = 0; i < castUpWidth; i++)
+        {
+            castUpMap[i].uiObject.SetActive(openState);
+        }
+
+        for (int i = 0; i < castDownWidth; i++)
+        {
+            castDownMap[i].uiObject.SetActive(openState);
         }
 
         castStartLabel.SetActive(openState);
