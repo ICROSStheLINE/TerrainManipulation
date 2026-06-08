@@ -1003,6 +1003,7 @@ public class CastLogic : MonoBehaviour
         Vector3 spawnPosition = handTransform.position + handTransform.up;
         for (int i = 0; i < SpellMenu.castStartHeight; i++)
         {
+            Vector3 spawnOffset = Vector3.zero;
             for (int j = 0; j < SpellMenu.castStartWidth; j++)
             {
                 if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.Empty)
@@ -1012,7 +1013,7 @@ public class CastLogic : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    GameObject ballObject = Instantiate(ballPrefab, spawnPosition, transform.rotation);
+                    GameObject ballObject = Instantiate(ballPrefab, spawnPosition + spawnOffset, transform.rotation);
                     PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
                     ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
                     ManaObject manaObject = ballObject.transform.GetComponent<ManaObject>();
@@ -1029,7 +1030,7 @@ public class CastLogic : MonoBehaviour
                     SpellSlot.SpellType eggSpellType = spellMenu.castStartMap[i,j].spellType;
                     SpellSlot.SpellType openParenthesis = GetOpenParenthesisForEgg(eggSpellType);
                     SpellSlot.SpellType closeParenthesis = GetCloseParenthesisForEgg(eggSpellType);
-                    GameObject spawnedEgg = Instantiate(eggPrefab, spawnPosition, transform.rotation);
+                    GameObject spawnedEgg = Instantiate(eggPrefab, spawnPosition + spawnOffset, transform.rotation);
                     spawnedEgg.transform.name = GetEggName(eggSpellType);
                     PhysicalProperties physicalProperties = spawnedEgg.GetComponent<PhysicalProperties>();
                     physicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
@@ -1115,8 +1116,16 @@ public class CastLogic : MonoBehaviour
                     if (manaManager.manaAmount <= 0)
                     { continue; }
                     
-                    Instantiate(sparkPrefab, spawnPosition, transform.rotation);
+                    Instantiate(sparkPrefab, spawnPosition + spawnOffset, transform.rotation);
                     manaManager.LoseMana(5);
+                }
+                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.XOpenParenthesis)
+                {
+                    spawnOffset += -handTransform.right;
+                }
+                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.XCloseParenthesis)
+                {
+                    spawnOffset += handTransform.right;
                 }
             }
         }

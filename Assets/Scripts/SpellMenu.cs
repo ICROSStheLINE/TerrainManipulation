@@ -10,40 +10,40 @@ public class SpellMenu : MonoBehaviour
     [SerializeField] GameObject buttonGameObjectPrefab;
     float buttonWidth = 75;
     float buttonHeight = 75;
-    public static int castStartWidth = 0;
-    public static int castStartHeight = 0;
+    public static int castStartWidth = 10;
+    public static int castStartHeight = 1;
     float castStartStartingPointX = -270;
     // float castStartStartingPointY = 225;
     float castStartStartingPointY = 375;
     GameObject castStartLabel;
     public SpellSlot[,] castStartMap = new SpellSlot[castStartHeight,castStartWidth];
     // Cast Close
-    public static int castCloseWidth = 1;
+    public static int castCloseWidth = 0;
     float castCloseStartingPointX = 900;
     float castCloseStartingPointY = -75;
     public List<SpellSlot> castCloseMap = new List<SpellSlot>();
     // Cast Middle
-    public static int castMiddleWidth = 1;
+    public static int castMiddleWidth = 0;
     float castMiddleStartingPointX = 200;
     float castMiddleStartingPointY = 50;
     public List<SpellSlot> castMiddleMap = new List<SpellSlot>();
-    public static int castFarWidth = 1;
+    public static int castFarWidth = 0;
     float castFarStartingPointX = 900;
     float castFarStartingPointY = 175;
     public List<SpellSlot> castFarMap = new List<SpellSlot>();
-    public static int castLeftWidth = 1;
+    public static int castLeftWidth = 0;
     float castLeftStartingPointX = -200;
     float castLeftStartingPointY = 50;
     public List<SpellSlot> castLeftMap = new List<SpellSlot>();
-    public static int castRightWidth = 1;
+    public static int castRightWidth = 0;
     float castRightStartingPointX = 600;
     float castRightStartingPointY = 50;
     public List<SpellSlot> castRightMap = new List<SpellSlot>();
-    public static int castUpWidth = 1;
+    public static int castUpWidth = 0;
     float castUpStartingPointX = 200;
     float castUpStartingPointY = 300;
     public List<SpellSlot> castUpMap = new List<SpellSlot>();
-    public static int castDownWidth = 1;
+    public static int castDownWidth = 0;
     float castDownStartingPointX = 200;
     float castDownStartingPointY = -200;
     public List<SpellSlot> castDownMap = new List<SpellSlot>();
@@ -55,7 +55,7 @@ public class SpellMenu : MonoBehaviour
     public SpellSlot[,] castContinuousMap = new SpellSlot[castContinuousHeight,castContinuousWidth];
     [SerializeField] Transform canvasTransform;
     static int inventoryWidth = 3;
-    static int inventoryHeight = 6;
+    static int inventoryHeight = 7;
     float inventoryStartingPointX = -600;
     float inventoryStartingPointY = 0;
     GameObject spellInventoryLabel;
@@ -87,6 +87,8 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[4,2].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[5,2].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[6,0].AssignSpell(SpellSlot.SpellType.XOpenParenthesis);
+        spellInventoryMap[6,1].AssignSpell(SpellSlot.SpellType.XCloseParenthesis);
     }
 
     void Update()
@@ -428,7 +430,11 @@ public class SpellMenu : MonoBehaviour
 public class SpellSlot
 {
     public GameObject uiObject;
-    public enum SpellType { Empty, Ball, Cube, EggA, EggB, OpenParenthesisA, CloseParenthesisA, OpenParenthesisB, CloseParenthesisB, Spark }
+    public enum SpellType { Empty, Ball, Cube, 
+                            EggA, EggB, OpenParenthesisA, 
+                            CloseParenthesisA, OpenParenthesisB, 
+                            CloseParenthesisB, Spark, 
+                            XOpenParenthesis, XCloseParenthesis }
     public enum ManaFlowType { NoManaFlow, ContinuousManaFlow, ManaFlowOnE }
     public SpellType spellType;
     public float manaResistancePercent = 50;
@@ -532,6 +538,10 @@ public class SpellSlot
             { tmp.text = "(B"; }
         if (spellType == SpellType.CloseParenthesisB)
             { tmp.text = ")B"; }
+        if (spellType == SpellType.XOpenParenthesis)
+            { tmp.text = "x("; }
+        if (spellType == SpellType.XCloseParenthesis)
+            { tmp.text = ")x"; }
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontSize = 24;
         tmp.color = Color.black;
@@ -567,6 +577,10 @@ public class SpellSlot
         if (spellType == SpellType.OpenParenthesisB)
         { return false; }
         if (spellType == SpellType.CloseParenthesisB)
+        { return false; }
+        if (spellType == SpellType.XOpenParenthesis)
+        { return false; }
+        if (spellType == SpellType.XCloseParenthesis)
         { return false; }
 
         return true;
