@@ -27,7 +27,7 @@ public class SpellMenu : MonoBehaviour
     public SpellSlot[,] castContinuousMap = new SpellSlot[castContinuousHeight,castContinuousWidth];
     [SerializeField] Transform canvasTransform;
     static int inventoryWidth = 3;
-    static int inventoryHeight = 8;
+    static int inventoryHeight = 5;
     float inventoryStartingPointX = -800;
     float inventoryStartingPointY = -300;
     GameObject spellInventoryLabel;
@@ -41,30 +41,43 @@ public class SpellMenu : MonoBehaviour
         PopulateSpellMenuMaps();
         PopulateSpellInventoryMap();
         PopulateUILabels();
-        spellInventoryMap[0,0].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.EggA);
-        spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
-        spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
-        spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
-        spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
-        spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.EggB);
+        // spellInventoryMap[0,0].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.EggA);
+        // spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
+        // spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
+        // spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
+        // spellInventoryMap[5,0].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
+        // spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.EggB);
+        // spellInventoryMap[1,1].AssignSpell(SpellSlot.SpellType.OpenParenthesisB);
+        // spellInventoryMap[2,1].AssignSpell(SpellSlot.SpellType.CloseParenthesisB);
+        // spellInventoryMap[3,1].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[4,1].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[5,1].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[0,2].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[1,2].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[2,2].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[4,2].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[5,2].AssignSpell(SpellSlot.SpellType.Ball);
+        // spellInventoryMap[6,0].AssignSpell(SpellSlot.SpellType.XOpenParenthesis);
+        // spellInventoryMap[6,1].AssignSpell(SpellSlot.SpellType.XCloseParenthesis);
+        // spellInventoryMap[6,2].AssignSpell(SpellSlot.SpellType.YOpenParenthesis);
+        // spellInventoryMap[7,0].AssignSpell(SpellSlot.SpellType.YCloseParenthesis);
+        // spellInventoryMap[7,1].AssignSpell(SpellSlot.SpellType.ZOpenParenthesis);
+        // spellInventoryMap[7,2].AssignSpell(SpellSlot.SpellType.ZCloseParenthesis);
+        spellInventoryMap[0,0].AssignSpell(SpellSlot.SpellType.EggA);
+        spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
+        spellInventoryMap[0,2].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
+        spellInventoryMap[1,0].AssignSpell(SpellSlot.SpellType.EggB);
         spellInventoryMap[1,1].AssignSpell(SpellSlot.SpellType.OpenParenthesisB);
-        spellInventoryMap[2,1].AssignSpell(SpellSlot.SpellType.CloseParenthesisB);
-        spellInventoryMap[3,1].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[4,1].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[5,1].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[0,2].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[1,2].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[2,2].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[4,2].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[5,2].AssignSpell(SpellSlot.SpellType.Ball);
-        spellInventoryMap[6,0].AssignSpell(SpellSlot.SpellType.XOpenParenthesis);
-        spellInventoryMap[6,1].AssignSpell(SpellSlot.SpellType.XCloseParenthesis);
-        spellInventoryMap[6,2].AssignSpell(SpellSlot.SpellType.YOpenParenthesis);
-        spellInventoryMap[7,0].AssignSpell(SpellSlot.SpellType.YCloseParenthesis);
-        spellInventoryMap[7,1].AssignSpell(SpellSlot.SpellType.ZOpenParenthesis);
-        spellInventoryMap[7,2].AssignSpell(SpellSlot.SpellType.ZCloseParenthesis);
+        spellInventoryMap[1,2].AssignSpell(SpellSlot.SpellType.CloseParenthesisB);
+        spellInventoryMap[2,0].AssignSpell(SpellSlot.SpellType.XOpenParenthesis);
+        spellInventoryMap[2,1].AssignSpell(SpellSlot.SpellType.XCloseParenthesis);
+        spellInventoryMap[2,2].AssignSpell(SpellSlot.SpellType.YOpenParenthesis);
+        spellInventoryMap[3,0].AssignSpell(SpellSlot.SpellType.YCloseParenthesis);
+        spellInventoryMap[3,1].AssignSpell(SpellSlot.SpellType.ZOpenParenthesis);
+        spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.ZCloseParenthesis);
+        spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.Ball);
     }
 
     void Update()
@@ -98,9 +111,13 @@ public class SpellMenu : MonoBehaviour
         if (spellSlot.spellType != SpellSlot.SpellType.Empty &&
             heldSpellSlot.spellType == SpellSlot.SpellType.Empty)
         {
-            heldSpellSlot.spellType = spellSlot.spellType;
-            heldSpellSlot.CopySpellInputs(spellSlot);
-            spellSlot.PickUpSpell();
+            if (spellSlot.uiObject.name.Contains("spellInventoryButton"))
+            {
+                heldSpellSlot.spellType = spellSlot.spellType;
+                heldSpellSlot.CopySpellInputs(spellSlot);
+            }
+            else 
+            { spellSlot.PickUpSpell(); }
             return;
         }
     }
