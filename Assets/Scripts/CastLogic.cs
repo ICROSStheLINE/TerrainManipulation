@@ -275,7 +275,8 @@ public class CastLogic : MonoBehaviour
                             ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
+                            activeManaObjects.Add(innerManaObject);
+                            innerManaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
                             manaManager.LoseMana(5);
                         }
                         if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
@@ -284,7 +285,6 @@ public class CastLogic : MonoBehaviour
                             { continue; }
                             GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position + randomOffset, transform.rotation);
                             sparkObject.transform.SetParent(spawnedEgg.transform);
-                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
                             manaManager.LoseMana(5);
                         }
                         if (IsEggSpell(spellMenu.castStartMap[i,eggIndex].spellType))
@@ -296,7 +296,7 @@ public class CastLogic : MonoBehaviour
                             innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            manaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
+                            innerManaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
                             manaManager.LoseMana(5);
                         }
                     }
