@@ -280,7 +280,7 @@ public class SpellSlot
     public SpellType spellType;
     public float manaResistancePercent = 50;
     public float manaFlowAmount = 1;
-    public ManaFlowType manaFlowType = ManaFlowType.NoManaFlow;
+    public ManaFlowType manaFlowType = ManaFlowType.ManaFlowOnE;
     GameObject spellIcon;
     List<GameObject> spellInputObjects = new List<GameObject>();
     TMP_InputField manaResistanceInput;
@@ -447,7 +447,7 @@ public class SpellSlot
     {
         if (HasManaFlowInput(spellType))
         {
-            CreateManaFlowInput(new Vector2(0, -55));
+            // CreateManaFlowInput(new Vector2(0, -55));
             CreateManaFlowAmountInput(new Vector2(0, -85));
         }
 

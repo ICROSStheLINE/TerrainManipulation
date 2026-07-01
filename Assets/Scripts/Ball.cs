@@ -23,7 +23,7 @@ public class Ball : MonoBehaviour
     {
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial = mat;
+        meshRenderer.sharedMaterial = GetComponent<Renderer>().material;
         // meshCollider = GetComponent<MeshCollider>();
 
         vertices = new List<Vector3>();
