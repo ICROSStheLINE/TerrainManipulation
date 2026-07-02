@@ -12,6 +12,7 @@ public class ManaObject : MonoBehaviour
     Egg eggProps;
     public SpellSlot spellSlotInfo;
     // ^ It might lowkey be bloat to add the manaObject's spellslot info here lol
+    int scrollForwardCount = 0;
 
     void Awake()
     {
@@ -26,10 +27,28 @@ public class ManaObject : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (attachedToHand)
+        {
+            if (Input.mouseScrollDelta.y > 0) // scrolled up
+            {
+                scrollForwardCount++;
+                if (scrollForwardCount > 2) {scrollForwardCount = 2;}
+            }
+            if (Input.mouseScrollDelta.y < 0) // scrolled down
+            {
+                scrollForwardCount--;
+                if (scrollForwardCount < -2) {scrollForwardCount = -2;}
+            }
+        }
+    }
+
     void StickToHand()
     {
+        Vector3 scrollOffset = -handTransform.forward * scrollForwardCount;
         rb.MoveRotation(handTransform.rotation);
-        Vector3 targetPosition = handTransform.position + handTransform.up - handTransform.forward;
+        Vector3 targetPosition = handTransform.position + handTransform.up - handTransform.forward + scrollOffset;
         Vector3 toTarget = targetPosition - rb.position;
         float springStrength = 100f;
         float dampingStrength = 8f;

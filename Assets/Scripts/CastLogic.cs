@@ -36,13 +36,14 @@ public class CastLogic : MonoBehaviour
 
             ReleaseCurrentSpell();
         }
-        if (Input.GetKeyDown(KeyCode.Mouse0) && casting)
-        {
-            casting = false;
-            if (castCoroutine != null) StopCoroutine(castCoroutine);
+        // Prepulsion Code
+        // if (Input.GetKeyDown(KeyCode.Mouse0) && casting)
+        // {
+        //     casting = false;
+        //     if (castCoroutine != null) StopCoroutine(castCoroutine);
 
-            PropelCurrentSpell();
-        }
+        //     PropelCurrentSpell();
+        // }
     }
 
     void PropelCurrentSpell()
@@ -100,7 +101,7 @@ public class CastLogic : MonoBehaviour
             if (spellSlotInfo.manaFlowType == SpellSlot.ManaFlowType.NoManaFlow)
             { continue; }
             if (spellSlotInfo.manaFlowType == SpellSlot.ManaFlowType.ManaFlowOnE &&
-                !Input.GetKey(KeyCode.E))
+                !Input.GetKey(KeyCode.Mouse0))
             { continue; }
             if (spellSlotInfo.manaFlowAmount <= 0)
             { continue; }
