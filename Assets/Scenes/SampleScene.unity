@@ -491,6 +491,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 625487111}
+  - component: {fileID: 625487115}
   - component: {fileID: 625487114}
   - component: {fileID: 625487113}
   - component: {fileID: 625487112}
@@ -671,6 +672,20 @@ MonoBehaviour:
   innerEggPrefab: {fileID: 30962906337970838, guid: 38b95a923d359104ca132d5bd26f079d, type: 3}
   sparkPrefab: {fileID: 1274411161981808580, guid: 6b9398f4616e0ea4aa1ccb8b018023f9, type: 3}
   handTransform: {fileID: 892467436}
+--- !u!114 &625487115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625487106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bea5e275d89b3de42b4c0aa7e7ea1e16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 5
+  health: 0
 --- !u!1 &892467435
 GameObject:
   m_ObjectHideFlags: 0
