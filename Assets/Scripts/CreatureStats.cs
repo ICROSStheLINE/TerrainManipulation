@@ -4,15 +4,35 @@ using UnityEngine;
 
 public class CreatureStats : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public float maxHealth = 5;
+    public float health;
+
     void Start()
+    {
+        health = maxHealth;
+    }
+
+    void Update()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(float damageAmount)
     {
-        
+        health -= damageAmount;
+        if (health <= 0)
+            { Die(); }
+    }
+
+    public void Heal(float healAmount)
+    {
+        health += healAmount;
+        if (health > maxHealth)
+            { health = maxHealth; }
+    }
+
+    void Die()
+    {
+        Debug.Log(gameObject.name + " died. RIP");
     }
 }
