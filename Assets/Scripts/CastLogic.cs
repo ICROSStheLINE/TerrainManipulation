@@ -296,6 +296,7 @@ public class CastLogic : MonoBehaviour
                             innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
                             ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
                             innerManaObject.AttachToEgg(spawnedEgg.transform);
+                            activeManaObjects.Add(innerManaObject);
                             innerManaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
                             manaManager.LoseMana(5);
                         }

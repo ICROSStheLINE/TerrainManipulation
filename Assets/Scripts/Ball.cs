@@ -71,7 +71,7 @@ public class Ball : MonoBehaviour
     {
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0, false);
-        // mesh.SetUVs(0, UVs);
+        mesh.SetUVs(0, UVs);
 
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
