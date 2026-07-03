@@ -6,7 +6,9 @@ public class PhysicalProperties : MonoBehaviour
 {
     [SerializeField] float flashPoint; // Flash Point: Temperature required to ignite using external source
     public float temperature = 0;
-    public bool isIgnited;
+    public float freezingPoint;
+    public bool isIgnited = false;
+    public bool isFrozen = false;
     public float pressureGenerationRate = 2f;
     Material material;
     Color defaultColor;
@@ -27,11 +29,15 @@ public class PhysicalProperties : MonoBehaviour
 
     void Update()
     {
+        if (temperature < freezingPoint && !isFrozen)
+        {
+            Freeze();
+        }
         if (isIgnited && temperature < flashPoint)
         {
             temperature = flashPoint;
         }
-        if (temperature < 6)
+        if (temperature < 6 && temperature > 0)
         {
             StopGlowing();
         }
@@ -43,6 +49,16 @@ public class PhysicalProperties : MonoBehaviour
         {
             Ignite();
         }
+    }
+
+    void Freeze()
+    {
+        isFrozen = true;
+        // Check if this object is parented under a "frozenObjectParent" object
+        // Check for other physics properties in its general vicinity
+        // Check if they are frozen
+        // If frozen, check if they are already under a frozenObjectParent object
+        // If they are not already under a frozenObjectParent object, create a new one and parent them all under it then disable their rigidbodies
     }
 
     void StopGlowing()
