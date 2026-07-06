@@ -58,12 +58,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flashPoint: 15
   temperature: 0
+  freezingPoint: -100
   isIgnited: 0
+  isFrozen: 0
+  frozenCluster: {fileID: 0}
   pressureGenerationRate: 2
   heatResistance: 3000
   manaResistance: 0.5
   manaCharge: 1
   emberSmokePrefab: {fileID: 7290046929545945003, guid: 677c28a46b4a2d345bf4aa58866af239, type: 3}
+  frozenClusterSearchRadius: 1
 --- !u!114 &223195709595459129
 MonoBehaviour:
   m_ObjectHideFlags: 0

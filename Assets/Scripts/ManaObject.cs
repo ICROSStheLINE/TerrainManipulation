@@ -72,8 +72,12 @@ public class ManaObject : MonoBehaviour
         rb.useGravity = false;
     }
 
-    public void Release()
+    public void Release(bool releaseFrozenCluster = true)
     {
+        // PSEUDOCODE:
+        // If releaseFrozenCluster is true and this object belongs to a FrozenCluster:
+        //   - Ask that FrozenCluster to release itself from the player's hand.
+
         attachedToHand = false;
         // attachedToEgg = false;
 

@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 8831475370947958554}
   - component: {fileID: 3202871070797959759}
   - component: {fileID: -1828234774440130812}
-  - component: {fileID: 6013774988976196316}
   - component: {fileID: 4580036844926491586}
   - component: {fileID: 1667363204685951481}
   - component: {fileID: -5968847155134301179}
   - component: {fileID: 453776743416186047}
+  - component: {fileID: -8468129134033712271}
   - component: {fileID: 2670390502022274146}
   m_Layer: 7
   m_Name: NewBall
@@ -65,33 +65,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flashPoint: 10
   temperature: 0
+  freezingPoint: -3
   isIgnited: 0
+  isFrozen: 0
+  frozenCluster: {fileID: 0}
   pressureGenerationRate: 2
   heatResistance: 0.7
   manaResistance: 0.1
   manaCharge: 1
   emberSmokePrefab: {fileID: 7290046929545945003, guid: 677c28a46b4a2d345bf4aa58866af239, type: 3}
---- !u!135 &6013774988976196316
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7263040950667591781}
-  m_Material: {fileID: 13400000, guid: aba02c7dde4b7ce4cbe56022cfbcce48, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  frozenClusterSearchRadius: 1
 --- !u!33 &4580036844926491586
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -192,6 +175,27 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1.5, y: 1.5, z: 1.5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &-8468129134033712271
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263040950667591781}
+  m_Material: {fileID: 13400000, guid: aba02c7dde4b7ce4cbe56022cfbcce48, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9, y: 0.9, z: 0.9}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2670390502022274146
 MonoBehaviour:
