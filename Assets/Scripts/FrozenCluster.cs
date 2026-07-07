@@ -11,149 +11,311 @@ public class FrozenCluster : MonoBehaviour
 
     void Awake()
     {
-        // PSEUDOCODE:
-        // Ensure this cluster has the required Rigidbody, BoxCollider, ManaObject,
-        // and PhysicalProperties components before anything tries to use it.
+        EnsureRequiredComponents();
     }
 
     public void AddMember(PhysicalProperties obj)
     {
-        // PSEUDOCODE:
-        // Add obj to this cluster.
-        // Recalculate the cluster center after adding it.
+        AddMember(obj, true);
     }
 
     public void RemoveMember(PhysicalProperties obj)
     {
-        // PSEUDOCODE:
-        // If obj is not in members, stop.
-        // Remove obj from members.
-        // Clear obj.frozenCluster.
-        // Unparent obj while preserving world transform.
-        // Re-enable obj colliders.
-        // Re-enable obj Rigidbody simulation.
-        // Recalculate the cluster center and collider bounds.
+        if (!obj || !members.Remove(obj))
+        {
+            return;
+        }
+
+        obj.frozenCluster = null;
+        obj.transform.SetParent(null, true);
+        SetMemberCollidersEnabled(obj, true);
+
+        Rigidbody childRigidbody = obj.GetComponent<Rigidbody>();
+        if (childRigidbody)
+        {
+            childRigidbody.isKinematic = false;
+        }
+
+        RecalculateCenter();
     }
 
     public void MergeWith(FrozenCluster other)
     {
-        // PSEUDOCODE:
-        // If other is null or other is this cluster, stop.
-        // If other is attached to the player's hand, attach this cluster to that hand.
-        // Average this cluster's PhysicalProperties with other.physicalProperties once.
-        // Move every member from other into this cluster without re-applying individual stats.
-        // Recalculate this cluster's center and box collider bounds.
-        // Destroy the other cluster GameObject.
+        if (!other || other == this)
+        {
+            return;
+        }
+
+        if (other.manaObject && other.manaObject.attachedToHand)
+        {
+            AttachToHand(other.manaObject.handTransform);
+        }
+
+        physicalProperties.ApplyMeanStatsWith(other.physicalProperties);
+        physicalProperties.frozenCluster = this;
+        physicalProperties.isFrozen = true;
+
+        for (int i = other.members.Count - 1; i >= 0; i--)
+        {
+            PhysicalProperties member = other.members[i];
+            other.members.RemoveAt(i);
+            AddMember(member, false, false);
+        }
+
+        RecalculateCenter();
+        Destroy(other.gameObject);
     }
 
     public void AttachToHand(Transform hand)
     {
-        // PSEUDOCODE:
-        // If hand is null, stop.
-        // Use this cluster's ManaObject to attach the whole cluster to the player's hand.
+        if (!hand)
+        {
+            return;
+        }
+
+        manaObject.AttachToHand(hand);
     }
 
     public void ReleaseFromHand()
     {
-        // PSEUDOCODE:
-        // Use this cluster's ManaObject to stop following the player's hand.
-        // Do not recursively release the cluster again while doing this.
+        manaObject.Release(false);
     }
 
     public void RecalculateCenter()
     {
-        // PSEUDOCODE:
-        // If there are no members, stop.
-        // Remove any null members from the list.
-        // Compute the average world position of all valid members.
-        // Cache each member's world position and rotation.
-        // Move this cluster GameObject to the average position.
-        // Restore each member's cached world position and rotation so nothing visually jumps.
-        // Recalculate the cluster BoxCollider bounds around all member visuals.
+        if (members.Count == 0)
+        {
+            return;
+        }
+
+        Vector3 center = Vector3.zero;
+        int validMemberCount = 0;
+
+        for (int i = members.Count - 1; i >= 0; i--)
+        {
+            PhysicalProperties member = members[i];
+            if (!member)
+            {
+                members.RemoveAt(i);
+                continue;
+            }
+
+            center += member.transform.position;
+            validMemberCount++;
+        }
+
+        if (validMemberCount == 0)
+        {
+            return;
+        }
+
+        center /= validMemberCount;
+
+        Vector3[] worldPositions = new Vector3[members.Count];
+        Quaternion[] worldRotations = new Quaternion[members.Count];
+
+        for (int i = 0; i < members.Count; i++)
+        {
+            Transform memberTransform = members[i].transform;
+            worldPositions[i] = memberTransform.position;
+            worldRotations[i] = memberTransform.rotation;
+        }
+
+        transform.position = center;
+
+        for (int i = 0; i < members.Count; i++)
+        {
+            Transform memberTransform = members[i].transform;
+            memberTransform.SetPositionAndRotation(worldPositions[i], worldRotations[i]);
+        }
+
+        RecalculateBoxColliderBounds();
     }
 
     void AddMember(PhysicalProperties obj, bool recalculateCenter)
     {
-        // PSEUDOCODE:
-        // Add obj to this cluster.
-        // If recalculateCenter is true, recalculate the cluster center after adding it.
+        AddMember(obj, recalculateCenter, true);
     }
 
     void AddMember(PhysicalProperties obj, bool recalculateCenter, bool applyPhysicalProperties)
     {
-        // PSEUDOCODE:
-        // If obj is null or already in members, stop.
-        // If obj belongs to a different FrozenCluster, remove it from that cluster's members list.
-        // If applyPhysicalProperties is true:
-        //   - If this cluster has no members, copy obj's PhysicalProperties exactly.
-        //   - Otherwise, average this cluster's current stats with obj's stats.
-        // Add obj to members.
-        // Set obj.frozenCluster to this cluster.
-        // Parent obj under this cluster while preserving world transform.
-        // If obj has a ManaObject attached to the player's hand:
-        //   - Attach this cluster's ManaObject to that same hand.
-        // Release obj's ManaObject without releasing the cluster.
-        // Disable obj's Rigidbody simulation.
-        // Disable obj's colliders so the cluster BoxCollider is the active collision shape.
-        // If recalculateCenter is true, recalculate the cluster center and bounds.
+        if (!obj || members.Contains(obj))
+        {
+            return;
+        }
+
+        if (obj.frozenCluster && obj.frozenCluster != this)
+        {
+            obj.frozenCluster.members.Remove(obj);
+        }
+
+        if (applyPhysicalProperties)
+        {
+            ApplyPhysicalPropertiesForNewMember(obj);
+        }
+
+        members.Add(obj);
+        obj.frozenCluster = this;
+        obj.transform.SetParent(transform, true);
+
+        ManaObject memberManaObject = obj.GetComponent<ManaObject>();
+        if (memberManaObject)
+        {
+            if (memberManaObject.attachedToHand)
+            {
+                AttachToHand(memberManaObject.handTransform);
+            }
+
+            memberManaObject.Release(false);
+        }
+
+        Rigidbody childRigidbody = obj.GetComponent<Rigidbody>();
+        if (childRigidbody)
+        {
+            childRigidbody.isKinematic = true;
+        }
+
+        SetMemberCollidersEnabled(obj, false);
+
+        if (recalculateCenter)
+        {
+            RecalculateCenter();
+        }
     }
 
     void EnsureRequiredComponents()
     {
-        // PSEUDOCODE:
-        // Find or add a Rigidbody on this GameObject and store it in clusterRigidbody.
-        // Find or add a ManaObject on this GameObject and store it in manaObject.
-        // Find or add PhysicalProperties on this GameObject and store it in physicalProperties.
-        // Mark physicalProperties as frozen and point it back to this cluster.
-        // Find or add a BoxCollider on this GameObject and store it in boxCollider.
+        if (!clusterRigidbody)
+        {
+            clusterRigidbody = GetComponent<Rigidbody>();
+        }
+
+        if (!clusterRigidbody)
+        {
+            clusterRigidbody = gameObject.AddComponent<Rigidbody>();
+        }
+
+        if (!manaObject)
+        {
+            manaObject = GetComponent<ManaObject>();
+        }
+
+        if (!manaObject)
+        {
+            manaObject = gameObject.AddComponent<ManaObject>();
+        }
+
+        if (!physicalProperties)
+        {
+            physicalProperties = GetComponent<PhysicalProperties>();
+        }
+
+        if (!physicalProperties)
+        {
+            physicalProperties = gameObject.AddComponent<PhysicalProperties>();
+        }
+
+        physicalProperties.frozenCluster = this;
+        physicalProperties.isFrozen = true;
+
+        if (!boxCollider)
+        {
+            boxCollider = GetComponent<BoxCollider>();
+        }
+
+        if (!boxCollider)
+        {
+            boxCollider = gameObject.AddComponent<BoxCollider>();
+        }
     }
 
     void SetMemberCollidersEnabled(PhysicalProperties member, bool enabled)
     {
-        // PSEUDOCODE:
-        // Find every Collider under member.
-        // Set each collider's enabled state to the requested value.
+        Collider[] memberColliders = member.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < memberColliders.Length; i++)
+        {
+            memberColliders[i].enabled = enabled;
+        }
     }
 
     void ApplyPhysicalPropertiesForNewMember(PhysicalProperties member)
     {
-        // PSEUDOCODE:
-        // If this cluster currently has no members:
-        //   - Copy member's PhysicalProperties directly onto the cluster.
-        // Otherwise:
-        //   - Average the cluster's current PhysicalProperties with member's PhysicalProperties.
-        // Ensure the cluster PhysicalProperties stays marked frozen and points to this cluster.
+        if (members.Count == 0)
+        {
+            physicalProperties.CopyStatsFrom(member);
+        }
+        else
+        {
+            physicalProperties.ApplyMeanStatsWith(member);
+        }
+
+        physicalProperties.frozenCluster = this;
+        physicalProperties.isFrozen = true;
     }
 
     void RecalculateBoxColliderBounds()
     {
-        // PSEUDOCODE:
-        // Start with an empty local-space Bounds value.
-        // For every cluster member:
-        //   - Find all enabled renderers below that member.
-        //   - Convert each renderer's world bounds into this cluster's local space.
-        //   - Encapsulate those points into one combined local Bounds.
-        // If no renderer bounds were found:
-        //   - Use a default one-unit box centered on the cluster.
-        // Otherwise:
-        //   - Set boxCollider.center and boxCollider.size from the combined local Bounds.
+        bool hasBounds = false;
+        Bounds localBounds = new Bounds();
+
+        for (int i = 0; i < members.Count; i++)
+        {
+            PhysicalProperties member = members[i];
+            if (!member)
+            {
+                continue;
+            }
+
+            Renderer[] memberRenderers = member.GetComponentsInChildren<Renderer>();
+            for (int j = 0; j < memberRenderers.Length; j++)
+            {
+                Renderer memberRenderer = memberRenderers[j];
+                if (!memberRenderer || !memberRenderer.enabled)
+                {
+                    continue;
+                }
+
+                EncapsulateWorldBounds(memberRenderer.bounds, ref localBounds, ref hasBounds);
+            }
+        }
+
+        if (!hasBounds)
+        {
+            boxCollider.center = Vector3.zero;
+            boxCollider.size = Vector3.one;
+            return;
+        }
+
+        boxCollider.center = localBounds.center;
+        boxCollider.size = localBounds.size;
     }
 
     void EncapsulateWorldBounds(Bounds worldBounds, ref Bounds localBounds, ref bool hasBounds)
     {
-        // PSEUDOCODE:
-        // Take all eight corners of worldBounds.
-        // Pass each corner to EncapsulateLocalPoint.
+        Vector3 min = worldBounds.min;
+        Vector3 max = worldBounds.max;
+
+        EncapsulateLocalPoint(new Vector3(min.x, min.y, min.z), ref localBounds, ref hasBounds);
+        EncapsulateLocalPoint(new Vector3(min.x, min.y, max.z), ref localBounds, ref hasBounds);
+        EncapsulateLocalPoint(new Vector3(min.x, max.y, min.z), ref localBounds, ref hasBounds);
+        EncapsulateLocalPoint(new Vector3(min.x, max.y, max.z), ref localBounds, ref hasBounds);
+        EncapsulateLocalPoint(new Vector3(max.x, min.y, min.z), ref localBounds, ref hasBounds);
+        EncapsulateLocalPoint(new Vector3(max.x, min.y, max.z), ref localBounds, ref hasBounds);
+        EncapsulateLocalPoint(new Vector3(max.x, max.y, min.z), ref localBounds, ref hasBounds);
+        EncapsulateLocalPoint(new Vector3(max.x, max.y, max.z), ref localBounds, ref hasBounds);
     }
 
     void EncapsulateLocalPoint(Vector3 worldPoint, ref Bounds localBounds, ref bool hasBounds)
     {
-        // PSEUDOCODE:
-        // Convert worldPoint into this cluster's local space.
-        // If localBounds has not been initialized yet:
-        //   - Initialize localBounds at that point with zero size.
-        //   - Mark hasBounds true.
-        // Otherwise:
-        //   - Expand localBounds to include the local point.
+        Vector3 localPoint = transform.InverseTransformPoint(worldPoint);
+
+        if (!hasBounds)
+        {
+            localBounds = new Bounds(localPoint, Vector3.zero);
+            hasBounds = true;
+            return;
+        }
+
+        localBounds.Encapsulate(localPoint);
     }
 }

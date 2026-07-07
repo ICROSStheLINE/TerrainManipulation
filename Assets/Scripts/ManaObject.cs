@@ -5,8 +5,8 @@ using UnityEngine;
 public class ManaObject : MonoBehaviour
 {
     Rigidbody rb;
-    bool attachedToHand = false;
-    Transform handTransform;
+    public bool attachedToHand = false;
+    public Transform handTransform;
     // bool attachedToEgg = false;
     Transform eggTransform;
     Egg eggProps;
@@ -74,9 +74,14 @@ public class ManaObject : MonoBehaviour
 
     public void Release(bool releaseFrozenCluster = true)
     {
-        // PSEUDOCODE:
-        // If releaseFrozenCluster is true and this object belongs to a FrozenCluster:
-        //   - Ask that FrozenCluster to release itself from the player's hand.
+        if (releaseFrozenCluster)
+        {
+            PhysicalProperties physicalProperties = GetComponent<PhysicalProperties>();
+            if (physicalProperties && physicalProperties.frozenCluster)
+            {
+                physicalProperties.frozenCluster.ReleaseFromHand();
+            }
+        }
 
         attachedToHand = false;
         // attachedToEgg = false;
