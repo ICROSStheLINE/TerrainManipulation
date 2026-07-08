@@ -11,6 +11,7 @@ public class FrozenCluster : MonoBehaviour
 
     void Awake()
     {
+        transform.tag = "PhysicalObject";
         EnsureRequiredComponents();
     }
 

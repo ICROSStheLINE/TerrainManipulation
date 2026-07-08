@@ -24,8 +24,11 @@ public class PhysicalProperties : MonoBehaviour
 
     void Start()
     {
-        material = GetComponent<Renderer>().material;
-        defaultColor = material.GetColor("_Color");
+        if (GetComponent<Renderer>())
+        {
+            material = GetComponent<Renderer>().material;
+            defaultColor = material.GetColor("_Color");
+        }
         sphereCollider = GetComponent<SphereCollider>();
     }
 

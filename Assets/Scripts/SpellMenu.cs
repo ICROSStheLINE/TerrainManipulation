@@ -261,7 +261,7 @@ public class SpellSlot
     public enum ManaFlowType { NoManaFlow, ContinuousManaFlow, ManaFlowOnE }
     public SpellType spellType;
     public float manaResistancePercent = 50;
-    public float manaFlowAmount = 1;
+    public float manaFlowAmount = 0;
     public ManaFlowType manaFlowType = ManaFlowType.ManaFlowOnE;
     GameObject spellIcon;
     List<GameObject> spellInputObjects = new List<GameObject>();
