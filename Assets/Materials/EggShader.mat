@@ -85,6 +85,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: c6dcf44773b2b264e9afeb40d8f68b48, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_ba1343875cb342b585bdebdb8a009cd0_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 0193924cbf6bb5346bcfced00eecf1af, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -111,18 +115,19 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _CrackStrength: -0.05
+    - _CrackStrength: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DissolveStrength: -0.05
+    - _DissolveStrength: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _ManaDrainStrength: -0.01
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005

@@ -51,6 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3091cf56e87b3af46978a0de8a066fd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attachedToHand: 0
+  handTransform: {fileID: 0}
 --- !u!114 &-1828234774440130812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,12 +70,12 @@ MonoBehaviour:
   freezingPoint: -3
   isIgnited: 0
   isFrozen: 0
-  frozenCluster: {fileID: 0}
   pressureGenerationRate: 2
   heatResistance: 0.7
   manaResistance: 0.1
   manaCharge: 1
   emberSmokePrefab: {fileID: 7290046929545945003, guid: 677c28a46b4a2d345bf4aa58866af239, type: 3}
+  frozenCluster: {fileID: 0}
   frozenClusterSearchRadius: 1
 --- !u!33 &4580036844926491586
 MeshFilter:
@@ -106,7 +108,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 965eb09ed6cb78f4288484ee2d70ff7c, type: 2}
+  - {fileID: 2100000, guid: 9c697beb2e3f47f4f800c879cb72ae39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
