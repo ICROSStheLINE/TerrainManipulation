@@ -108,7 +108,10 @@ public class CastLogic : MonoBehaviour
             if (manaManager.manaAmount <= 0)
             { continue; }
 
-            manaManager.LoseMana(spellSlotInfo.manaFlowAmount);
+            if (Mathf.Sign(spellSlotInfo.manaResistancePercent) == 1)
+                manaManager.LoseMana(spellSlotInfo.manaFlowAmount);
+            else
+                manaManager.GainMana(spellSlotInfo.manaFlowAmount);
             physicalProperties.AddMana(spellSlotInfo.manaFlowAmount);
         }
     }

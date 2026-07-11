@@ -1481,7 +1481,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "50dc2a0fb4424d259a2fe6ccccdfd7b3",
     "m_Id": 0,
-    "m_DisplayName": "ManaDrainStrength",
+    "m_DisplayName": "ManaFizzleStrength",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -2507,10 +2507,10 @@
     "m_Guid": {
         "m_GuidSerialized": "dd306f1f-eff7-4cf0-8c02-7066b95d347f"
     },
-    "m_Name": "ManaDrainStrength",
+    "m_Name": "ManaFizzleStrength",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "ManaDrainStrength",
-    "m_DefaultReferenceName": "_ManaDrainStrength",
+    "m_RefNameGeneratedByDisplayName": "ManaFizzleStrength",
+    "m_DefaultReferenceName": "_ManaFizzleStrength",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,

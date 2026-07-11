@@ -21,6 +21,7 @@ public class PhysicalProperties : MonoBehaviour
     GameObject emberSmokeObject;
     public FrozenCluster frozenCluster;
     [SerializeField] float frozenClusterSearchRadius = 1f;
+    bool isManaFizzling = false;
 
     void Start()
     {
@@ -34,9 +35,13 @@ public class PhysicalProperties : MonoBehaviour
 
     void Update()
     {
-        if (manaCharge == 0)
+        if (manaCharge <= 0 && !isManaFizzling)
         {
-            ManaFizzle();
+            BeginManaFizzle();
+        }
+        if (isManaFizzling && temperature > freezingPoint)
+        {
+            temperature = freezingPoint;
         }
         if (temperature < freezingPoint && !isFrozen)
         {
@@ -60,9 +65,33 @@ public class PhysicalProperties : MonoBehaviour
         }
     }
 
-    void ManaFizzle()
+    void BeginManaFizzle()
     {
         // Use the new shader to fizzle away
+        isManaFizzling = true;
+        StartCoroutine("ManaFizzle");
+        // Instantiate some mana vapour around the object or something
+    }
+
+    IEnumerator ManaFizzle()
+    {
+        float manaFizzleDuration = 1;
+        float manaFizzleStrength;
+        float elapsedTime = 0;
+
+        while ( elapsedTime < manaFizzleDuration )
+        {
+            elapsedTime += Time.deltaTime;
+
+            manaFizzleStrength = Mathf.Lerp(-0.01f, 1.5f, elapsedTime / manaFizzleDuration);
+
+            if (material) material.SetFloat("_ManaDrainStrength", manaFizzleStrength);
+
+            yield return null;
+        }
+
+
+        Destroy(gameObject);
     }
 
     void Freeze()
@@ -220,6 +249,7 @@ public class PhysicalProperties : MonoBehaviour
         manaResistance = Mathf.Clamp(manaResistance, -1f, 1f);
         float manaConvertedToHeat = manaAmount * manaResistance;
         
+        manaAmount = manaAmount * Mathf.Sign(manaResistance);
         manaCharge += manaAmount - manaConvertedToHeat;
         temperature += manaConvertedToHeat;
     }
