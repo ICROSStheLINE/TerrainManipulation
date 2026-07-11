@@ -158,6 +158,7 @@ public class FrozenCluster : MonoBehaviour
         members.Add(obj);
         obj.frozenCluster = this;
         obj.transform.SetParent(transform, true);
+        obj.transform.rotation = Quaternion.Euler(Vector3.zero);
 
         ManaObject memberManaObject = obj.GetComponent<ManaObject>();
         if (memberManaObject)
