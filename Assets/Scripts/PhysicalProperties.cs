@@ -43,7 +43,7 @@ public class PhysicalProperties : MonoBehaviour
         {
             temperature = freezingPoint;
         }
-        if (temperature < freezingPoint && !isFrozen)
+        if (temperature <= freezingPoint && !isFrozen)
         {
             Freeze();
         }
@@ -90,7 +90,7 @@ public class PhysicalProperties : MonoBehaviour
             yield return null;
         }
 
-
+        frozenCluster.RemoveMember(this);
         Destroy(gameObject);
     }
 
@@ -169,7 +169,8 @@ public class PhysicalProperties : MonoBehaviour
         pressureGenerationRate = other.pressureGenerationRate;
         heatResistance = other.heatResistance;
         manaResistance = other.manaResistance;
-        manaCharge = other.manaCharge;
+        // manaCharge = other.manaCharge;
+        manaCharge = 1;
         isFrozen = true;
     }
 
@@ -187,7 +188,8 @@ public class PhysicalProperties : MonoBehaviour
         pressureGenerationRate = (pressureGenerationRate + other.pressureGenerationRate) / 2f;
         heatResistance = (heatResistance + other.heatResistance) / 2f;
         manaResistance = (manaResistance + other.manaResistance) / 2f;
-        manaCharge = (manaCharge + other.manaCharge) / 2f;
+        // manaCharge = (manaCharge + other.manaCharge) / 2f;
+        manaCharge = 1;
         isFrozen = true;
     }
 
