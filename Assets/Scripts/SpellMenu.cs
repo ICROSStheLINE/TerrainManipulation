@@ -387,6 +387,25 @@ public class SpellSlot
         { return true; }
         if (spellType == SpellType.EggB)
         { return true; }
+        // TIME TO ADD THE CUBE
+        // This will be a spell that can manipulate objects and the earth
+        // This will be a spell that seemingly does nothing on its own
+        // It will also be able to phase through any physical objects when nothing is done to it
+        
+        // HOWEVER, the cube will be able to become tangible when a difference in its mana charge is detected
+        // (like if mana was just now added to it or removed from it)
+        // When the cube becomes tangible, it can no longer phase through physical objects.
+        // However, if the cube was made tangible while it was already overlapping with a physical object...
+        // ...It can "latch onto" it and move it around.
+        // If it latched onto the floor, it can distort and mold the floor around where it moves
+        // If it latched onto a grabable object, it just makes it float around where the cube is
+
+        // The cube gets casted with an initial lukewarm temperature that gradually gets colder over time.
+        // The cube must remain lukewarm or else it will dissipate.
+        // This means if the cube gets too cold or too hot, it will be unusable.
+        // Therefore, the player must manage the mana resistance value accordingly to make sure they can
+        // give consistent enough mana to keep the cube tangible, while not having a lot of mana get
+        // accidentally converted to heat.
 
         return false;
     }
