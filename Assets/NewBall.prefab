@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 8831475370947958554}
   - component: {fileID: 3202871070797959759}
   - component: {fileID: -1828234774440130812}
+  - component: {fileID: 2670390502022274146}
   - component: {fileID: 4580036844926491586}
   - component: {fileID: 1667363204685951481}
   - component: {fileID: -5968847155134301179}
   - component: {fileID: 453776743416186047}
   - component: {fileID: -8468129134033712271}
-  - component: {fileID: 2670390502022274146}
+  - component: {fileID: -7893559316899916126}
   m_Layer: 7
   m_Name: NewBall
   m_TagString: PhysicalObject
@@ -77,6 +78,24 @@ MonoBehaviour:
   emberSmokePrefab: {fileID: 7290046929545945003, guid: 677c28a46b4a2d345bf4aa58866af239, type: 3}
   frozenCluster: {fileID: 0}
   frozenClusterSearchRadius: 1
+--- !u!114 &2670390502022274146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263040950667591781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ef06d1818863641aeba3c9c2dcac98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mat: {fileID: 2100000, guid: 965eb09ed6cb78f4288484ee2d70ff7c, type: 2}
+  radius: 1
+  mesh: {fileID: 0}
+  vertices: []
+  triangles: 
+  UVs: []
 --- !u!33 &4580036844926491586
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -195,25 +214,28 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.9, y: 0.9, z: 0.9}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2670390502022274146
-MonoBehaviour:
+--- !u!135 &-7893559316899916126
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7263040950667591781}
+  m_Material: {fileID: 13400000, guid: aba02c7dde4b7ce4cbe56022cfbcce48, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80ef06d1818863641aeba3c9c2dcac98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mat: {fileID: 2100000, guid: 965eb09ed6cb78f4288484ee2d70ff7c, type: 2}
-  radius: 1
-  mesh: {fileID: 0}
-  vertices: []
-  triangles: 
-  UVs: []
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

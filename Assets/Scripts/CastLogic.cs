@@ -109,13 +109,15 @@ public class CastLogic : MonoBehaviour
             if (manaManager.manaAmount <= 0)
             { continue; }
 
-            float flowableMana = spellSlotInfo.manaFlowAmount;
-            if (flowableMana > manaManager.manaAmount) flowableMana = manaManager.manaAmount;
-            if (Mathf.Sign(spellSlotInfo.manaResistancePercent) == 1)
-                manaManager.LoseMana(flowableMana);
-            else
+            float flowableMana = spellSlotInfo.manaFlowAmount; // Start with the amount of mana the spell expects to receive
+            if (Mathf.Sign(spellSlotInfo.manaResistancePercent) == 1) // If we SEND IN mana
             {
-                if (flowableMana > physicalProperties.manaCharge) flowableMana = physicalProperties.manaCharge;
+                if (flowableMana > manaManager.manaAmount) flowableMana = manaManager.manaAmount; // If we're tryna send in more mana than we have, just send in what we have
+                manaManager.LoseMana(flowableMana);
+            }
+            else // If we SIPHON OUT mana
+            {
+                if (flowableMana > physicalProperties.manaCharge) flowableMana = physicalProperties.manaCharge; // If we're tryna siphon out more mana than the spell has, just siphon out what the spell has
                 manaManager.GainMana(flowableMana);
             }
             physicalProperties.AddMana(flowableMana);
