@@ -6,7 +6,7 @@ public class ManaObject : MonoBehaviour
 {
     Rigidbody rb;
     public bool attachedToHand = false;
-    public Transform handTransform;
+    [HideInInspector] public Transform handTransform;
     // bool attachedToEgg = false;
     Transform eggTransform;
     Egg eggProps;
