@@ -19,7 +19,7 @@ public class PhysicalProperties : MonoBehaviour
     public float manaCharge;
     [SerializeField] GameObject emberSmokePrefab;
     GameObject emberSmokeObject;
-    public FrozenCluster frozenCluster;
+    [HideInInspector] public FrozenCluster frozenCluster;
     [SerializeField] float frozenClusterSearchRadius = 1f;
     bool isManaFizzling = false;
 

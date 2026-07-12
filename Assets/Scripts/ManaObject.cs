@@ -5,7 +5,7 @@ using UnityEngine;
 public class ManaObject : MonoBehaviour
 {
     Rigidbody rb;
-    public bool attachedToHand = false;
+    [HideInInspector] public bool attachedToHand = false;
     [HideInInspector] public Transform handTransform;
     // bool attachedToEgg = false;
     Transform eggTransform;
