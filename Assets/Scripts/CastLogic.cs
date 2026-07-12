@@ -108,11 +108,16 @@ public class CastLogic : MonoBehaviour
             if (manaManager.manaAmount <= 0)
             { continue; }
 
+            float flowableMana = spellSlotInfo.manaFlowAmount;
+            if (flowableMana < manaManager.manaAmount) flowableMana = manaManager.manaAmount;
             if (Mathf.Sign(spellSlotInfo.manaResistancePercent) == 1)
-                manaManager.LoseMana(spellSlotInfo.manaFlowAmount);
+                manaManager.LoseMana(flowableMana);
             else
-                manaManager.GainMana(spellSlotInfo.manaFlowAmount);
-            physicalProperties.AddMana(spellSlotInfo.manaFlowAmount);
+            {
+                if (flowableMana > physicalProperties.manaCharge) flowableMana = physicalProperties.manaCharge;
+                manaManager.GainMana(flowableMana);
+            }
+            physicalProperties.AddMana(flowableMana);
         }
     }
 
