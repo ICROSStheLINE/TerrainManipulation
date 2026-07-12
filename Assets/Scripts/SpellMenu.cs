@@ -60,6 +60,7 @@ public class SpellMenu : MonoBehaviour
         spellInventoryMap[3,1].AssignSpell(SpellSlot.SpellType.ZOpenParenthesis);
         spellInventoryMap[3,2].AssignSpell(SpellSlot.SpellType.ZCloseParenthesis);
         spellInventoryMap[4,0].AssignSpell(SpellSlot.SpellType.Ball);
+        spellInventoryMap[4,1].AssignSpell(SpellSlot.SpellType.Cube);
     }
 
     void Update()
@@ -343,7 +344,7 @@ public class SpellSlot
             return;
         }
 
-        manaResistancePercent = 50;
+        manaResistancePercent = 0;
     }
 
     void CreateSpellIcon(SpellType spellType)
@@ -387,6 +388,9 @@ public class SpellSlot
         { return true; }
         if (spellType == SpellType.EggB)
         { return true; }
+        if (spellType == SpellType.Cube)
+        { return true; }
+
         // TIME TO ADD THE CUBE
         // This will be a spell that can manipulate objects and the earth
         // This will be a spell that seemingly does nothing on its own

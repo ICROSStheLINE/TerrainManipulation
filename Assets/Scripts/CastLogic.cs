@@ -15,6 +15,7 @@ public class CastLogic : MonoBehaviour
     [SerializeField] Transform handTransform;
     List<ManaObject> activeManaObjects = new List<ManaObject>();
     float prepulsionStrength = 20f;
+    [SerializeField] GameObject cubePrefab;
 
     void Start()
     {
@@ -332,6 +333,20 @@ public class CastLogic : MonoBehaviour
                 { spawnOffset += -handTransform.forward + -handTransform.forward; }
                 if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.ZCloseParenthesis)
                 { spawnOffset += handTransform.forward + handTransform.forward; }
+                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.Cube)
+                {
+                    if (manaManager.manaAmount <= 0)
+                    { continue; }
+                    
+                    GameObject cubeObject = Instantiate(cubePrefab, spawnPosition + spawnOffset + randomOffset, transform.rotation);
+                    PhysicalProperties cubePhysicalProperties = cubeObject.GetComponent<PhysicalProperties>();
+                    cubePhysicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
+                    ManaObject manaObject = cubeObject.transform.GetComponent<ManaObject>();
+                    manaObject.AttachToHand(handTransform);
+                    activeManaObjects.Add(manaObject);
+                    manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                    manaManager.LoseMana(5);
+                }
             }
         }
     }
@@ -514,6 +529,20 @@ public class CastLogic : MonoBehaviour
                 { spawnOffset += -handTransform.forward + -handTransform.forward; }
                 if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.ZCloseParenthesis)
                 { spawnOffset += handTransform.forward + handTransform.forward; }
+                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.Cube)
+                {
+                    if (manaManager.manaAmount <= 0)
+                    { continue; }
+                    
+                    GameObject cubeObject = Instantiate(cubePrefab, spawnPosition + spawnOffset + randomOffset, transform.rotation);
+                    // PhysicalProperties cubePhysicalProperties = cubeObject.GetComponent<PhysicalProperties>();
+                    // cubePhysicalProperties.manaResistance = spellMenu.castStartMap[i,j].manaResistancePercent / 100f;
+                    // ManaObject manaObject = cubeObject.transform.GetComponent<ManaObject>();
+                    // manaObject.AttachToHand(handTransform);
+                    // activeManaObjects.Add(manaObject);
+                    // manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                    manaManager.LoseMana(5);
+                }
             }
         }
     }
