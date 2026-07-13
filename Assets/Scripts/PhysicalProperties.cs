@@ -90,12 +90,13 @@ public class PhysicalProperties : MonoBehaviour
             yield return null;
         }
 
-        frozenCluster.RemoveMember(this);
+
         Destroy(gameObject);
     }
 
     void Freeze()
     {
+        if (isManaFizzling) return;
         isFrozen = true;
 
         List<FrozenCluster> nearbyClusters = FindNearbyFrozenClusters();
