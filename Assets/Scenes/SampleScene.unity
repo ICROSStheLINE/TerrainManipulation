@@ -433,6 +433,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1213565640003633668, guid: cdb83a978bd52b14f8882825b770486f, type: 3}
+      propertyPath: temperature
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: -1213565640003633668, guid: cdb83a978bd52b14f8882825b770486f, type: 3}
+      propertyPath: freezingPoint
+      value: -1.59
+      objectReference: {fileID: 0}
     - target: {fileID: 1541034544196987380, guid: cdb83a978bd52b14f8882825b770486f, type: 3}
       propertyPath: m_Name
       value: Sphere
@@ -1247,6 +1255,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1828234774440130812, guid: 7182cdb75773baa4caf9fbc73a965a90, type: 3}
+      propertyPath: temperature
+      value: 1.32
+      objectReference: {fileID: 0}
     - target: {fileID: 7263040950667591781, guid: 7182cdb75773baa4caf9fbc73a965a90, type: 3}
       propertyPath: m_Name
       value: NewBall
