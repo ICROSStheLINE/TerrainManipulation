@@ -117,8 +117,9 @@ public class CastLogic : MonoBehaviour
             }
             else // If we SIPHON OUT mana
             {
-                if (flowableMana > physicalProperties.manaCharge) flowableMana = physicalProperties.manaCharge; // If we're tryna siphon out more mana than the spell has, just siphon out what the spell has
-                manaManager.GainMana(flowableMana);
+                float tempFlowableMana = flowableMana;
+                if (flowableMana > physicalProperties.manaCharge && physicalProperties.manaCharge >= 0) tempFlowableMana = physicalProperties.manaCharge; // If we're tryna siphon out more mana than the spell has, just siphon out what the spell has
+                manaManager.GainMana(tempFlowableMana);
             }
             physicalProperties.AddMana(flowableMana);
         }

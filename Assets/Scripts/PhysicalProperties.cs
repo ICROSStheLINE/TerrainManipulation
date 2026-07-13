@@ -262,7 +262,9 @@ public class PhysicalProperties : MonoBehaviour
         // [b.] -10 - -5 = -5 (mana = -5)
         manaAmount = manaAmount - manaConvertedToHeat;
         if (Mathf.Abs(manaAmount) < 0.01f) manaAmount = Mathf.Sign(manaAmount); // If the amount of mana being added or removed is really insanely tiny, just make it 1 instead xd
-        manaCharge += manaAmount; // I'm running into a problem here. When I try to cool down an object to 0 it repeatedly halves over and over and over again (assuming the manaResistance is -0.5). Is does this because in CastLogic.cs it does this if statement before calling this functions: if (flowableMana > physicalProperties.manaCharge) flowableMana = physicalProperties.manaCharge; // This function is to prevent the player from siphoning out more mana than the spell actually has. How do I solve this? I don't like that the siphoning process takes so long due to this halving.
+        manaCharge += manaAmount; 
+        // Problem: I'm running into a problem here. When I try to cool down an object to 0 it repeatedly halves over and over and over again (assuming the manaResistance is -0.5). Is does this because in CastLogic.cs it does this if statement before calling this functions: if (flowableMana > physicalProperties.manaCharge) flowableMana = physicalProperties.manaCharge; // This function is to prevent the player from siphoning out more mana than the spell actually has. How do I solve this? I don't like that the siphoning process takes so long due to this halving.
+        // Solution: I have decided to make that code not relevant for a spell's mana amount. Therefore, a spell's mana charge is theoretically able to be negative (although it's useless)
         temperature += manaConvertedToHeat;
     }
 
