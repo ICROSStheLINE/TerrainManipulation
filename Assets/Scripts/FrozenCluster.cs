@@ -8,6 +8,8 @@ public class FrozenCluster : MonoBehaviour
     public BoxCollider boxCollider;
     public ManaObject manaObject;
     public PhysicalProperties physicalProperties;
+    private Transform visualMesh;
+    private Material visualMaterial;
 
     void Awake()
     {
@@ -185,6 +187,44 @@ public class FrozenCluster : MonoBehaviour
         }
     }
 
+    void CreateVisualMesh()
+    {
+        if (visualMesh != null)
+        {
+            return;
+        }
+
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = "FrozenClusterVisual";
+        cube.transform.SetParent(transform, false);
+
+        Destroy(cube.GetComponent<Collider>());
+
+        visualMesh = cube.transform;
+
+        Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+        if (shader == null)
+            shader = Shader.Find("Standard");
+
+        visualMaterial = new Material(shader);
+        visualMaterial.color = new Color(0.6f, 0.85f, 1f, 0.25f);
+
+        // Standard shader transparency
+        if (shader.name == "Standard")
+        {
+            visualMaterial.SetFloat("_Mode", 3);
+            visualMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            visualMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            visualMaterial.SetInt("_ZWrite", 0);
+            visualMaterial.DisableKeyword("_ALPHATEST_ON");
+            visualMaterial.EnableKeyword("_ALPHABLEND_ON");
+            visualMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            visualMaterial.renderQueue = 3000;
+        }
+
+        cube.GetComponent<MeshRenderer>().material = visualMaterial;
+    }
+
     void EnsureRequiredComponents()
     {
         if (!clusterRigidbody)
@@ -229,6 +269,8 @@ public class FrozenCluster : MonoBehaviour
         {
             boxCollider = gameObject.AddComponent<BoxCollider>();
         }
+        
+        CreateVisualMesh();
     }
 
     void SetMemberCollidersEnabled(PhysicalProperties member, bool enabled)
@@ -255,6 +297,18 @@ public class FrozenCluster : MonoBehaviour
         physicalProperties.isFrozen = true;
     }
 
+    void UpdateVisualMesh()
+{
+    if (visualMesh == null)
+    {
+        return;
+    }
+
+    visualMesh.localPosition = boxCollider.center;
+    visualMesh.localRotation = Quaternion.identity;
+    visualMesh.localScale = boxCollider.size;
+}
+
     void RecalculateBoxColliderBounds()
     {
         bool hasBounds = false;
@@ -264,6 +318,16 @@ public class FrozenCluster : MonoBehaviour
         {
             PhysicalProperties member = members[i];
             if (!member)
+            {
+                continue;
+            }
+
+            ManaObject manaObject = member.GetComponent<ManaObject>();
+
+            // Only include Ball spells in the cluster bounds.
+            if (manaObject == null ||
+                manaObject.spellSlotInfo == null ||
+                manaObject.spellSlotInfo.spellType != SpellSlot.SpellType.Ball)
             {
                 continue;
             }
@@ -285,11 +349,13 @@ public class FrozenCluster : MonoBehaviour
         {
             boxCollider.center = Vector3.zero;
             boxCollider.size = Vector3.one;
+            UpdateVisualMesh();
             return;
         }
 
         boxCollider.center = localBounds.center;
         boxCollider.size = localBounds.size;
+        UpdateVisualMesh();
     }
 
     void EncapsulateWorldBounds(Bounds worldBounds, ref Bounds localBounds, ref bool hasBounds)
