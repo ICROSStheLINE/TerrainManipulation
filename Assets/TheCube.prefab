@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7777509847051845432}
+  - component: {fileID: 6103760276827747368}
+  - component: {fileID: 1070682006914735084}
   - component: {fileID: 7209056928158303790}
   - component: {fileID: 2995063506933033233}
   - component: {fileID: 2553556783814077611}
   - component: {fileID: 4064507277117555688}
-  - component: {fileID: 6103760276827747368}
-  - component: {fileID: 1070682006914735084}
   m_Layer: 0
   m_Name: TheCube
   m_TagString: Untagged
@@ -37,6 +37,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6103760276827747368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485499158852127728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9c77232cbf6b444c931e6b5f154ab35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashPoint: 6
+  temperature: 4
+  freezingPoint: 2
+  isIgnited: 0
+  isFrozen: 0
+  pressureGenerationRate: 2
+  heatResistance: 3000
+  manaResistance: 0
+  manaCharge: 5
+  emberSmokePrefab: {fileID: 7290046929545945003, guid: 677c28a46b4a2d345bf4aa58866af239, type: 3}
+  frozenCluster: {fileID: 0}
+  frozenClusterSearchRadius: 1
+--- !u!114 &1070682006914735084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6485499158852127728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3091cf56e87b3af46978a0de8a066fd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachedToHand: 0
+  handTransform: {fileID: 0}
 --- !u!33 &7209056928158303790
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -138,41 +176,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6103760276827747368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485499158852127728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9c77232cbf6b444c931e6b5f154ab35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flashPoint: 6
-  temperature: 4
-  freezingPoint: 2
-  isIgnited: 0
-  isFrozen: 0
-  pressureGenerationRate: 2
-  heatResistance: 3000
-  manaResistance: 0
-  manaCharge: 5
-  emberSmokePrefab: {fileID: 7290046929545945003, guid: 677c28a46b4a2d345bf4aa58866af239, type: 3}
-  frozenCluster: {fileID: 0}
-  frozenClusterSearchRadius: 1
---- !u!114 &1070682006914735084
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6485499158852127728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3091cf56e87b3af46978a0de8a066fd9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attachedToHand: 0
-  handTransform: {fileID: 0}
