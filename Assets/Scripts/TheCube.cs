@@ -60,8 +60,8 @@ public class TheCube : MonoBehaviour
         //      - Note that this will depend on the size/bounds of the cube, so account for that accordingly
         //      - EDIT: Actually whole number coordinates are the CORNERS of cubes. I guess then I must find out which half number (x = 0.5, y = 0.5) coordinates it overlaps?
         //          - EDIT2: Well it gets floored to int anyways in the next function that gets called, so does it even matter?
-        //              - EDIT3: Actually it probably does matter. It would make sense if a cube is detected to be overlapped if this object touches the centre of it instead of a random corner.
-        // Use world.ConvertWorldPositionToCubeInChunk(...) for each whole number coordinate found.
+        //              - EDIT3: Actually it probably does matter. It would make sense if a cube is detected to be overlapped when this object touches the centre of it instead of a random corner.
+        // Use world.ConvertWorldPositionToCubeInChunk(...) for each coordinate found.
         // Find the info on what blocktype that cube and chunk position refers to
         // Return an array of blocktypes that aren't air blocks.
         // Profit
