@@ -9,8 +9,10 @@ public class TheCube : MonoBehaviour
     PhysicalProperties physicalProperties;
     float previousManaCharge = 0;
     bool materialized = false;
-    BoxCollider boxCollider;
     List<Transform> detectionPoints = new List<Transform>();
+    Vector3 latchAnchor;
+    bool latched = false;
+    List<BasicBlockInfo> latchedBlocks = new List<BasicBlockInfo>();
     
 
     void Start()
@@ -20,14 +22,13 @@ public class TheCube : MonoBehaviour
         material = GetComponent<Renderer>().material;
         physicalProperties = GetComponent<PhysicalProperties>();
         previousManaCharge = physicalProperties.manaCharge;
-        boxCollider = GetComponent<BoxCollider>();
 
         foreach (Transform child in transform)
         {
             detectionPoints.Add(child);
         }
 
-        Invoke("OverlappingCubes", 5f);
+        Invoke("Materialize", 5f);
     }
 
 
@@ -44,13 +45,50 @@ public class TheCube : MonoBehaviour
             Dematerialize();
         }
 
+        if (latched)
+        {
+            if (transform.position.x - latchAnchor.x > 1f)
+            {
+                // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
+                for (int i = 0; i < latchedBlocks.Count; i++)
+                {
+                    world.DrawBlock(latchedBlocks[i].cubePos.x,
+                        latchedBlocks[i].cubePos.y,
+                        latchedBlocks[i].cubePos.z,
+                        latchedBlocks[i].chunkPos.x,
+                        latchedBlocks[i].chunkPos.y,
+                        Block.BlockType.Air,
+                        false);
+                    BasicBlockInfo thisCube = new BasicBlockInfo();
+                    thisCube.blockType = latchedBlocks[i].blockType;
+                    thisCube.cubePos = latchedBlocks[i].cubePos + new Vector3Int(1,0,0);
+                    thisCube.chunkPos = latchedBlocks[i].chunkPos;
+                    latchedBlocks[i] = thisCube;
+                    // Somehow apply this positional change to the actual block lol
+                    world.DrawBlock(thisCube.cubePos.x,
+                        thisCube.cubePos.y,
+                        thisCube.cubePos.z,
+                        thisCube.chunkPos.x,
+                        thisCube.chunkPos.y,
+                        thisCube.blockType,
+                        true);
+                }
+                latchAnchor = transform.position;
+            }
+        }
+
 
         previousManaCharge = physicalProperties.manaCharge;
     }
 
     void Materialize()
     {
-        // if OverlappingCubes > 0 then call Latch()
+        List<BasicBlockInfo> overlappedBlocks = OverlappingBlocks();
+
+        if (overlappedBlocks.Count > 0)
+        {
+            Latch(overlappedBlocks);
+        }
     }
 
     void Dematerialize()
@@ -58,17 +96,21 @@ public class TheCube : MonoBehaviour
         
     }
 
-    void Latch()
+    void Latch(List<BasicBlockInfo> blocksToLatchOnto)
     {
+        latched = true;
+        latchAnchor = transform.position;
+        latchedBlocks = blocksToLatchOnto;
+
         // I have no idea what to do here.
         // I guess take in the cube position and information as arguments?
         // Then move them accordingly and have them only be able to move in a spot that an air block was?
         // Maybe find a way to store information on where the overlapping cube was relative to this object, then constantly keep it moving towards that relative position
     }
 
-    List<OverlappingCube> OverlappingCubes()
+    List<BasicBlockInfo> OverlappingBlocks()
     {
-        List<OverlappingCube> overlappingCubes = new List<OverlappingCube>();
+        List<BasicBlockInfo> overlappingBlocks = new List<BasicBlockInfo>();
         // Find all the the cubes overlapping with the detection points using world.ConvertWorldPositionToCubeInChunk(...)
         foreach (Transform detectionPoint in detectionPoints)
         {
@@ -81,25 +123,25 @@ public class TheCube : MonoBehaviour
             (x,y,z,chunkX,chunkY) = World.ConvertWorldPositionToCubeInChunk(detectionPoint.position);
             if (world.CheckCubeInChunk(x,y,z,chunkX,chunkY)) // Check if this cube is a solid block
             {
-                OverlappingCube thisCube = new OverlappingCube();
+                BasicBlockInfo thisCube = new BasicBlockInfo();
                 thisCube.blockType = world.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
                 thisCube.cubePos = new Vector3Int(x,y,z);
                 thisCube.chunkPos = new Vector2Int(chunkX,chunkY);
-                if (!overlappingCubes.Contains(thisCube))
+                if (!overlappingBlocks.Contains(thisCube))
                 {
-                    overlappingCubes.Add(thisCube); // I can't tell if this is spaghetti code or not
+                    overlappingBlocks.Add(thisCube); // I can't tell if this is spaghetti code or not
                 }
             }
         }
 
         // Return an array of blocktypes that aren't air blocks. maybe also return their position too so I can move them around
         // Profit
-        foreach (OverlappingCube overlappingCube in overlappingCubes)
+        foreach (BasicBlockInfo overlappingCube in overlappingBlocks)
             Debug.Log(overlappingCube.blockType + "\n" + overlappingCube.cubePos + "\n" + overlappingCube.chunkPos);
-        return overlappingCubes;
+        return overlappingBlocks;
     }
 
-    struct OverlappingCube
+    struct BasicBlockInfo
     {
         public Block.BlockType blockType;
         public Vector3Int cubePos;

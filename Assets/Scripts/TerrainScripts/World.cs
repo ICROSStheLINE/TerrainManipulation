@@ -89,24 +89,28 @@ public class World : MonoBehaviour
             chunkY -= 1;
             z += Chunk.chunkWidth;
             DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
+            return;
         }
         if (z >= Chunk.chunkWidth)
         {
             chunkY += 1;
             z -= Chunk.chunkWidth;
             DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
+            return;
         }
         if (x < 0)
         {
             chunkX -= 1;
             x += Chunk.chunkLength;
             DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
+            return;
         }
         if (x >= Chunk.chunkLength) // If it's out of bounds
         {
             chunkX += 1;
             x -= Chunk.chunkLength;
             DrawBlock(x,y,z,chunkX,chunkY,blockType,regenMesh);
+            return;
         }
         if (y < 0)
         {
