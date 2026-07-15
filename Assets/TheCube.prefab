@@ -1637,9 +1637,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c77232cbf6b444c931e6b5f154ab35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashPoint: 6
+  flashPoint: 6000
   temperature: 4
-  freezingPoint: 2
+  freezingPoint: -2000
   isIgnited: 0
   isFrozen: 0
   pressureGenerationRate: 2

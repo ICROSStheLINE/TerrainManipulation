@@ -13,6 +13,7 @@ public class TheCube : MonoBehaviour
     Vector3 latchAnchor;
     bool latched = false;
     List<BasicBlockInfo> latchedBlocks = new List<BasicBlockInfo>();
+    Color defaultColor;
     
 
     void Start()
@@ -20,6 +21,7 @@ public class TheCube : MonoBehaviour
         GameObject worldGameObject = GameObject.FindWithTag("World");
         world = worldGameObject.transform.GetComponent<World>();
         material = GetComponent<Renderer>().material;
+        defaultColor = material.GetColor("_Color");
         physicalProperties = GetComponent<PhysicalProperties>();
         previousManaCharge = physicalProperties.manaCharge;
 
@@ -28,7 +30,7 @@ public class TheCube : MonoBehaviour
             detectionPoints.Add(child);
         }
 
-        Invoke("Materialize", 5f);
+        // Invoke("Materialize", 5f);
     }
 
 
@@ -55,6 +57,8 @@ public class TheCube : MonoBehaviour
 
     void Materialize()
     {
+        material.SetColor("_Color", Color.black);
+
         List<BasicBlockInfo> overlappedBlocks = OverlappingBlocks();
 
         if (overlappedBlocks.Count > 0)
@@ -65,7 +69,17 @@ public class TheCube : MonoBehaviour
 
     void Dematerialize()
     {
-        
+        material.SetColor("_Color", defaultColor);
+
+        if (latched)
+        {
+            Unlatch();
+        }
+    }
+
+    void Unlatch()
+    {
+        latched = false;
     }
 
     void Latch(List<BasicBlockInfo> blocksToLatchOnto)
