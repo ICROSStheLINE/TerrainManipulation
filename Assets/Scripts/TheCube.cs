@@ -47,56 +47,8 @@ public class TheCube : MonoBehaviour
 
         if (latched)
         {
-            int latchDeltaX = 0;
-            int latchDeltaY = 0;
-            int latchDeltaZ = 0;
-
-            if (transform.position.x - latchAnchor.x > 1f) latchDeltaX++;
-            if (transform.position.x - latchAnchor.x < -1f) latchDeltaX--;
-            if (transform.position.y - latchAnchor.y > 1f) latchDeltaY++;
-            if (transform.position.y - latchAnchor.y < -1f) latchDeltaY--;
-            if (transform.position.z - latchAnchor.z > 1f) latchDeltaZ++;
-            if (transform.position.z - latchAnchor.z < -1f) latchDeltaZ--;
-
-            if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
-            {
-                // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
-                for (int i = 0; i < latchedBlocks.Count; i++)
-                {
-                    world.DrawBlock(latchedBlocks[i].cubePos.x,
-                        latchedBlocks[i].cubePos.y,
-                        latchedBlocks[i].cubePos.z,
-                        latchedBlocks[i].chunkPos.x,
-                        latchedBlocks[i].chunkPos.y,
-                        Block.BlockType.Air,
-                        false);
-                }
-            }
-            
-            if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
-            {
-                // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
-                for (int i = 0; i < latchedBlocks.Count; i++)
-                {
-                    BasicBlockInfo thisCube = new BasicBlockInfo();
-                    thisCube.blockType = latchedBlocks[i].blockType;
-                    thisCube.cubePos = latchedBlocks[i].cubePos + new Vector3Int(latchDeltaX,latchDeltaY,latchDeltaZ);
-                    thisCube.chunkPos = latchedBlocks[i].chunkPos;
-                    latchedBlocks[i] = thisCube;
-                    // Somehow apply this positional change to the actual block lol
-                    world.DrawBlock(thisCube.cubePos.x,
-                        thisCube.cubePos.y,
-                        thisCube.cubePos.z,
-                        thisCube.chunkPos.x,
-                        thisCube.chunkPos.y,
-                        thisCube.blockType,
-                        true);
-                }
-                latchAnchor += new Vector3(latchDeltaX,latchDeltaY,latchDeltaZ);
-                // latchAnchor = transform.position;
-            }
+            DragAroundLatchedObjects();
         }
-
 
         previousManaCharge = physicalProperties.manaCharge;
     }
@@ -126,6 +78,56 @@ public class TheCube : MonoBehaviour
         // I guess take in the cube position and information as arguments?
         // Then move them accordingly and have them only be able to move in a spot that an air block was?
         // Maybe find a way to store information on where the overlapping cube was relative to this object, then constantly keep it moving towards that relative position
+    }
+
+    void DragAroundLatchedObjects()
+    {
+        int latchDeltaX = 0;
+        int latchDeltaY = 0;
+        int latchDeltaZ = 0;
+        if (transform.position.x - latchAnchor.x > 1f) latchDeltaX++;
+        if (transform.position.x - latchAnchor.x < -1f) latchDeltaX--;
+        if (transform.position.y - latchAnchor.y > 1f) latchDeltaY++;
+        if (transform.position.y - latchAnchor.y < -1f) latchDeltaY--;
+        if (transform.position.z - latchAnchor.z > 1f) latchDeltaZ++;
+        if (transform.position.z - latchAnchor.z < -1f) latchDeltaZ--;
+        if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
+        {
+            // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
+            for (int i = 0; i < latchedBlocks.Count; i++)
+            {
+                world.DrawBlock(latchedBlocks[i].cubePos.x,
+                    latchedBlocks[i].cubePos.y,
+                    latchedBlocks[i].cubePos.z,
+                    latchedBlocks[i].chunkPos.x,
+                    latchedBlocks[i].chunkPos.y,
+                    Block.BlockType.Air,
+                    false);
+            }
+        }
+        
+        if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
+        {
+            // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
+            for (int i = 0; i < latchedBlocks.Count; i++)
+            {
+                BasicBlockInfo thisCube = new BasicBlockInfo();
+                thisCube.blockType = latchedBlocks[i].blockType;
+                thisCube.cubePos = latchedBlocks[i].cubePos + new Vector3Int(latchDeltaX,latchDeltaY,latchDeltaZ);
+                thisCube.chunkPos = latchedBlocks[i].chunkPos;
+                latchedBlocks[i] = thisCube;
+                // Somehow apply this positional change to the actual block lol
+                world.DrawBlock(thisCube.cubePos.x,
+                    thisCube.cubePos.y,
+                    thisCube.cubePos.z,
+                    thisCube.chunkPos.x,
+                    thisCube.chunkPos.y,
+                    thisCube.blockType,
+                    true);
+            }
+            latchAnchor += new Vector3(latchDeltaX,latchDeltaY,latchDeltaZ);
+            // latchAnchor = transform.position;
+        }
     }
 
     List<BasicBlockInfo> OverlappingBlocks()
