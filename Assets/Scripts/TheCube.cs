@@ -47,7 +47,18 @@ public class TheCube : MonoBehaviour
 
         if (latched)
         {
-            if (transform.position.x - latchAnchor.x > 1f)
+            int latchDeltaX = 0;
+            int latchDeltaY = 0;
+            int latchDeltaZ = 0;
+
+            if (transform.position.x - latchAnchor.x > 1f) latchDeltaX++;
+            if (transform.position.x - latchAnchor.x < -1f) latchDeltaX--;
+            if (transform.position.y - latchAnchor.y > 1f) latchDeltaY++;
+            if (transform.position.y - latchAnchor.y < -1f) latchDeltaY--;
+            if (transform.position.z - latchAnchor.z > 1f) latchDeltaZ++;
+            if (transform.position.z - latchAnchor.z < -1f) latchDeltaZ--;
+
+            if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
             {
                 // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
                 for (int i = 0; i < latchedBlocks.Count; i++)
@@ -59,9 +70,17 @@ public class TheCube : MonoBehaviour
                         latchedBlocks[i].chunkPos.y,
                         Block.BlockType.Air,
                         false);
+                }
+            }
+            
+            if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
+            {
+                // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
+                for (int i = 0; i < latchedBlocks.Count; i++)
+                {
                     BasicBlockInfo thisCube = new BasicBlockInfo();
                     thisCube.blockType = latchedBlocks[i].blockType;
-                    thisCube.cubePos = latchedBlocks[i].cubePos + new Vector3Int(1,0,0);
+                    thisCube.cubePos = latchedBlocks[i].cubePos + new Vector3Int(latchDeltaX,latchDeltaY,latchDeltaZ);
                     thisCube.chunkPos = latchedBlocks[i].chunkPos;
                     latchedBlocks[i] = thisCube;
                     // Somehow apply this positional change to the actual block lol
@@ -73,7 +92,8 @@ public class TheCube : MonoBehaviour
                         thisCube.blockType,
                         true);
                 }
-                latchAnchor = transform.position;
+                latchAnchor += new Vector3(latchDeltaX,latchDeltaY,latchDeltaZ);
+                // latchAnchor = transform.position;
             }
         }
 
