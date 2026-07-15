@@ -116,6 +116,38 @@ public class Chunk
     return Block.IsSolid(cubeMap[x,y,z]);
   }
 
+  public Block.BlockType CheckForCubeType(int x, int y, int z)
+  {
+    int chunkX = this.chunkX; 
+    int chunkY = this.chunkY;
+    if (z < 0)
+    {
+      chunkY -= 1;
+      z += chunkWidth;
+      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+    }
+    if (z >= chunkWidth)
+    {
+      chunkY += 1;
+      z -= chunkWidth;
+      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+    }
+    if (x < 0)
+    {
+      chunkX -= 1;
+      x += chunkLength;
+      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+    }
+    if (x >= chunkLength)
+    {
+      chunkX += 1;
+      x -= chunkLength;
+      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+    }
+    
+    return cubeMap[x,y,z];
+  }
+
   bool CheckForNeighbouringCube(int x, int y, int z, int faceIndex) // Returns true if neighbour exists
   {
     if (faceIndex == 0) // Vector3.backward

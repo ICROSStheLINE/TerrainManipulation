@@ -163,6 +163,11 @@ public class World : MonoBehaviour
         return chunkMap[chunkX,chunkY].CheckForCube(cubeX,cubeY,cubeZ);
     }
 
+    public Block.BlockType CheckCubeTypeInChunk(int cubeX, int cubeY, int cubeZ, int chunkX, int chunkY)
+    {
+        return chunkMap[chunkX,chunkY].CheckForCubeType(cubeX,cubeY,cubeZ);
+    }
+
     static public (int,int,int,int,int) ConvertWorldPositionToCubeInChunk(Vector3 worldPosition)
     {
         int blockX;

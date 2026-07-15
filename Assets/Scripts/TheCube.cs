@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TheCube : MonoBehaviour
@@ -7,6 +9,8 @@ public class TheCube : MonoBehaviour
     PhysicalProperties physicalProperties;
     float previousManaCharge = 0;
     bool materialized = false;
+    BoxCollider boxCollider;
+    List<Transform> detectionPoints = new List<Transform>();
     
 
     void Start()
@@ -16,6 +20,14 @@ public class TheCube : MonoBehaviour
         material = GetComponent<Renderer>().material;
         physicalProperties = GetComponent<PhysicalProperties>();
         previousManaCharge = physicalProperties.manaCharge;
+        boxCollider = GetComponent<BoxCollider>();
+
+        foreach (Transform child in transform)
+        {
+            detectionPoints.Add(child);
+        }
+
+        Invoke("OverlappingCubes", 5f);
     }
 
 
@@ -54,17 +66,43 @@ public class TheCube : MonoBehaviour
         // Maybe find a way to store information on where the overlapping cube was relative to this object, then constantly keep it moving towards that relative position
     }
 
-    Block.BlockType[] OverlappingCubes()
+    List<OverlappingCube> OverlappingCubes()
     {
-        // Find all the whole number Vector3 coordinates that this cube overlaps
-        //      - Note that this will depend on the size/bounds of the cube, so account for that accordingly
-        //      - EDIT: Actually whole number coordinates are the CORNERS of cubes. I guess then I must find out which half number (x = 0.5, y = 0.5) coordinates it overlaps?
-        //          - EDIT2: Well it gets floored to int anyways in the next function that gets called, so does it even matter?
-        //              - EDIT3: Actually it probably does matter. It would make sense if a cube is detected to be overlapped when this object touches the centre of it instead of a random corner.
-        // Use world.ConvertWorldPositionToCubeInChunk(...) for each coordinate found.
-        // Find the info on what blocktype that cube and chunk position refers to
-        // Return an array of blocktypes that aren't air blocks.
+        List<OverlappingCube> overlappingCubes = new List<OverlappingCube>();
+        // Find all the the cubes overlapping with the detection points using world.ConvertWorldPositionToCubeInChunk(...)
+        foreach (Transform detectionPoint in detectionPoints)
+        {
+            // Find the info on what blocktype that cube and chunk position refers to
+            int x;
+            int y;
+            int z;
+            int chunkX;
+            int chunkY;
+            (x,y,z,chunkX,chunkY) = World.ConvertWorldPositionToCubeInChunk(detectionPoint.position);
+            if (world.CheckCubeInChunk(x,y,z,chunkX,chunkY)) // Check if this cube is a solid block
+            {
+                OverlappingCube thisCube = new OverlappingCube();
+                thisCube.blockType = world.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+                thisCube.cubePos = new Vector3Int(x,y,z);
+                thisCube.chunkPos = new Vector2Int(chunkX,chunkY);
+                if (!overlappingCubes.Contains(thisCube))
+                {
+                    overlappingCubes.Add(thisCube); // I can't tell if this is spaghetti code or not
+                }
+            }
+        }
+
+        // Return an array of blocktypes that aren't air blocks. maybe also return their position too so I can move them around
         // Profit
-        return null;
+        foreach (OverlappingCube overlappingCube in overlappingCubes)
+            Debug.Log(overlappingCube.blockType + "\n" + overlappingCube.cubePos + "\n" + overlappingCube.chunkPos);
+        return overlappingCubes;
+    }
+
+    struct OverlappingCube
+    {
+        public Block.BlockType blockType;
+        public Vector3Int cubePos;
+        public Vector2Int chunkPos;
     }
 }
