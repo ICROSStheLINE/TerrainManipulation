@@ -127,6 +127,8 @@ public class TheCube : MonoBehaviour
 
     void DragAroundLatchedObjects()
     {
+        HashSet<Vector2Int> affectedChunks = new HashSet<Vector2Int>();
+
         int latchDeltaX = 0;
         int latchDeltaY = 0;
         int latchDeltaZ = 0;
@@ -148,6 +150,8 @@ public class TheCube : MonoBehaviour
                     latchedBlocks[i].chunkPos.y,
                     Block.BlockType.Air,
                     false);
+
+                affectedChunks.Add(latchedBlocks[i].chunkPos);
             }
         }
         
@@ -160,6 +164,7 @@ public class TheCube : MonoBehaviour
                 thisCube.blockType = latchedBlocks[i].blockType;
                 thisCube.cubePos = latchedBlocks[i].cubePos + new Vector3Int(latchDeltaX,latchDeltaY,latchDeltaZ);
                 thisCube.chunkPos = latchedBlocks[i].chunkPos;
+                (thisCube.cubePos,thisCube.chunkPos) = World.FindRealBlockChunkAndPos(thisCube.cubePos,thisCube.chunkPos);
                 latchedBlocks[i] = thisCube;
                 // Somehow apply this positional change to the actual block lol
                 world.DrawBlock(thisCube.cubePos.x,
@@ -168,8 +173,16 @@ public class TheCube : MonoBehaviour
                     thisCube.chunkPos.x,
                     thisCube.chunkPos.y,
                     thisCube.blockType,
-                    true);
+                    false);
+
+                affectedChunks.Add(thisCube.chunkPos);
             }
+
+            foreach (Vector2Int chunk in affectedChunks)
+            {
+                world.GenerateSpecificChunkMesh(chunk);
+            }
+
             latchAnchor += new Vector3(latchDeltaX,latchDeltaY,latchDeltaZ) * Chunk.voxelSize;
             // latchAnchor = transform.position;
         }

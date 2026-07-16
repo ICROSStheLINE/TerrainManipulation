@@ -157,6 +157,11 @@ public class World : MonoBehaviour
         }
     }
 
+    public void GenerateSpecificChunkMesh(Vector2Int chunk)
+    {
+        chunkMap[chunk.x,chunk.y].RegenMesh();
+    }
+
     public bool CheckCubeInChunk(int cubeX, int cubeY, int cubeZ, int chunkX, int chunkY)
     {
         if (chunkX < 0 || chunkX >= worldLength || chunkY < 0 || chunkY >= worldWidth)
@@ -191,5 +196,36 @@ public class World : MonoBehaviour
         blockZ = blockZ - (chunkY * Chunk.chunkWidth);
 
         return (blockX, blockY, blockZ, chunkX, chunkY);
+    }
+
+    public static (Vector3Int cubePos, Vector2Int chunkPos) FindRealBlockChunkAndPos (
+        Vector3Int cubePos,
+        Vector2Int chunkPos)
+    {
+        while (cubePos.x < 0)
+        {
+            cubePos.x += Chunk.chunkLength;
+            chunkPos.x--;
+        }
+
+        while (cubePos.x >= Chunk.chunkLength)
+        {
+            cubePos.x -= Chunk.chunkLength;
+            chunkPos.x++;
+        }
+
+        while (cubePos.z < 0)
+        {
+            cubePos.z += Chunk.chunkWidth;
+            chunkPos.y--;
+        }
+
+        while (cubePos.z >= Chunk.chunkWidth)
+        {
+            cubePos.z -= Chunk.chunkWidth;
+            chunkPos.y++;
+        }
+
+        return (cubePos, chunkPos);
     }
 }
