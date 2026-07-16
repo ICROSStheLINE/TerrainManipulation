@@ -14,6 +14,8 @@ public class TheCube : MonoBehaviour
     bool latched = false;
     List<BasicBlockInfo> latchedBlocks = new List<BasicBlockInfo>();
     Color defaultColor;
+    Coroutine manaFlowCoroutine;
+    float manaChargeDelta;
     
 
     void Start()
@@ -36,15 +38,17 @@ public class TheCube : MonoBehaviour
 
     void Update()
     {
-        float manaChargeDelta = physicalProperties.manaCharge - previousManaCharge;
+        manaChargeDelta = CheckManaChargeDelta();
 
         if (manaChargeDelta != 0 && !materialized)
         {
             Materialize();
+            Debug.Log("Materialize");
         }
         else if (manaChargeDelta == 0 && materialized)
         {
             Dematerialize();
+            Debug.Log("DeMaterialize");
         }
 
         if (latched)
@@ -55,8 +59,34 @@ public class TheCube : MonoBehaviour
         previousManaCharge = physicalProperties.manaCharge;
     }
 
+    float CheckManaChargeDelta()
+    {
+        float delta = physicalProperties.manaCharge - previousManaCharge;
+
+        if (delta != 0)
+        {
+            manaChargeDelta = delta;
+
+            if (manaFlowCoroutine != null)
+                StopCoroutine(manaFlowCoroutine);
+
+            manaFlowCoroutine = StartCoroutine(ManaFlowCooldown());
+        }
+
+        return manaChargeDelta;
+    }
+
+    IEnumerator ManaFlowCooldown()
+    {
+        yield return new WaitForSeconds(0.251f);
+
+        manaChargeDelta = 0;
+        manaFlowCoroutine = null;
+    }
+
     void Materialize()
     {
+        materialized = true;
         material.SetColor("_Color", Color.black);
 
         List<BasicBlockInfo> overlappedBlocks = OverlappingBlocks();
@@ -69,6 +99,7 @@ public class TheCube : MonoBehaviour
 
     void Dematerialize()
     {
+        materialized = false;
         material.SetColor("_Color", defaultColor);
 
         if (latched)
