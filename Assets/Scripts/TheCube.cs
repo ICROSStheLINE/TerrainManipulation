@@ -130,12 +130,12 @@ public class TheCube : MonoBehaviour
         int latchDeltaX = 0;
         int latchDeltaY = 0;
         int latchDeltaZ = 0;
-        if (transform.position.x - latchAnchor.x > 1f) latchDeltaX++;
-        if (transform.position.x - latchAnchor.x < -1f) latchDeltaX--;
-        if (transform.position.y - latchAnchor.y > 1f) latchDeltaY++;
-        if (transform.position.y - latchAnchor.y < -1f) latchDeltaY--;
-        if (transform.position.z - latchAnchor.z > 1f) latchDeltaZ++;
-        if (transform.position.z - latchAnchor.z < -1f) latchDeltaZ--;
+        if (transform.position.x - latchAnchor.x > Chunk.voxelSize) latchDeltaX++;
+        if (transform.position.x - latchAnchor.x < -Chunk.voxelSize) latchDeltaX--;
+        if (transform.position.y - latchAnchor.y > Chunk.voxelSize) latchDeltaY++;
+        if (transform.position.y - latchAnchor.y < -Chunk.voxelSize) latchDeltaY--;
+        if (transform.position.z - latchAnchor.z > Chunk.voxelSize) latchDeltaZ++;
+        if (transform.position.z - latchAnchor.z < -Chunk.voxelSize) latchDeltaZ--;
         if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
         {
             // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
@@ -170,7 +170,7 @@ public class TheCube : MonoBehaviour
                     thisCube.blockType,
                     true);
             }
-            latchAnchor += new Vector3(latchDeltaX,latchDeltaY,latchDeltaZ);
+            latchAnchor += new Vector3(latchDeltaX,latchDeltaY,latchDeltaZ) * Chunk.voxelSize;
             // latchAnchor = transform.position;
         }
     }

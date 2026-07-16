@@ -180,9 +180,9 @@ public class World : MonoBehaviour
         int chunkX;
         int chunkY;
 
-        blockX = Mathf.FloorToInt(worldPosition.x);
-        blockY = Mathf.FloorToInt(worldPosition.y);
-        blockZ = Mathf.FloorToInt(worldPosition.z);
+        blockX = Mathf.FloorToInt(worldPosition.x / Chunk.voxelSize);
+        blockY = Mathf.FloorToInt(worldPosition.y / Chunk.voxelSize);
+        blockZ = Mathf.FloorToInt(worldPosition.z / Chunk.voxelSize);
 
         chunkX = Mathf.FloorToInt(blockX / Chunk.chunkLength);
         chunkY = Mathf.FloorToInt(blockZ / Chunk.chunkWidth);

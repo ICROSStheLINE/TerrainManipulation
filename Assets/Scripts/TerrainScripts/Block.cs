@@ -12,6 +12,10 @@ public static class Block
     public static bool IsSolid(BlockType blockType)
     {
         if (blockType == BlockType.Air) return false;
+        if (blockType == BlockType.Grass) return true;
+        if (blockType == BlockType.Dirt) return true;
+        if (blockType == BlockType.Stone) return true;
+        
         return true;
     }
 
