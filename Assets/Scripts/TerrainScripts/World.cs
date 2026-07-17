@@ -172,9 +172,9 @@ public class World : MonoBehaviour
         return chunkMap[chunkX,chunkY].CheckForCube(cubeX,cubeY,cubeZ);
     }
 
-    public Block.BlockType CheckCubeTypeInChunk(int cubeX, int cubeY, int cubeZ, int chunkX, int chunkY)
+    public Block.BlockType CheckCubeTypeInChunk(Vector3Int cubePos, Vector2Int chunkPos)
     {
-        return chunkMap[chunkX,chunkY].CheckForCubeType(cubeX,cubeY,cubeZ);
+        return chunkMap[chunkPos.x,chunkPos.y].CheckForCubeType(cubePos.x,cubePos.y,cubePos.z);
     }
 
     static public (int,int,int,int,int) ConvertWorldPositionToCubeInChunk(Vector3 worldPosition)

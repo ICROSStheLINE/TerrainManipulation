@@ -124,25 +124,25 @@ public class Chunk
     {
       chunkY -= 1;
       z += chunkWidth;
-      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+      return worldScript.CheckCubeTypeInChunk(new Vector3Int(x,y,z),new Vector2Int(chunkX,chunkY));
     }
     if (z >= chunkWidth)
     {
       chunkY += 1;
       z -= chunkWidth;
-      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+      return worldScript.CheckCubeTypeInChunk(new Vector3Int(x,y,z),new Vector2Int(chunkX,chunkY));
     }
     if (x < 0)
     {
       chunkX -= 1;
       x += chunkLength;
-      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+      return worldScript.CheckCubeTypeInChunk(new Vector3Int(x,y,z),new Vector2Int(chunkX,chunkY));
     }
     if (x >= chunkLength)
     {
       chunkX += 1;
       x -= chunkLength;
-      return worldScript.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+      return worldScript.CheckCubeTypeInChunk(new Vector3Int(x,y,z),new Vector2Int(chunkX,chunkY));
     }
     
     return cubeMap[x,y,z];

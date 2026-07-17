@@ -143,6 +143,9 @@ public class TheCube : MonoBehaviour
             // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
             for (int i = 0; i < latchedBlocks.Count; i++)
             {
+                if (Block.IsGround(latchedBlocks[i].blockType))
+                { continue; }
+
                 world.DrawBlock(latchedBlocks[i].cubePos.x,
                     latchedBlocks[i].cubePos.y,
                     latchedBlocks[i].cubePos.z,
@@ -160,11 +163,16 @@ public class TheCube : MonoBehaviour
             // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
             for (int i = 0; i < latchedBlocks.Count; i++)
             {
+                Vector3Int cubePosDestination = latchedBlocks[i].cubePos + new Vector3Int(latchDeltaX,latchDeltaY,latchDeltaZ);
+                Vector2Int cubeChunkDestination = latchedBlocks[i].chunkPos;
+                (cubePosDestination,cubeChunkDestination) = World.FindRealBlockChunkAndPos(cubePosDestination,cubeChunkDestination);
+                if (!Block.IsGround(latchedBlocks[i].blockType) && Block.IsSolid(latchedBlocks[i].blockType) && world.CheckCubeTypeInChunk(cubePosDestination,cubeChunkDestination) != Block.BlockType.Air)
+                { continue; }
+
                 BasicBlockInfo thisCube = new BasicBlockInfo();
                 thisCube.blockType = latchedBlocks[i].blockType;
-                thisCube.cubePos = latchedBlocks[i].cubePos + new Vector3Int(latchDeltaX,latchDeltaY,latchDeltaZ);
-                thisCube.chunkPos = latchedBlocks[i].chunkPos;
-                (thisCube.cubePos,thisCube.chunkPos) = World.FindRealBlockChunkAndPos(thisCube.cubePos,thisCube.chunkPos);
+                thisCube.cubePos = cubePosDestination;
+                thisCube.chunkPos = cubeChunkDestination;
                 latchedBlocks[i] = thisCube;
                 // Somehow apply this positional change to the actual block lol
                 world.DrawBlock(thisCube.cubePos.x,
@@ -204,7 +212,7 @@ public class TheCube : MonoBehaviour
             if (world.CheckCubeInChunk(x,y,z,chunkX,chunkY)) // Check if this cube is a solid block
             {
                 BasicBlockInfo thisCube = new BasicBlockInfo();
-                thisCube.blockType = world.CheckCubeTypeInChunk(x,y,z,chunkX,chunkY);
+                thisCube.blockType = world.CheckCubeTypeInChunk(new Vector3Int(x,y,z),new Vector2Int(chunkX,chunkY));
                 thisCube.cubePos = new Vector3Int(x,y,z);
                 thisCube.chunkPos = new Vector2Int(chunkX,chunkY);
                 if (!overlappingBlocks.Contains(thisCube))
