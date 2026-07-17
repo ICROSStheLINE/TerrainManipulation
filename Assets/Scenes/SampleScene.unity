@@ -149,8 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manaBar: {fileID: 947558655}
-  manaMax: 200
-  manaAmount: 200
+  manaMax: 600
+  manaAmount: 600
 --- !u!4 &327266522
 Transform:
   m_ObjectHideFlags: 0

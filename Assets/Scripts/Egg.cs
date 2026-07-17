@@ -100,19 +100,28 @@ public class Egg : MonoBehaviour
 
     void DestroyNearbyCubes()
     {
+        HashSet<Vector2Int> affectedChunks = new HashSet<Vector2Int>();
         int x;
         int y;
         int z;
         int chunkX;
         int chunkY;
         (x,y,z,chunkX,chunkY) = World.ConvertWorldPositionToCubeInChunk(transform.position);
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                for (int k = -1; k <= 1; k++)
+        for (int i = -10; i <= 10; i++) {
+            for (int j = -10; j <= 10; j++) {
+                for (int k = -10; k <= 10; k++)
                 {
-                    world.DrawBlock( x + i, y + j, z + k, chunkX, chunkY, Block.BlockType.Air, true);
+                    Vector3Int cubePos = new Vector3Int(x,y,z);
+                    Vector2Int chunkPos = new Vector2Int(chunkX,chunkY);
+                    world.DrawBlock( x + i, y + j, z + k, chunkX, chunkY, Block.BlockType.Air, false);
+                    (cubePos, chunkPos) = World.FindRealBlockChunkAndPos(new Vector3Int(x+i,y+j,z+k),chunkPos);
+                    affectedChunks.Add(chunkPos);
                 }
             }
+        }
+        foreach (Vector2Int chunk in affectedChunks)
+        {
+            world.GenerateSpecificChunkMesh(chunk);
         }
     }
 
