@@ -228,4 +228,13 @@ public class World : MonoBehaviour
 
         return (cubePos, chunkPos);
     }
+
+    public static Vector3 BlockToWorldPosition(Vector3Int cubePos, Vector2Int chunkPos)
+    {
+        return new Vector3(
+            (chunkPos.x * Chunk.chunkLength + cubePos.x) * Chunk.voxelSize,
+            cubePos.y * Chunk.voxelSize,
+            (chunkPos.y * Chunk.chunkWidth + cubePos.z) * Chunk.voxelSize
+        );
+    }
 }

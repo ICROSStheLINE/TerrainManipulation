@@ -16,6 +16,7 @@ public class TheCube : MonoBehaviour
     Color defaultColor;
     Coroutine manaFlowCoroutine;
     float manaChargeDelta;
+    Vector3 originalScale;
     
 
     void Start()
@@ -26,11 +27,10 @@ public class TheCube : MonoBehaviour
         defaultColor = material.GetColor("_Color");
         physicalProperties = GetComponent<PhysicalProperties>();
         previousManaCharge = physicalProperties.manaCharge;
-
         foreach (Transform child in transform)
-        {
-            detectionPoints.Add(child);
-        }
+        { detectionPoints.Add(child); }
+        originalScale = transform.localScale;
+        StartCoroutine("Shrink");
 
         // Invoke("Materialize", 5f);
     }
@@ -57,6 +57,37 @@ public class TheCube : MonoBehaviour
         }
 
         previousManaCharge = physicalProperties.manaCharge;
+    }
+
+    IEnumerator Shrink()
+    {
+        float duration = 2;
+        float shrinkAmount;
+        float elapsedTime = 0;
+        int durationDivision = 0;
+
+        while ( elapsedTime < duration )
+        {
+            elapsedTime += Time.deltaTime;
+
+            shrinkAmount = Mathf.Lerp(1f, 0.1f, elapsedTime / duration);
+            transform.localScale = originalScale * shrinkAmount;
+
+            int currentDivision = Mathf.Min(Mathf.FloorToInt((elapsedTime / duration) * 12), 12);
+
+            if (currentDivision > durationDivision)
+            {
+                durationDivision = currentDivision;
+
+                int latchedBlocksCount = latchedBlocks.Count;
+                if (latchedBlocksCount > 1)
+                { 
+                    latchedBlocks.RemoveAt(latchedBlocksCount - 1);
+                }
+            }
+
+            yield return null;
+        }
     }
 
     float CheckManaChargeDelta()
@@ -113,16 +144,19 @@ public class TheCube : MonoBehaviour
         latched = false;
     }
 
-    void Latch(List<BasicBlockInfo> blocksToLatchOnto)
+    void Latch(List<BasicBlockInfo> overlappedBlocks)
     {
         latched = true;
         latchAnchor = transform.position;
-        latchedBlocks = blocksToLatchOnto;
+        latchedBlocks = overlappedBlocks;
 
-        // I have no idea what to do here.
-        // I guess take in the cube position and information as arguments?
-        // Then move them accordingly and have them only be able to move in a spot that an air block was?
-        // Maybe find a way to store information on where the overlapping cube was relative to this object, then constantly keep it moving towards that relative position
+        latchedBlocks.Sort((a, b) =>
+        {
+            float aDist = (World.BlockToWorldPosition(a.cubePos, a.chunkPos) - latchAnchor).sqrMagnitude;
+            float bDist = (World.BlockToWorldPosition(b.cubePos, b.chunkPos) - latchAnchor).sqrMagnitude;
+
+            return aDist.CompareTo(bDist);
+        });
     }
 
     void DragAroundLatchedObjects()
