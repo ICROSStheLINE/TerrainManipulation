@@ -46,6 +46,28 @@ public static class Block
         return Color.magenta;
     }
 
+    public static bool isStructure(BlockType blockType)
+    {
+        if (blockType == BlockType.Air) return false;
+        if (blockType == BlockType.Grass) return false;
+        if (blockType == BlockType.Dirt) return false;
+        if (blockType == BlockType.Stone) return false;
+        if (blockType == BlockType.Wood) return true;
+
+        return false;
+    }
+
+    public static bool isGround(BlockType blockType)
+    {
+        if (blockType == BlockType.Air) return false;
+        if (blockType == BlockType.Grass) return false;
+        if (blockType == BlockType.Dirt) return true;
+        if (blockType == BlockType.Stone) return true;
+        if (blockType == BlockType.Wood) return false;
+
+        return false;
+    }
+
     public static int GetHardness(BlockType blockType)
     {
         if (blockType == BlockType.Air) return 0;
