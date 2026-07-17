@@ -246,7 +246,7 @@ public class Chunk
 
   #region Static Variables
 
-  public const float voxelSize = 0.5f;
+  public const float voxelSize = 0.25f;
   // The 8 corner positions of a unit cube (from (0,0,0) to (1,1,1)).
   static readonly Vector3[] voxelVertices = new Vector3[8]
   {
