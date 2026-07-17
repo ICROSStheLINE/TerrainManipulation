@@ -46,7 +46,7 @@ public static class Block
         return Color.magenta;
     }
 
-    public static bool isStructure(BlockType blockType)
+    public static bool IsStructure(BlockType blockType)
     {
         if (blockType == BlockType.Air) return false;
         if (blockType == BlockType.Grass) return false;
@@ -57,7 +57,7 @@ public static class Block
         return false;
     }
 
-    public static bool isGround(BlockType blockType)
+    public static bool IsGround(BlockType blockType)
     {
         if (blockType == BlockType.Air) return false;
         if (blockType == BlockType.Grass) return false;
