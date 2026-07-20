@@ -19,7 +19,7 @@ public class Chunk
   List<Color> colors;
 
   public static int chunkLength = 15; // x  (I had to make these static so I could use them to make the cube map)
-  public static int chunkHeight = 40; // y
+  public static int chunkHeight = 100; // y
   public static int chunkWidth = chunkLength; // z
   
   // Apparently storing this as BlockType is much more memory efficient??
@@ -69,7 +69,12 @@ public class Chunk
             cubeMap[x,y,z] = Block.BlockType.Air; // CHANGE: assign enum directly
             continue;
           }
-          cubeMap[x,y,z] = Block.BlockType.Grass; // CHANGE: assign enum directly
+          if (y == groundHeight)
+          {
+            cubeMap[x,y,z] = Block.BlockType.Grass; // CHANGE: assign enum directly
+            continue;
+          }
+          cubeMap[x,y,z] = Block.BlockType.Dirt; // CHANGE: assign enum directly
         }
       }
     }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    static int worldLength = 6;
-    static int worldWidth = 6;
+    static int worldLength = 20;
+    static int worldWidth = 20;
 
     Chunk[,] chunkMap = new Chunk[worldLength, worldWidth];
     public Material blockMaterial;
@@ -44,9 +44,9 @@ public class World : MonoBehaviour
                    Chunk.chunkLength - 1, Chunk.groundHeight+1, Chunk.chunkWidth - 1,
                    fourthChunkX, fourthChunkY, Block.BlockType.Dirt, false);
 
-        // int houseChunkX = Mathf.FloorToInt(worldLength/2);
-        // int houseChunkY = Mathf.FloorToInt(worldWidth/2);
-        // DrawHouse(1, Chunk.groundHeight+1, 1, houseChunkX, houseChunkY);
+        int houseChunkX = Mathf.FloorToInt(worldLength/2);
+        int houseChunkY = Mathf.FloorToInt(worldWidth/2);
+        DrawHouse(1, Chunk.groundHeight+1, 1, houseChunkX, houseChunkY);
 
         GenerateAllChunkMeshes();
     }
@@ -54,12 +54,12 @@ public class World : MonoBehaviour
     void DrawHouse(int x, int y, int z, 
                    int chunkX, int chunkY)
     {
-        DrawBlocks(x,y,z, x+7,y+7,z+7, chunkX, chunkY, Block.BlockType.Stone, false); // Giant cube
-        DrawBlocks(x+1,y+0,z+1, x+6,y+6,z+6, chunkX, chunkY, Block.BlockType.Air, false); // Hollow out cube
-        DrawBlocks(x+7,y+0,z+4, x+7,y+1,z+4, chunkX, chunkY, Block.BlockType.Air, false); // Door
-        DrawBlocks(x+7,y+1,z+2, x+7,y+1,z+2, chunkX, chunkY, Block.BlockType.Air, false); // Window next to door
+        DrawBlocks(x,y,z, x+28,y+28,z+28, chunkX, chunkY, Block.BlockType.Stone, false); // Giant cube
+        DrawBlocks(x+4,y+0,z+4, x+24,y+24,z+24, chunkX, chunkY, Block.BlockType.Air, false); // Hollow out cube
+        DrawBlocks(x+24,y+0,z+16, x+28,y+12,z+20, chunkX, chunkY, Block.BlockType.Air, false); // Door
+        DrawBlocks(x+24,y+6,z+6, x+28,y+10,z+10, chunkX, chunkY, Block.BlockType.Air, false); // Window next to door
         for (int i = 0; i < 3; i++)
-        DrawBlocks(x+(-1+i),y+(7+i),z+(-1+i), x+(8-i),y+(7+i),z+(8-i), chunkX, chunkY, Block.BlockType.Stone, true); // Roof Layers
+        DrawBlocks(x+(-4+i),y+(28+i),z+(-4+i), x+(32-i),y+(28+i),z+(32-i), chunkX, chunkY, Block.BlockType.Stone, false); // Roof Layers
     }
 
     void DrawBlocks(int startX, int startY, int startZ, 
