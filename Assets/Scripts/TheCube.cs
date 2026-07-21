@@ -48,12 +48,10 @@ public class TheCube : MonoBehaviour
         if (manaChargeDelta != 0 && !materialized)
         {
             Materialize();
-            Debug.Log("Materialize");
         }
         else if (manaChargeDelta == 0 && materialized)
         {
             Dematerialize();
-            Debug.Log("DeMaterialize");
         }
 
         if (latched)
@@ -191,6 +189,7 @@ public class TheCube : MonoBehaviour
         if (transform.position.z - latchAnchor.z < -Chunk.voxelSize) latchDeltaZ--;
         if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
         {
+            // Cool block shaking effect {
             foreach (BasicBlockInfo randomizedBlock in randomizedBlocks)
             {
                 world.DrawBlock(randomizedBlock.cubePos.x,
@@ -232,7 +231,7 @@ public class TheCube : MonoBehaviour
                         false);
                     randomizedBlocks.Add(randomizedBlock);
                 }
-            }
+            }  // } Cool block shaking effect
 
             // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
             for (int i = 0; i < latchedBlocks.Count; i++)
@@ -329,8 +328,6 @@ public class TheCube : MonoBehaviour
 
         // Return an array of blocktypes that aren't air blocks. maybe also return their position too so I can move them around
         // Profit
-        foreach (BasicBlockInfo overlappingCube in overlappingBlocks)
-            Debug.Log(overlappingCube.blockType + "\n" + overlappingCube.cubePos + "\n" + overlappingCube.chunkPos);
         return overlappingBlocks;
     }
 
