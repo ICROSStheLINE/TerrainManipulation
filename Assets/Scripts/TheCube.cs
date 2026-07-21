@@ -35,6 +35,7 @@ public class TheCube : MonoBehaviour
         { detectionPoints.Add(child); }
         originalScale = transform.localScale;
         StartCoroutine("Shrink");
+        Destroy(gameObject, 3f);
 
         // Invoke("Materialize", 5f);
     }
