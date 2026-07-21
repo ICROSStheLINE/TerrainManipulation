@@ -140,7 +140,7 @@ public class SpellMenu : MonoBehaviour
                 RectTransform rect = castStartMap[i,j].uiObject.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(
                     castStartStartingPointX + (buttonWidth * j),
-                    castStartStartingPointY + (buttonHeight * i)
+                    castStartStartingPointY - (buttonHeight * i)
                 );
                 castStartMap[i,j].uiObject.SetActive(false);
                 Button button = castStartMap[i,j].uiObject.GetComponent<Button>();
