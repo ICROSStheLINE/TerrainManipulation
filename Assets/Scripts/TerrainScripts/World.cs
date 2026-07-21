@@ -54,12 +54,12 @@ public class World : MonoBehaviour
     void DrawHouse(int x, int y, int z, 
                    int chunkX, int chunkY)
     {
-        DrawBlocks(x,y,z, x+28,y+28,z+28, chunkX, chunkY, Block.BlockType.Stone, false); // Giant cube
+        DrawBlocks(x,y,z, x+28,y+28,z+28, chunkX, chunkY, Block.BlockType.Wood, false); // Giant cube
         DrawBlocks(x+4,y+0,z+4, x+24,y+24,z+24, chunkX, chunkY, Block.BlockType.Air, false); // Hollow out cube
         DrawBlocks(x+24,y+0,z+16, x+28,y+12,z+20, chunkX, chunkY, Block.BlockType.Air, false); // Door
         DrawBlocks(x+24,y+6,z+6, x+28,y+10,z+10, chunkX, chunkY, Block.BlockType.Air, false); // Window next to door
         for (int i = 0; i < 3; i++)
-        DrawBlocks(x+(-4+i),y+(28+i),z+(-4+i), x+(32-i),y+(28+i),z+(32-i), chunkX, chunkY, Block.BlockType.Stone, false); // Roof Layers
+        DrawBlocks(x+(-4+i),y+(28+i),z+(-4+i), x+(32-i),y+(28+i),z+(32-i), chunkX, chunkY, Block.BlockType.Wood, false); // Roof Layers
     }
 
     void DrawBlocks(int startX, int startY, int startZ, 

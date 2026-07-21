@@ -202,9 +202,9 @@ public class CastLogic : MonoBehaviour
     void CastStart()
     {
         Vector3 spawnPosition = handTransform.position + handTransform.up;
+        Vector3 spawnOffset = Vector3.zero;
         for (int i = 0; i < SpellMenu.castStartHeight; i++)
         {
-            Vector3 spawnOffset = Vector3.zero;
             for (int j = 0; j < SpellMenu.castStartWidth; j++)
             {
                 float randomRadius = 0.05f;
@@ -243,77 +243,99 @@ public class CastLogic : MonoBehaviour
                     manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
                     manaManager.LoseMana(5);
 
-                    int remainingIndices = spellMenu.castStartMap.GetLength(1) - 1 - j;
-                    if (remainingIndices <= 2)
+                    int remainingRows = SpellMenu.castStartHeight - 1 - i;
+                    int remainingIndices = SpellMenu.castStartWidth - 1 - j;
+                    if (remainingIndices <= 2 && remainingRows == 0)
                     { continue; }
 
                     int openParenthesesPassed = 0;
                     int closeParenthesesPassed = 0;
                     int closeParenthesisIndex = 0;
-                    for (int eggIndex = j + 1; eggIndex < spellMenu.castStartMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
+                    int closeParenthesisIndexVert = 0;
+                    for (int eggIndexVert = i; eggIndexVert < SpellMenu.castStartHeight; eggIndexVert++)
                     {
-                        if (spellMenu.castStartMap[i,eggIndex].spellType == openParenthesis)
+                        bool shouldBreak = false;
+                        for (int eggIndex = 0; eggIndex < SpellMenu.castStartWidth; eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
                         {
-                            openParenthesesPassed++;
-                        }
-                        if (spellMenu.castStartMap[i,eggIndex].spellType == closeParenthesis)
-                        {
-                            closeParenthesesPassed++;
-                            closeParenthesisIndex = eggIndex;
-                        }
+                            if (eggIndex == 0 && eggIndexVert == i)
+                            { eggIndex = j + 1; } // If checking the first row, start at the openparenthesis index instead of the beginning xdxd
 
-                        if (closeParenthesesPassed > openParenthesesPassed)
-                        { break; }
+                            if (spellMenu.castStartMap[eggIndexVert,eggIndex].spellType == openParenthesis)
+                            {
+                                openParenthesesPassed++;
+                            }
+                            if (spellMenu.castStartMap[eggIndexVert,eggIndex].spellType == closeParenthesis)
+                            {
+                                closeParenthesesPassed++;
+                                closeParenthesisIndex = eggIndex;
+                                closeParenthesisIndexVert = eggIndexVert;
+                            }
 
-                        if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
-                        { break; }
+                            if (closeParenthesesPassed > openParenthesesPassed)
+                            { shouldBreak = true; break; }
+
+                            if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
+                            { shouldBreak = true; break; }
+                        }
+                        if (shouldBreak) {break;}
                     }
+                    Debug.Log("1");
+                    
                     if (openParenthesesPassed != closeParenthesesPassed)
                     { continue; }
                     if (openParenthesesPassed == 0)
                     { continue; }
 
-                    for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
-                    {
-                        randomOffset = Random.insideUnitSphere * randomRadius;
+                    Debug.Log("2, CloseParenthesisIndex=" + closeParenthesisIndex + " CloseParenthesisIndexVert=" + closeParenthesisIndexVert);
 
-                        if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Empty)
-                        { continue; }
-                        if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Ball)
+                    for (int eggIndexVert = i; eggIndexVert <= closeParenthesisIndexVert; eggIndexVert++)
+                    {
+                        for (int eggIndex = 0; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
                         {
-                            if (manaManager.manaAmount <= 0) 
+                            if (eggIndex == 0 && eggIndexVert == i)
+                            { eggIndex = j + 1; } // If checking the first row, start at the openparenthesis index instead of the beginning xdxd
+
+                            randomOffset = Random.insideUnitSphere * randomRadius;
+
+                            if (spellMenu.castStartMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Empty)
                             { continue; }
-                            GameObject ballObject = Instantiate(ballPrefab, spawnedEgg.transform.position + randomOffset, transform.rotation); // Any spells within the parentheses should be spawned in the egg
-                            PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
-                            ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
-                            ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
-                            innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            activeManaObjects.Add(innerManaObject);
-                            innerManaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
-                            manaManager.LoseMana(5);
-                        }
-                        if (spellMenu.castStartMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
-                        {
-                            if (manaManager.manaAmount <= 0)
-                            { continue; }
-                            GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position + randomOffset, transform.rotation);
-                            sparkObject.transform.SetParent(spawnedEgg.transform);
-                            manaManager.LoseMana(5);
-                        }
-                        if (IsEggSpell(spellMenu.castStartMap[i,eggIndex].spellType))
-                        {
-                            if (manaManager.manaAmount <= 0)
-                            { continue; }
-                            GameObject innerEggObject = Instantiate(innerEggPrefab, spawnedEgg.transform.position + randomOffset, transform.rotation);
-                            PhysicalProperties innerEggPhysicalProps = innerEggObject.GetComponent<PhysicalProperties>();
-                            innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
-                            ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
-                            innerManaObject.AttachToEgg(spawnedEgg.transform);
-                            activeManaObjects.Add(innerManaObject);
-                            innerManaObject.spellSlotInfo = spellMenu.castStartMap[i,eggIndex];
-                            manaManager.LoseMana(5);
+                            if (spellMenu.castStartMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Ball)
+                            {
+                                if (manaManager.manaAmount <= 0) 
+                                { continue; }
+                                GameObject ballObject = Instantiate(ballPrefab, spawnedEgg.transform.position + randomOffset, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                                PhysicalProperties ballPhysicalProperties = ballObject.GetComponent<PhysicalProperties>();
+                                ballPhysicalProperties.manaResistance = spellMenu.castStartMap[i,eggIndex].manaResistancePercent / 100f;
+                                ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
+                                innerManaObject.AttachToEgg(spawnedEgg.transform);
+                                activeManaObjects.Add(innerManaObject);
+                                innerManaObject.spellSlotInfo = spellMenu.castStartMap[eggIndexVert,eggIndex];
+                                manaManager.LoseMana(5);
+                            }
+                            if (spellMenu.castStartMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Spark)
+                            {
+                                if (manaManager.manaAmount <= 0)
+                                { continue; }
+                                GameObject sparkObject = Instantiate(sparkPrefab, spawnedEgg.transform.position + randomOffset, transform.rotation);
+                                sparkObject.transform.SetParent(spawnedEgg.transform);
+                                manaManager.LoseMana(5);
+                            }
+                            if (IsEggSpell(spellMenu.castStartMap[eggIndexVert,eggIndex].spellType))
+                            {
+                                if (manaManager.manaAmount <= 0)
+                                { continue; }
+                                GameObject innerEggObject = Instantiate(innerEggPrefab, spawnedEgg.transform.position + randomOffset, transform.rotation);
+                                PhysicalProperties innerEggPhysicalProps = innerEggObject.GetComponent<PhysicalProperties>();
+                                innerEggPhysicalProps.manaResistance = spellMenu.castStartMap[eggIndexVert,eggIndex].manaResistancePercent / 100f;
+                                ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
+                                innerManaObject.AttachToEgg(spawnedEgg.transform);
+                                activeManaObjects.Add(innerManaObject);
+                                innerManaObject.spellSlotInfo = spellMenu.castStartMap[eggIndexVert,eggIndex];
+                                manaManager.LoseMana(5);
+                            }
                         }
                     }
+                    i = closeParenthesisIndexVert;
                     j = closeParenthesisIndex;
                 }
                 if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.Spark)
@@ -357,9 +379,9 @@ public class CastLogic : MonoBehaviour
     void CastContinuous()
     {
         Vector3 spawnPosition = handTransform.position + handTransform.up;
+        Vector3 spawnOffset = Vector3.zero;
         for (int i = 0; i < SpellMenu.castContinuousHeight; i++)
         {
-            Vector3 spawnOffset = Vector3.zero;
             for (int j = 0; j < SpellMenu.castContinuousWidth; j++)
             {
                 float randomRadius = 0.05f;
@@ -392,57 +414,75 @@ public class CastLogic : MonoBehaviour
                     // activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
 
-                    int remainingIndices = spellMenu.castContinuousMap.GetLength(1) - 1 - j;
-                    if (remainingIndices <= 2)
+                    int remainingRows = SpellMenu.castContinuousHeight - 1 - i;
+                    int remainingIndices = SpellMenu.castContinuousWidth - 1 - j;
+                    if (remainingIndices <= 2 && remainingRows == 0)
                     { continue; }
 
                     int openParenthesesPassed = 0;
                     int closeParenthesesPassed = 0;
                     int closeParenthesisIndex = 0;
-                    for (int eggIndex = j + 1; eggIndex < spellMenu.castContinuousMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
+                    int closeParenthesisIndexVert = 0;
+                    for (int eggIndexVert = i; eggIndexVert < SpellMenu.castContinuousHeight; eggIndexVert++)
                     {
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == openParenthesis)
+                        bool shouldBreak = false;
+                        for (int eggIndex = 0; eggIndex < SpellMenu.castContinuousWidth; eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
                         {
-                            openParenthesesPassed++;
-                        }
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == closeParenthesis)
-                        {
-                            closeParenthesesPassed++;
-                            closeParenthesisIndex = eggIndex;
-                        }
+                            if (eggIndex == 0 && eggIndexVert == i)
+                            { eggIndex = j + 1; } // If checking the first row, start at the openparenthesis index instead of the beginning xdxd
 
-                        if (closeParenthesesPassed > openParenthesesPassed)
-                        { break; }
+                            if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == openParenthesis)
+                            {
+                                openParenthesesPassed++;
+                            }
+                            if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == closeParenthesis)
+                            {
+                                closeParenthesesPassed++;
+                                closeParenthesisIndex = eggIndex;
+                                closeParenthesisIndexVert = eggIndexVert;
+                            }
 
-                        if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
-                        { break; }
+                            if (closeParenthesesPassed > openParenthesesPassed)
+                            { shouldBreak = true; break; }
+
+                            if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
+                            { shouldBreak = true; break; }
+                        }
+                        if (shouldBreak) {break;}
                     }
                     if (openParenthesesPassed != closeParenthesesPassed)
                     { continue; }
                     if (openParenthesesPassed == 0)
                     { continue; }
 
-                    for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
+                    for (int eggIndexVert = i; eggIndexVert <= closeParenthesisIndexVert; eggIndexVert++)
                     {
-                        randomOffset = Random.insideUnitSphere * randomRadius;
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Empty)
-                        { continue; }
+                        for (int eggIndex = 0; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
+                        {
+                            if (eggIndex == 0 && eggIndexVert == i)
+                            { eggIndex = j + 1; } // If checking the first row, start at the openparenthesis index instead of the beginning xdxd
 
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Ball)
-                        {
-                            if (manaManager.manaAmount <= 0) 
+                            randomOffset = Random.insideUnitSphere * randomRadius;
+                            if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Empty)
                             { continue; }
-                            Instantiate(ballPrefab, spawnedEgg.transform.position + spawnOffset + randomOffset, transform.rotation); // Any spells within the parentheses should be spawned in the egg
-                            manaManager.LoseMana(5);
-                        }
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
-                        {
-                            if (manaManager.manaAmount <= 0)
-                            { continue; }
-                            Instantiate(sparkPrefab, spawnedEgg.transform.position + spawnOffset + randomOffset, transform.rotation);
-                            manaManager.LoseMana(5);
+
+                            if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Ball)
+                            {
+                                if (manaManager.manaAmount <= 0) 
+                                { continue; }
+                                Instantiate(ballPrefab, spawnedEgg.transform.position + spawnOffset + randomOffset, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                                manaManager.LoseMana(5);
+                            }
+                            if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Spark)
+                            {
+                                if (manaManager.manaAmount <= 0)
+                                { continue; }
+                                Instantiate(sparkPrefab, spawnedEgg.transform.position + spawnOffset + randomOffset, transform.rotation);
+                                manaManager.LoseMana(5);
+                            }
                         }
                     }
+                    i = closeParenthesisIndexVert;
                     j = closeParenthesisIndex;
                 }
                 if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.Spark)
@@ -455,8 +495,9 @@ public class CastLogic : MonoBehaviour
                 }
                 if (IsOpenParenthesisSpell(spellMenu.castContinuousMap[i,j].spellType))
                 {
-                    int remainingIndices = spellMenu.castContinuousMap.GetLength(1) - 1 - j;
-                    if (remainingIndices <= 1)
+                    int remainingRows = SpellMenu.castContinuousHeight - 1 - i;
+                    int remainingIndices = SpellMenu.castContinuousWidth - 1 - j;
+                    if (remainingIndices <= 1 && remainingRows == 0)
                     { continue; }
 
                     SpellSlot.SpellType openParenthesis = spellMenu.castContinuousMap[i,j].spellType;
@@ -465,24 +506,35 @@ public class CastLogic : MonoBehaviour
                     int openParenthesesPassed = 0;
                     int closeParenthesesPassed = 0;
                     int closeParenthesisIndex = 0;
-                    for (int eggIndex = j; eggIndex < spellMenu.castContinuousMap.GetLength(1); eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
+                    int closeParenthesisIndexVert = 0;
+                    for (int eggIndexVert = i; eggIndexVert < SpellMenu.castContinuousHeight; eggIndexVert++)
                     {
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == openParenthesis)
+                        bool shouldBreak = false;
+                        for (int eggIndex = 0; eggIndex < SpellMenu.castContinuousWidth; eggIndex++) // do another loop to iterate through the the spells until you get to a an amount of closed parentheses passed that is equal to the amount of open parentheses passed (including the first open parenthesis).
                         {
-                            openParenthesesPassed++;
-                        }
-                        if (spellMenu.castContinuousMap[i,eggIndex].spellType == closeParenthesis)
-                        {
-                            closeParenthesesPassed++;
-                            closeParenthesisIndex = eggIndex;
-                        }
+                            if (eggIndex == 0 && eggIndexVert == i)
+                            { eggIndex = j; } // If checking the first row, start at the openparenthesis index instead of the beginning xdxd
 
-                        if (closeParenthesesPassed > openParenthesesPassed)
-                        { break; }
+                            if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == openParenthesis)
+                            {
+                                openParenthesesPassed++;
+                            }
+                            if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == closeParenthesis)
+                            {
+                                closeParenthesesPassed++;
+                                closeParenthesisIndex = eggIndex;
+                                closeParenthesisIndexVert = eggIndexVert;
+                            }
 
-                        if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
-                        { break; }
+                            if (closeParenthesesPassed > openParenthesesPassed)
+                            { shouldBreak = true; break; }
+
+                            if (openParenthesesPassed == closeParenthesesPassed && openParenthesesPassed > 0)
+                            { shouldBreak = true; break; }
+                        }
+                        if (shouldBreak) {break;}
                     }
+                    
                     if (openParenthesesPassed != closeParenthesesPassed)
                     { continue; }
 
@@ -494,45 +546,49 @@ public class CastLogic : MonoBehaviour
                         if (obj.transform.name != eggName)
                         { continue; }
 
-                        for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
+                        for (int eggIndexVert = i; eggIndexVert <= closeParenthesisIndexVert; eggIndexVert++)
                         {
-                            if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Empty)
-                            { continue; }
+                            for (int eggIndex = j + 1; eggIndex < closeParenthesisIndex; eggIndex++) // If so, iterate through the rest of the spells between parentheses until you reach the closed parenthesis.
+                            {
+                                if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Empty)
+                                { continue; }
 
-                            if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Ball)
-                            {
-                                if (manaManager.manaAmount <= 0) 
-                                { continue; }
-                                GameObject ballObject = Instantiate(ballPrefab, obj.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
-                                ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
-                                innerManaObject.AttachToEgg(obj.transform);
-                                manaManager.LoseMana(5);
-                            }
-                            if (spellMenu.castContinuousMap[i,eggIndex].spellType == SpellSlot.SpellType.Spark)
-                            {
-                                if (manaManager.manaAmount <= 0)
-                                { continue; }
-                                Instantiate(sparkPrefab, obj.transform.position, transform.rotation);
-                                manaManager.LoseMana(5);
+                                if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Ball)
+                                {
+                                    if (manaManager.manaAmount <= 0) 
+                                    { continue; }
+                                    GameObject ballObject = Instantiate(ballPrefab, obj.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                                    ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
+                                    innerManaObject.AttachToEgg(obj.transform);
+                                    manaManager.LoseMana(5);
+                                }
+                                if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Spark)
+                                {
+                                    if (manaManager.manaAmount <= 0)
+                                    { continue; }
+                                    Instantiate(sparkPrefab, obj.transform.position, transform.rotation);
+                                    manaManager.LoseMana(5);
+                                }
                             }
                         }
+                        i = closeParenthesisIndexVert;
                         j = closeParenthesisIndex;
                         break;
                     }
                 }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.XOpenParenthesis)
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.XOpenParenthesis)
                 { spawnOffset += -handTransform.right; }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.XCloseParenthesis)
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.XCloseParenthesis)
                 { spawnOffset += handTransform.right; }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.YOpenParenthesis)
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.YOpenParenthesis)
                 { spawnOffset += handTransform.up; }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.YCloseParenthesis)
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.YCloseParenthesis)
                 { spawnOffset += -handTransform.up; }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.ZOpenParenthesis)
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.ZOpenParenthesis)
                 { spawnOffset += -handTransform.forward + -handTransform.forward; }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.ZCloseParenthesis)
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.ZCloseParenthesis)
                 { spawnOffset += handTransform.forward + handTransform.forward; }
-                if (spellMenu.castStartMap[i,j].spellType == SpellSlot.SpellType.Cube)
+                if (spellMenu.castContinuousMap[i,j].spellType == SpellSlot.SpellType.Cube)
                 {
                     if (manaManager.manaAmount <= 0)
                     { continue; }

@@ -11,7 +11,7 @@ public class SpellMenu : MonoBehaviour
     float buttonWidth = 75;
     float buttonHeight = 75;
     public static int castStartWidth = 15;
-    public static int castStartHeight = 1;
+    public static int castStartHeight = 3;
     float castStartStartingPointX = -400;
     // float castStartStartingPointY = 225;
     float castStartStartingPointY = 200;
@@ -41,12 +41,12 @@ public class SpellMenu : MonoBehaviour
         PopulateSpellMenuMaps();
         PopulateSpellInventoryMap();
         PopulateUILabels();
-        castStartMap[0,0].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,2].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,4].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,6].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,8].AssignSpell(SpellSlot.SpellType.Ball);
-        castStartMap[0,10].AssignSpell(SpellSlot.SpellType.Ball);
+        // castStartMap[0,0].AssignSpell(SpellSlot.SpellType.Ball);
+        // castStartMap[0,2].AssignSpell(SpellSlot.SpellType.Ball);
+        // castStartMap[0,4].AssignSpell(SpellSlot.SpellType.Ball);
+        // castStartMap[0,6].AssignSpell(SpellSlot.SpellType.Ball);
+        // castStartMap[0,8].AssignSpell(SpellSlot.SpellType.Ball);
+        // castStartMap[0,10].AssignSpell(SpellSlot.SpellType.Ball);
         spellInventoryMap[0,0].AssignSpell(SpellSlot.SpellType.EggA);
         spellInventoryMap[0,1].AssignSpell(SpellSlot.SpellType.OpenParenthesisA);
         spellInventoryMap[0,2].AssignSpell(SpellSlot.SpellType.CloseParenthesisA);
