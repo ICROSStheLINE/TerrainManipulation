@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TheCube : MonoBehaviour
@@ -17,6 +18,9 @@ public class TheCube : MonoBehaviour
     Coroutine manaFlowCoroutine;
     float manaChargeDelta;
     Vector3 originalScale;
+    HashSet<BasicBlockInfo> placedBlocks = new HashSet<BasicBlockInfo>();
+    HashSet<BasicBlockInfo> randomizedBlocks = new HashSet<BasicBlockInfo>();
+    HashSet<Vector2Int> affectedChunks = new HashSet<Vector2Int>();
     
 
     void Start()
@@ -73,7 +77,7 @@ public class TheCube : MonoBehaviour
             shrinkAmount = Mathf.Lerp(1f, 0.1f, elapsedTime / duration);
             transform.localScale = originalScale * shrinkAmount;
 
-            int currentDivision = Mathf.Min(Mathf.FloorToInt((elapsedTime / duration) * 12), 12);
+            int currentDivision = Mathf.Min(Mathf.FloorToInt((elapsedTime / duration) * 20), 20);
 
             if (currentDivision > durationDivision)
             {
@@ -82,11 +86,16 @@ public class TheCube : MonoBehaviour
                 int latchedBlocksCount = latchedBlocks.Count;
                 if (latchedBlocksCount > 1)
                 {
+                    int groundBlockCount = 0;
+                    foreach (BasicBlockInfo latchedBlock in latchedBlocks)
+                    { if (Block.IsGround(latchedBlock.blockType)) {groundBlockCount++;} }
+
                     for (int i = latchedBlocksCount - 1; i > 1; i--)
                     {
-                        if (Block.IsGround(latchedBlocks[i].blockType))
+                        if (Block.IsGround(latchedBlocks[i].blockType) && groundBlockCount > 1)
                         {
                             latchedBlocks.RemoveAt(i);
+                            groundBlockCount--;
                             break;
                         }
                     }
@@ -148,6 +157,8 @@ public class TheCube : MonoBehaviour
 
     void Unlatch()
     {
+        placedBlocks.Clear();
+        affectedChunks.Clear();
         latched = false;
     }
 
@@ -168,8 +179,6 @@ public class TheCube : MonoBehaviour
 
     void DragAroundLatchedObjects()
     {
-        HashSet<Vector2Int> affectedChunks = new HashSet<Vector2Int>();
-
         int latchDeltaX = 0;
         int latchDeltaY = 0;
         int latchDeltaZ = 0;
@@ -181,11 +190,60 @@ public class TheCube : MonoBehaviour
         if (transform.position.z - latchAnchor.z < -Chunk.voxelSize) latchDeltaZ--;
         if (latchDeltaX != 0 || latchDeltaY != 0 || latchDeltaZ != 0)
         {
+            foreach (BasicBlockInfo randomizedBlock in randomizedBlocks)
+            {
+                world.DrawBlock(randomizedBlock.cubePos.x,
+                    randomizedBlock.cubePos.y,
+                    randomizedBlock.cubePos.z,
+                    randomizedBlock.chunkPos.x,
+                    randomizedBlock.chunkPos.y,
+                    Block.BlockType.Air,
+                    false);
+            }
+            randomizedBlocks.Clear();
+            foreach (BasicBlockInfo placedBlock in placedBlocks)
+            {
+                world.DrawBlock(placedBlock.cubePos.x,
+                    placedBlock.cubePos.y,
+                    placedBlock.cubePos.z,
+                    placedBlock.chunkPos.x,
+                    placedBlock.chunkPos.y,
+                    Block.BlockType.Air,
+                    false);
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                foreach (BasicBlockInfo placedBlock in placedBlocks)
+                {
+                    BasicBlockInfo randomizedBlock;
+                    randomizedBlock.blockType = placedBlock.blockType;
+                    randomizedBlock.cubePos = placedBlock.cubePos + new Vector3Int(Random.Range(-1,2),Random.Range(-1,2),Random.Range(-1,2));
+                    randomizedBlock.chunkPos = placedBlock.chunkPos;
+
+                    if (world.CheckCubeTypeInChunk(randomizedBlock.cubePos,randomizedBlock.chunkPos) != Block.BlockType.Air)
+                    { continue; }
+                    world.DrawBlock(randomizedBlock.cubePos.x,
+                        randomizedBlock.cubePos.y,
+                        randomizedBlock.cubePos.z,
+                        randomizedBlock.chunkPos.x,
+                        randomizedBlock.chunkPos.y,
+                        randomizedBlock.blockType,
+                        false);
+                    randomizedBlocks.Add(randomizedBlock);
+                }
+            }
+
             // For testing purposes, I am testing to see if moving TheCube one unit up the x axis would bring the latched block with it
             for (int i = 0; i < latchedBlocks.Count; i++)
             {
+                affectedChunks.Add(latchedBlocks[i].chunkPos);
+
                 if (Block.IsGround(latchedBlocks[i].blockType))
-                { continue; }
+                {
+                    // placedBlocks.Add(latchedBlocks[i]);
+                    StartCoroutine(AddToPlacedBlocksList(latchedBlocks[i]));
+                    continue;
+                }
 
                 world.DrawBlock(latchedBlocks[i].cubePos.x,
                     latchedBlocks[i].cubePos.y,
@@ -195,7 +253,6 @@ public class TheCube : MonoBehaviour
                     Block.BlockType.Air,
                     false);
 
-                affectedChunks.Add(latchedBlocks[i].chunkPos);
             }
         }
         
@@ -235,6 +292,12 @@ public class TheCube : MonoBehaviour
             latchAnchor += new Vector3(latchDeltaX,latchDeltaY,latchDeltaZ) * Chunk.voxelSize;
             // latchAnchor = transform.position;
         }
+    }
+
+    IEnumerator AddToPlacedBlocksList(BasicBlockInfo placedBlock)
+    {
+        yield return new WaitForSeconds(0.1f);
+        placedBlocks.Add(placedBlock);
     }
 
     List<BasicBlockInfo> OverlappingBlocks()
