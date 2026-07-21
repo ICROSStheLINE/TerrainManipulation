@@ -81,8 +81,15 @@ public class TheCube : MonoBehaviour
 
                 int latchedBlocksCount = latchedBlocks.Count;
                 if (latchedBlocksCount > 1)
-                { 
-                    latchedBlocks.RemoveAt(latchedBlocksCount - 1);
+                {
+                    for (int i = latchedBlocksCount - 1; i > 1; i--)
+                    {
+                        if (Block.IsGround(latchedBlocks[i].blockType))
+                        {
+                            latchedBlocks.RemoveAt(i);
+                            break;
+                        }
+                    }
                 }
             }
 
