@@ -22,6 +22,7 @@ public class PhysicalProperties : MonoBehaviour
     [HideInInspector] public FrozenCluster frozenCluster;
     [SerializeField] float frozenClusterSearchRadius = 1f;
     bool isManaFizzling = false;
+    bool isGlowing = false;
 
     void Start()
     {
@@ -51,11 +52,11 @@ public class PhysicalProperties : MonoBehaviour
         {
             temperature = flashPoint;
         }
-        if (temperature < 6 && temperature > 0)
+        if (temperature < 6 && temperature > 0 && isGlowing)
         {
             StopGlowing();
         }
-        if (temperature > 6 * flashPoint / 7 && temperature < flashPoint)
+        if (temperature > 6 * flashPoint / 7 && temperature < flashPoint && !isGlowing)
         {
             Glow();
         }
@@ -196,11 +197,13 @@ public class PhysicalProperties : MonoBehaviour
 
     void StopGlowing()
     {
+        isGlowing = false;
         material.SetColor("_Color", defaultColor);
     }
 
     void Glow()
     {
+        isGlowing = true;
         material.SetColor("_Color", Color.yellow);
     }
 
