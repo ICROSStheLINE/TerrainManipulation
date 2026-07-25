@@ -20,7 +20,7 @@ public class PhysicalProperties : MonoBehaviour
     [SerializeField] GameObject emberSmokePrefab;
     GameObject emberSmokeObject;
     [HideInInspector] public FrozenCluster frozenCluster;
-    [SerializeField] float frozenClusterSearchRadius = 1f;
+    float frozenClusterSearchRadius = 0.5f;
     bool isManaFizzling = false;
     bool isGlowing = false;
 
@@ -272,16 +272,18 @@ public class PhysicalProperties : MonoBehaviour
         temperature += manaConvertedToHeat;
     }
 
-    void OnTriggerEnter(Collider collision)
-    {
-        if (collision.gameObject.tag == "Spark")
-        {
-            temperature += 10;
-        }
-    }
+    // void OnTriggerEnter(Collider collision)
+    // {
+        
+    // }
 
     void OnTriggerStay(Collider collision) // Call when touching something
     {
+        if (collision.gameObject.tag == "Spark")
+        {
+            temperature += 1;
+        }
+
         if (collision.gameObject.tag == "PhysicalObject") // If touching physical object
         {
             PhysicalProperties collisionPhysicalProps = collision.gameObject.transform.GetComponent<PhysicalProperties>(); // Get reference
