@@ -19,6 +19,32 @@ public class ManaObject : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    // This is actually a NECESSARY FUNCTION!
+    // C# has a weird quirk where setting a variable (who's datatype is a CLASS) to an object
+    // doesn't make it a copy of the object like how setting a string or an int does. It
+    // instead sets it to a REFERENCE to that existing object (like how a pointer works).
+    // This is why I can do var = GetComponent<Class>() and it would still track the values
+    // in that component as they change.
+    // Therefore, if we want to keep a snapshot of the spell slot info, we can't just set
+    // spellSlotInfo directly to the value of the spellSlot object, cause the next time that
+    // slot gets changed to something else in the menu this variable would change too!
+    // Therefore, this method was created for the sole purpose of keeping a "snapshot" of
+    // the spellslot data.
+    public void SetSpellSlotInfo(SpellSlot source)
+    {
+        if (source == null)
+        {
+            spellSlotInfo = null;
+            return;
+        }
+
+        spellSlotInfo = new SpellSlot();
+        spellSlotInfo.spellType = source.spellType;
+        spellSlotInfo.manaResistancePercent = source.manaResistancePercent;
+        spellSlotInfo.manaFlowAmount = source.manaFlowAmount;
+        spellSlotInfo.manaFlowType = source.manaFlowType;
+    }
+
     void FixedUpdate()
     {
         if (attachedToHand)

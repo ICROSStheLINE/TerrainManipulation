@@ -222,7 +222,7 @@ public class CastLogic : MonoBehaviour
                     ManaObject manaObject = ballObject.transform.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
-                    manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                    manaObject.SetSpellSlotInfo(spellMenu.castStartMap[i,j]);
                     manaManager.LoseMana(5);
                 }
                 if (IsEggSpell(spellMenu.castStartMap[i,j].spellType)) // if spell is an egg, then 
@@ -240,7 +240,7 @@ public class CastLogic : MonoBehaviour
                     ManaObject manaObject = spawnedEgg.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
-                    manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                    manaObject.SetSpellSlotInfo(spellMenu.castStartMap[i,j]);
                     manaManager.LoseMana(5);
 
                     int remainingRows = SpellMenu.castStartHeight - 1 - i;
@@ -309,7 +309,7 @@ public class CastLogic : MonoBehaviour
                                 ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
                                 innerManaObject.AttachToEgg(spawnedEgg.transform);
                                 activeManaObjects.Add(innerManaObject);
-                                innerManaObject.spellSlotInfo = spellMenu.castStartMap[eggIndexVert,eggIndex];
+                                innerManaObject.SetSpellSlotInfo(spellMenu.castStartMap[eggIndexVert,eggIndex]);
                                 manaManager.LoseMana(5);
                             }
                             if (spellMenu.castStartMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Spark)
@@ -330,7 +330,7 @@ public class CastLogic : MonoBehaviour
                                 ManaObject innerManaObject = innerEggObject.GetComponent<ManaObject>();
                                 innerManaObject.AttachToEgg(spawnedEgg.transform);
                                 activeManaObjects.Add(innerManaObject);
-                                innerManaObject.spellSlotInfo = spellMenu.castStartMap[eggIndexVert,eggIndex];
+                                innerManaObject.SetSpellSlotInfo(spellMenu.castStartMap[eggIndexVert,eggIndex]);
                                 manaManager.LoseMana(5);
                             }
                         }
@@ -369,7 +369,7 @@ public class CastLogic : MonoBehaviour
                     ManaObject manaObject = cubeObject.transform.GetComponent<ManaObject>();
                     manaObject.AttachToHand(handTransform);
                     activeManaObjects.Add(manaObject);
-                    manaObject.spellSlotInfo = spellMenu.castStartMap[i,j];
+                    manaObject.SetSpellSlotInfo(spellMenu.castStartMap[i,j]);
                     manaManager.LoseMana(5);
                 }
             }
@@ -394,7 +394,8 @@ public class CastLogic : MonoBehaviour
                     { continue; }
                     
                     GameObject ballObject = Instantiate(ballPrefab, spawnPosition + spawnOffset + randomOffset, transform.rotation);
-                    // ManaObject manaObject = ballObject.GetComponent<ManaObject>();
+                    ManaObject manaObject = ballObject.GetComponent<ManaObject>();
+                    manaObject.SetSpellSlotInfo(spellMenu.castContinuousMap[i,j]);
                     // manaObject.AttachToHand(handTransform);
                     // activeManaObjects.Add(manaObject);
                     manaManager.LoseMana(5);
@@ -470,7 +471,9 @@ public class CastLogic : MonoBehaviour
                             {
                                 if (manaManager.manaAmount <= 0) 
                                 { continue; }
-                                Instantiate(ballPrefab, spawnedEgg.transform.position + spawnOffset + randomOffset, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                                GameObject ballObject = Instantiate(ballPrefab, spawnedEgg.transform.position + spawnOffset + randomOffset, transform.rotation); // Any spells within the parentheses should be spawned in the egg
+                                ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
+                                innerManaObject.SetSpellSlotInfo(spellMenu.castContinuousMap[eggIndexVert,eggIndex]);
                                 manaManager.LoseMana(5);
                             }
                             if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Spark)
@@ -560,6 +563,7 @@ public class CastLogic : MonoBehaviour
                                     GameObject ballObject = Instantiate(ballPrefab, obj.transform.position, transform.rotation); // Any spells within the parentheses should be spawned in the egg
                                     ManaObject innerManaObject = ballObject.GetComponent<ManaObject>();
                                     innerManaObject.AttachToEgg(obj.transform);
+                                    innerManaObject.SetSpellSlotInfo(spellMenu.castContinuousMap[eggIndexVert,eggIndex]);
                                     manaManager.LoseMana(5);
                                 }
                                 if (spellMenu.castContinuousMap[eggIndexVert,eggIndex].spellType == SpellSlot.SpellType.Spark)
