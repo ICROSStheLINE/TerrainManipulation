@@ -17,6 +17,30 @@ public class FrozenCluster : MonoBehaviour
         EnsureRequiredComponents();
     }
 
+    void Update()
+    {
+        if (physicalProperties.temperature <= physicalProperties.freezingPoint || members.Count == 0)
+        {
+            return;
+        }
+
+        PhysicalProperties closestMember = members[0];
+        float closestAlignment = Vector3.Dot((closestMember.transform.position - transform.position).normalized, physicalProperties.tempChangeDirection);
+
+        for (int i = 1; i < members.Count; i++)
+        {
+            float alignment = Vector3.Dot((members[i].transform.position - transform.position).normalized, physicalProperties.tempChangeDirection);
+            if (alignment > closestAlignment)
+            {
+                closestMember = members[i];
+                closestAlignment = alignment;
+            }
+        }
+
+        RemoveMember(closestMember);
+        physicalProperties.temperature = physicalProperties.freezingPoint - 5f;
+    }
+
     public void AddMember(PhysicalProperties obj)
     {
         AddMember(obj, true);
@@ -37,6 +61,12 @@ public class FrozenCluster : MonoBehaviour
         if (childRigidbody)
         {
             childRigidbody.isKinematic = false;
+        }
+
+        if (members.Count == 0)
+        {
+            Destroy(gameObject);
+            return;
         }
 
         RecalculateCenter();
@@ -287,6 +317,8 @@ public class FrozenCluster : MonoBehaviour
         if (members.Count == 0)
         {
             physicalProperties.CopyStatsFrom(member);
+            physicalProperties.temperature = physicalProperties.freezingPoint - 1f;
+            physicalProperties.heatResistance = -0.5f;
         }
         else
         {
