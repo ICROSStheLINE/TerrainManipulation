@@ -318,7 +318,7 @@ public class FrozenCluster : MonoBehaviour
         {
             physicalProperties.CopyStatsFrom(member);
             physicalProperties.temperature = physicalProperties.freezingPoint - 1f;
-            physicalProperties.heatResistance = -0.5f;
+            physicalProperties.heatResistance = 0.2f;
         }
         else
         {

@@ -289,12 +289,11 @@ public class PhysicalProperties : MonoBehaviour
         if (collision.gameObject.tag == "PhysicalObject") // If touching physical object
         {
             PhysicalProperties collisionPhysicalProps = collision.gameObject.transform.GetComponent<PhysicalProperties>(); // Get reference
-            if (Mathf.Abs(collisionPhysicalProps.temperature) >= Mathf.Abs(temperature)) // If the collided object's temperature is greater than THIS object's temperature...
+            if (collisionPhysicalProps && collisionPhysicalProps.temperature != temperature)
             {
                 tempChangeDirection = (collision.transform.position - transform.position).normalized;
-                float temperatureTransferRate = (collisionPhysicalProps.temperature - temperature) / heatResistance; // Multiply difference in temps by conductivity
-                temperature += 0.01f * temperatureTransferRate; // Add this much heat to THIS object
-                collisionPhysicalProps.temperature -= 0.01f * temperatureTransferRate; // Delete this much heat from the collided object
+                float temperatureTransferRate = (collisionPhysicalProps.temperature - temperature) / Mathf.Max(heatResistance, 0.01f);
+                temperature += 0.01f * temperatureTransferRate;
             }
         }
     }
